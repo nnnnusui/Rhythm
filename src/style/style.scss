@@ -1,0 +1,99 @@
+html,
+body {
+  margin: 0;
+  height: 100%;
+}
+body {
+  display: flex;
+  flex-direction: column;
+  background-color: #222;
+  color: white;
+}
+
+.source {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+}
+
+.player {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+
+.play-button {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  opacity: 0.2;
+  background-color: white;
+  &.playing {
+    width: 2em;
+    height: 2em;
+    left: 0;
+    top: 0;
+    opacity: 1;
+  }
+}
+
+.action-detector {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+}
+.judge-line {
+  position: absolute;
+  top: 80%;
+  width: 100%;
+  height: 1px;
+  background-color: white;
+}
+
+.view {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+}
+.judge-view {
+  pointer-events: none;
+  position: absolute;
+  background: rgba($color: #000000, $alpha: 0.4);
+  font-size: 5em;
+  font-weight: 600;
+}
+.lane {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+.note {
+  transition-property: top;
+  transition-duration: 1s;
+  transition-timing-function: linear;
+  position: absolute;
+  width: 100%;
+  height: 10em;
+  top: 0;
+  &.active {
+    top: 100%;
+  }
+
+  display: flex;
+  flex-direction: column;
+  &::before {
+    height: 100%;
+    background-color: orange;
+  }
+  .judge {
+    width: 100%;
+    height: 100%;
+    border-style: solid;
+    border-color: white;
+  }
+}
