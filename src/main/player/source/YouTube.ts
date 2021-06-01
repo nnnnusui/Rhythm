@@ -17,6 +17,19 @@ const YouTube = (args: {
     ...source,
     kind: "YouTube",
     element,
+    waitLoadAndPlay: (callback: () => void) => {
+      let called = false;
+      source.on("stateChange", (event) => {
+        console.log(event.data);
+        switch (event.data) {
+          case 1:
+            if (called) return;
+            called = true;
+            callback();
+        }
+      });
+      source.playVideo();
+    },
   };
 };
 

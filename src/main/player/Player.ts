@@ -25,8 +25,7 @@ const Player = (args: { score: Score }) => {
   });
   const playButton = PlayButton({
     onPlay: () => {
-      view.play();
-      source.playVideo();
+      source.waitLoadAndPlay(() => view.play());
     },
     onPause: () => {
       view.pause();
