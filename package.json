@@ -1,0 +1,41 @@
+{
+  "private": true,
+  "scripts": {
+    "lint:prettier": "prettier src --check",
+    "lint:eslint": "eslint src",
+    "lint": "run-p lint:*",
+    "fix:prettier": "npm run lint:prettier -- --write",
+    "fix:eslint": "npm run lint:eslint -- --fix",
+    "fix": "run-s fix:*",
+    "build:webpack": "webpack --mode=production",
+    "build:sass": "sass src/style:out",
+    "build:copy": "node -e \"require('fs-extra').copySync('public', 'out')\"",
+    "build": "run-p build:*",
+    "run": "cd out && http-server",
+    "routine": "run-s fix build run",
+    "monitor": "nodemon --ignore out/ --ignore node_modules/ --ext ts,scss --exec \"npm run routine\""
+  },
+  "devDependencies": {
+    "@types/chrome": "0.0.139",
+    "@types/webpack": "^5.28.0",
+    "@types/youtube-player": "^5.5.3",
+    "@typescript-eslint/eslint-plugin": "^4.23.0",
+    "@typescript-eslint/parser": "^4.23.0",
+    "eslint": "^7.26.0",
+    "eslint-plugin-prettier": "^3.4.0",
+    "fs-extra": "^10.0.0",
+    "http-server": "^0.12.3",
+    "nodemon": "^2.0.7",
+    "npm-run-all": "^4.1.5",
+    "prettier": "^2.3.0",
+    "sass": "^1.33.0",
+    "ts-loader": "^9.2.2",
+    "ts-node": "^10.0.0",
+    "typescript": "^4.2.4",
+    "webpack": "^5.37.1",
+    "webpack-cli": "^4.7.0"
+  },
+  "dependencies": {
+    "youtube-player": "^5.5.2"
+  }
+}
