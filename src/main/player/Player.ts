@@ -1,6 +1,5 @@
 import { Score } from "../type/Score";
 import { ActionDetector } from "./action/ActionDetector";
-import { JudgeLine } from "./action/JudgeLine";
 import { PlayButton } from "./controller/PlayButton";
 import { YouTube } from "./source/YouTube";
 import { LaneView } from "./view/LaneView";
@@ -18,9 +17,8 @@ const Player = (args: { score: Score }) => {
     onReady: () => playButton.activate(),
   });
   const view = LaneView({ score });
-  const judgeLine = JudgeLine();
   const actionDetector = ActionDetector({
-    judgeLine,
+    judgeLineView: view.judgeLineView,
     onJudge: (judge) => view.setJudge(judge),
   });
   const playButton = PlayButton({
@@ -35,7 +33,6 @@ const Player = (args: { score: Score }) => {
   element.append(
     source.element,
     view.element,
-    judgeLine.element,
     actionDetector.element,
     playButton.element
   );

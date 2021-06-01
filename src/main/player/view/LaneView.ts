@@ -1,4 +1,5 @@
 import { Score } from "../../type/Score";
+import { JudgeLineView } from "./JudgeLineView";
 import { JudgeView } from "./JudgeView";
 import { NoteView } from "./NoteView";
 
@@ -15,6 +16,7 @@ const LaneView = (args: { score: Score }) => {
   const lanes = [...Array(score.amount).keys()].map(Lane);
 
   const judgeView = JudgeView();
+  const judgeLineView = JudgeLineView();
   const notes = score.notes.map((it) => {
     const note = NoteView({ onJudge: (judge) => judgeView.set(judge) });
     lanes[it.position].element.prepend(note.element);
@@ -27,12 +29,17 @@ const LaneView = (args: { score: Score }) => {
       },
     };
   });
-  element.append(...lanes.map((it) => it.element), judgeView.element);
+  element.append(
+    ...lanes.map((it) => it.element),
+    judgeLineView.element,
+    judgeView.element
+  );
   return {
     element,
     play: () => notes.forEach((it) => it.play()),
     pause: () => {},
     setJudge: judgeView.set,
+    judgeLineView,
   };
 };
 
