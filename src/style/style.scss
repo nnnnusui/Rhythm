@@ -20,7 +20,6 @@ body {
   position: absolute;
   width: 100%;
   height: 100%;
-  perspective: 40px;
 }
 
 .play-button {
@@ -45,7 +44,7 @@ body {
 }
 .judge-line {
   position: absolute;
-  bottom: 5%;
+  bottom: 8%;
   width: 100%;
   height: 1px;
   background-color: white;
@@ -58,9 +57,20 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  overflow: hidden;
+  perspective: 100px;
+  perspective-origin: 50% 25%;
+}
+.lanes {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   transform: rotateX(45deg);
   transform-origin: bottom;
+  overflow: hidden;
+  background: rgba($color: #000000, $alpha: 0.2);
 }
 .judge-view {
   pointer-events: none;
@@ -73,8 +83,6 @@ body {
   position: relative;
   width: 100%;
   height: 100%;
-  background-color: #000000;
-  opacity: 0.2;
 }
 .note {
   transition-property: top;
@@ -92,12 +100,17 @@ body {
   flex-direction: column;
   &::before {
     height: 100%;
-    background-color: orange;
   }
+
   .judge {
     width: 100%;
     height: 100%;
-    border-style: solid;
-    border-color: white;
+    // border-style: solid;
+    // border-color: white;
+  }
+  .perfect {
+    width: 100%;
+    height: 100%;
+    background-color: orange;
   }
 }

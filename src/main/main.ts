@@ -1,4 +1,4 @@
-import { Player } from "./player/Player";
+import { Game } from "./Game";
 import { score } from "./sample-score";
 
 const suppressTouchMove = () => {
@@ -8,7 +8,7 @@ const suppressTouchMove = () => {
 };
 suppressTouchMove();
 
-const player = Player({ score });
+const game = Game({ score });
 
 const root = document.body;
-root.append(player.element);
+root.append(game.element);
