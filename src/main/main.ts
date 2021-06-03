@@ -6,9 +6,20 @@ const suppressTouchMove = () => {
     passive: false,
   });
 };
-suppressTouchMove();
-
-const game = Game({ score });
 
 const root = document.body;
-root.append(game.element);
+const starter = document.createElement("div");
+starter.textContent = "Click to start";
+starter.classList.add("starter");
+root.append(starter);
+
+starter.addEventListener(
+  "click",
+  () => {
+    starter.remove();
+    suppressTouchMove();
+    const game = Game({ score });
+    root.append(game.element);
+  },
+  { once: true }
+);
