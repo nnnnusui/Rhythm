@@ -6,6 +6,11 @@ import { NoteView } from "./NoteView";
 const LaneView = () => {
   const element = document.createElement("div");
   element.classList.add("lane");
+  const startAction = () => element.classList.add("action");
+  const endAction = () => element.classList.remove("action");
+  element.addEventListener("pointerdown", startAction);
+  element.addEventListener("pointerup", endAction);
+  element.addEventListener("pointerleave", endAction);
   return { element };
 };
 const LanesView = (args: {
