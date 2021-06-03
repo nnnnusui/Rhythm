@@ -1,21 +1,30 @@
 import { JudgeLineView } from "../view/JudgeLineView";
 
+const dispatchPointerEventTo =
+  (getClientY: () => number) => (event: PointerEvent) => {
+    if (event.target !== event.currentTarget) return;
+    const clientY = getClientY();
+    const onJudgeLine = document.elementsFromPoint(event.clientX, clientY)[1];
+    if (!onJudgeLine) return;
+    const newEvent = new PointerEvent(event.type, {
+      bubbles: true,
+      cancelable: true,
+      clientX: event.clientX,
+      clientY: clientY,
+    });
+    onJudgeLine.dispatchEvent(newEvent);
+  };
+
 const ActionDetector = (args: {
   judgeLineView: JudgeLineView;
   onJudge: (judge: string) => void;
 }) => {
   const element = document.createElement("div");
   element.classList.add("action-detector");
-  element.addEventListener("pointerdown", (event) => {
-    const judgeElement = document
-      .elementsFromPoint(event.clientX, args.judgeLineView.y())
-      .filter((it) => it.classList.contains("judge"))[0];
-    if (!judgeElement) return;
-    const judge = (judgeElement as HTMLElement).dataset["judge"];
-    if (!judge) return;
-    args.onJudge(judge);
-    judgeElement.parentElement?.remove();
-  });
+  const dispatchEvent = dispatchPointerEventTo(args.judgeLineView.y);
+  element.addEventListener("pointerdown", dispatchEvent);
+  element.addEventListener("pointerup", dispatchEvent);
+  element.addEventListener("pointerleave", dispatchEvent);
   return { element };
 };
 
