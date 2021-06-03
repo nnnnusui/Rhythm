@@ -10,7 +10,7 @@ const LaneView = () => {
   const endAction = () => element.classList.remove("action");
   element.addEventListener("pointerdown", startAction);
   element.addEventListener("pointerup", endAction);
-  element.addEventListener("pointerleave", endAction);
+  element.addEventListener("pointercancel", endAction);
   return { element };
 };
 const LanesView = (args: {
