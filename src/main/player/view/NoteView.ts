@@ -1,13 +1,21 @@
+const JudgeView = (args: {
+  evaluation: string;
+  onJudge: (judge: string) => void;
+}) => {
+  const element = document.createElement("div");
+  element.classList.add("judge", args.evaluation);
+  element.dataset["judge"] = args.evaluation;
+  element.addEventListener("pointerdown", () => args.onJudge(args.evaluation));
+  return { element };
+};
+
 const NoteView = (args: { onJudge: (judge: string) => void }) => {
   const element = document.createElement("div");
   element.classList.add("note");
-  const judges = ["great", "perfect", "great", "good"].map((evaluation) => {
-    const element = document.createElement("div");
-    element.classList.add("judge", evaluation);
-    element.dataset["judge"] = evaluation;
-    element.addEventListener("pointerdown", () => args.onJudge(evaluation));
-    return { element };
-  });
+  element.addEventListener("pointerdown", () => element.remove());
+  const judges = ["great", "perfect", "great", "good"].map((evaluation) =>
+    JudgeView({ evaluation, onJudge: args.onJudge })
+  );
   element.append(...judges.map((it) => it.element));
   return { element, activate: () => element.classList.add("active") };
 };
