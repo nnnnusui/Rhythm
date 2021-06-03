@@ -1,6 +1,6 @@
-import { PlayButton } from "./player/controller/PlayButton";
+import { PlayButton } from "./controller/PlayButton";
 import { Player } from "./player/Player";
-import { YouTube } from "./player/source/YouTube";
+import { YouTube } from "./source/YouTube";
 import { Score } from "./type/Score";
 
 const Game = (args: { score: Score }) => {
