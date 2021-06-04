@@ -1,7 +1,6 @@
-const JudgeView = (args: {
-  evaluation: string;
-  onJudge: (judge: string) => void;
-}) => {
+import { OnJudge } from "../type/OnJudge";
+
+const JudgeView = (args: { evaluation: string; onJudge: OnJudge }) => {
   const element = document.createElement("div");
   element.classList.add("judge", args.evaluation);
   element.dataset["judge"] = args.evaluation;
@@ -9,7 +8,7 @@ const JudgeView = (args: {
   return { element };
 };
 
-const NoteView = (args: { onJudge: (judge: string) => void }) => {
+const NoteView = (args: { onJudge: OnJudge }) => {
   const element = document.createElement("div");
   element.classList.add("note");
   element.addEventListener("pointerdown", () =>

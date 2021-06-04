@@ -5,7 +5,7 @@ import { View } from "./view/View";
 const Player = (args: { score: Score }) => {
   const element = document.createElement("div");
   element.classList.add("player");
-  const view = View({ score: args.score });
+  const view = View({ score: args.score, onJudge: () => {} });
   const actionDetector = ActionDetector({
     judgeLineView: view.judgeLineView,
     onJudge: (judge) => view.setJudge(judge),

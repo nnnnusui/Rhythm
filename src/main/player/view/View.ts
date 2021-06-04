@@ -1,4 +1,5 @@
 import { Score } from "../../type/Score";
+import { OnJudge } from "../type/OnJudge";
 import { JudgeLineView } from "./JudgeLineView";
 import { JudgeView } from "./JudgeView";
 import { NoteView } from "./NoteView";
@@ -13,10 +14,7 @@ const LaneView = () => {
   element.addEventListener("pointercancel", endAction);
   return { element };
 };
-const LanesView = (args: {
-  score: Score;
-  onJudge: Parameters<typeof NoteView>[0]["onJudge"];
-}) => {
+const LanesView = (args: { score: Score; onJudge: OnJudge }) => {
   const element = document.createElement("div");
   element.classList.add("lanes");
   const lanes = [...Array(args.score.amount).keys()].map(LaneView);
@@ -43,13 +41,16 @@ const LanesView = (args: {
   };
 };
 
-const View = (args: { score: Score }) => {
+const View = (args: { score: Score; onJudge: OnJudge }) => {
   const element = document.createElement("div");
   element.classList.add("view");
   const judgeView = JudgeView();
   const lanesView = LanesView({
     score: args.score,
-    onJudge: (judge) => judgeView.set(judge),
+    onJudge: (judge) => {
+      judgeView.set(judge);
+      args.onJudge(judge);
+    },
   });
   element.append(lanesView.element, judgeView.element);
   return {

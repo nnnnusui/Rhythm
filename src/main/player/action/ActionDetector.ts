@@ -17,7 +17,7 @@ const dispatchPointerEventTo =
 
 const ActionDetector = (args: {
   judgeLineView: JudgeLineView;
-  onJudge: (judge: string) => void;
+  onJudge: OnJudge;
 }) => {
   const element = document.createElement("div");
   element.classList.add("action-detector");
