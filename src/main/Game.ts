@@ -18,11 +18,10 @@ const Game = (args: { score: Score }) => {
   const player = Player({ score: args.score });
   const playButton = PlayButton({
     onPlay: () => {
-      source.waitLoadAndPlay(() => player.play());
+      source.play(() => player.play());
     },
     onPause: () => {
-      player.pause();
-      source.pauseVideo();
+      source.pause(() => player.pause());
     },
   });
   element.append(source.element, player.element, playButton.element);

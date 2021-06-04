@@ -14,10 +14,9 @@ const YouTube = (args: {
   });
   source.on("ready", args.onReady);
   return {
-    ...source,
-    kind: "YouTube",
+    kind: "YouTube" as const,
     element,
-    waitLoadAndPlay: (callback: () => void) => {
+    play: (after: () => void) => {
       let called = false;
       source.on("stateChange", (event) => {
         console.log(event.data);
@@ -25,10 +24,14 @@ const YouTube = (args: {
           case 1:
             if (called) return;
             called = true;
-            callback();
+            after();
         }
       });
       source.playVideo();
+    },
+    pause: (after: () => void) => {
+      source.pauseVideo();
+      after();
     },
   };
 };
