@@ -32,9 +32,11 @@ const Game = (args: { score: Score }) => {
   const player = Player({ score: args.score });
   const playButton = PlayButton({
     onPlay: () => {
+      element.classList.remove("pause");
       source.play(() => player.play());
     },
     onPause: () => {
+      element.classList.add("pause");
       source.pause(() => player.pause());
     },
   });
