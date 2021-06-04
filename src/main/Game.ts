@@ -9,24 +9,23 @@ const Game = (args: { score: Score }) => {
   element.classList.add("game");
 
   const source = (() => {
+    const base = {
+      size: {
+        width: document.body.clientWidth,
+        height: document.body.clientHeight,
+      },
+      onReady: () => playButton.activate(),
+    };
     switch (args.score.source.kind) {
       case "YouTube":
         return YouTube({
+          ...base,
           videoId: args.score.source.id,
-          size: {
-            width: document.body.clientWidth,
-            height: document.body.clientHeight,
-          },
-          onReady: () => {},
         });
       case "SoundCloud":
         return SoundCloud({
+          ...base,
           id: args.score.source.id,
-          size: {
-            width: document.body.clientWidth,
-            height: document.body.clientHeight,
-          },
-          onReady: () => {},
         });
     }
   })();
@@ -39,7 +38,6 @@ const Game = (args: { score: Score }) => {
       source.pause(() => player.pause());
     },
   });
-  playButton.activate();
   element.append(source.element, player.element, playButton.element);
   return { element };
 };

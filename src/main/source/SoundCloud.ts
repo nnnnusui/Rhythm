@@ -23,9 +23,11 @@ const SoundCloud = (args: {
     .map(([key, value]) => `${key}=${encodeURI(value.toString())}`)
     .join("&");
   element.src = `https://w.soundcloud.com/player/?${urlParameters}`;
-  args.onReady();
-  console.log(SC);
   const widget = SC.Widget(element);
+  widget.bind(SC.Widget.Events.READY, () => {
+    widget.setVolume(50);
+    args.onReady();
+  });
   return {
     kind: "SoundCloud" as const,
     element,
@@ -34,7 +36,6 @@ const SoundCloud = (args: {
       widget.bind(SC.Widget.Events.PLAY, () => {
         if (called) return;
         called = true;
-        widget.setVolume(50);
         after();
       });
       widget.play();
