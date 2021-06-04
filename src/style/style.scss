@@ -21,24 +21,20 @@ body {
   width: 100%;
   height: 100%;
 }
-.player {
-  position: absolute;
-  width: 100%;
-  height: 100%;
+.game {
   -webkit-user-select: none;
   user-select: none;
 }
-
-.source {
+.game,
+.source,
+.player,
+.play-button {
   position: absolute;
   width: 100%;
   height: 100%;
 }
 
 .play-button {
-  position: absolute;
-  width: 100%;
-  height: 100%;
   opacity: 0.2;
   background-color: white;
   &.playing {
