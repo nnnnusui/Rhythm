@@ -18,7 +18,13 @@ const NoteView = (args: { onJudge: OnJudge }) => {
     JudgeView({ evaluation, onJudge: args.onJudge })
   );
   element.append(...judges.map((it) => it.element));
-  return { element, activate: () => element.classList.add("active") };
+  return {
+    element,
+    activate: (delay: number) => {
+      element.classList.add("active");
+      element.style.animationDelay = `${delay}s`;
+    },
+  };
 };
 
 type NoteView = ReturnType<typeof NoteView>;

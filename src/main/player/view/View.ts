@@ -25,8 +25,7 @@ const LanesView = (args: { score: Score; onJudge: OnJudge }) => {
       element: note,
       play: (currentTime?: number) => {
         const wait = currentTime ? it.timing - currentTime : it.timing;
-        const waitMs = wait * 1000;
-        setTimeout(() => note.activate(), waitMs);
+        note.activate(wait);
       },
     };
   });

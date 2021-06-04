@@ -104,7 +104,7 @@ body {
   }
 }
 
-@keyframes move {
+@keyframes fall {
   from {
     top: 0;
   }
@@ -113,7 +113,7 @@ body {
   }
 }
 .note {
-  animation-name: move;
+  animation-name: fall;
   animation-duration: 1s;
   animation-timing-function: linear;
   animation-fill-mode: forwards;
