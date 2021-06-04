@@ -1,4 +1,6 @@
-type Source = { kind: "YouTube"; videoId: string };
+type Source =
+  | { kind: "YouTube"; id: string }
+  | { kind: "SoundCloud"; id: string };
 
 export type Score = {
   source: Source;
