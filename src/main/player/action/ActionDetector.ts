@@ -1,10 +1,11 @@
+import { OnJudge } from "../type/OnJudge";
 import { JudgeLineView } from "../view/JudgeLineView";
 
 const dispatchPointerEventTo =
   (getClientY: () => number) => (event: PointerEvent) => {
     if (event.target !== event.currentTarget) return;
     const clientY = getClientY();
-    const onJudgeLine = document.elementsFromPoint(event.clientX, clientY)[1];
+    const onJudgeLine = document.elementsFromPoint(event.clientX, clientY)[2];
     if (!onJudgeLine) return;
     const newEvent = new PointerEvent(event.type, {
       bubbles: true,
