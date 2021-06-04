@@ -12,7 +12,9 @@ const JudgeView = (args: {
 const NoteView = (args: { onJudge: (judge: string) => void }) => {
   const element = document.createElement("div");
   element.classList.add("note");
-  element.addEventListener("pointerdown", () => element.remove());
+  element.addEventListener("pointerdown", () =>
+    element.classList.add("judged")
+  );
   const judges = ["great", "perfect", "great", "good"].map((evaluation) =>
     JudgeView({ evaluation, onJudge: args.onJudge })
   );

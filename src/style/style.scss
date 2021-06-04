@@ -1,3 +1,10 @@
+// :root {
+//   all: unset;
+// }
+iframe {
+  border-style: none;
+}
+:root,
 html,
 body {
   margin: 0;
@@ -103,6 +110,9 @@ body {
   top: 0;
   &.active {
     top: 100%;
+  }
+  &.judged {
+    opacity: 0;
   }
 
   display: flex;
