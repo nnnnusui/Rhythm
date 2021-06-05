@@ -8,6 +8,8 @@ const Game = (args: { score: Score }) => {
   const element = document.createElement("div");
   element.classList.add("game");
 
+  const player = Player({ score: args.score });
+
   const source = (() => {
     const base = {
       size: {
@@ -15,6 +17,8 @@ const Game = (args: { score: Score }) => {
         height: document.body.clientHeight,
       },
       onReady: () => playButton.activate(),
+      onPlay: () => player.play(),
+      onPause: () => player.pause(),
     };
     switch (args.score.source.kind) {
       case "YouTube":
@@ -29,15 +33,14 @@ const Game = (args: { score: Score }) => {
         });
     }
   })();
-  const player = Player({ score: args.score });
   const playButton = PlayButton({
     onPlay: () => {
       element.classList.remove("pause");
-      source.play(() => player.play());
+      source.play();
     },
     onPause: () => {
       element.classList.add("pause");
-      source.pause(() => player.pause());
+      source.pause();
     },
   });
   element.append(source.element, player.element, playButton.element);

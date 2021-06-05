@@ -6,9 +6,11 @@ document.head.prepend(tag);
 declare let SC: any;
 
 const SoundCloud = (args: {
-  size: { width: number; height: number };
   id: string;
+  size: { width: number; height: number };
   onReady: () => void;
+  onPlay: () => void;
+  onPause: () => void;
 }) => {
   const element = document.createElement("iframe");
   element.classList.add("source");
@@ -28,22 +30,15 @@ const SoundCloud = (args: {
     widget.setVolume(50);
     args.onReady();
   });
+
+  widget.bind(SC.Widget.Events.PLAY, args.onPlay);
+  widget.bind(SC.Widget.Events.PAUSE, args.onPause);
+
   return {
     kind: "SoundCloud" as const,
     element,
-    play: (after: () => void) => {
-      let called = false;
-      widget.bind(SC.Widget.Events.PLAY, () => {
-        if (called) return;
-        called = true;
-        after();
-      });
-      widget.play();
-    },
-    pause: (after: () => void) => {
-      widget.pause();
-      after();
-    },
+    play: () => widget.play(),
+    pause: () => widget.pause(),
   };
 };
 

@@ -4,6 +4,8 @@ const YouTube = (args: {
   videoId: string;
   size: { width: number; height: number };
   onReady: () => void;
+  onPlay: () => void;
+  onPause: () => void;
 }) => {
   const element = document.createElement("div");
   element.classList.add("source");
@@ -13,26 +15,21 @@ const YouTube = (args: {
     videoId: args.videoId,
   });
   source.on("ready", args.onReady);
+  source.on("stateChange", (event) => {
+    switch (event.data) {
+      case 1:
+        args.onPlay();
+        break;
+      case 2:
+        args.onPause();
+        break;
+    }
+  });
   return {
     kind: "YouTube" as const,
     element,
-    play: (after: () => void) => {
-      let called = false;
-      source.on("stateChange", (event) => {
-        console.log(event.data);
-        switch (event.data) {
-          case 1:
-            if (called) return;
-            called = true;
-            after();
-        }
-      });
-      source.playVideo();
-    },
-    pause: (after: () => void) => {
-      source.pauseVideo();
-      after();
-    },
+    play: () => source.playVideo(),
+    pause: () => source.pauseVideo(),
   };
 };
 
