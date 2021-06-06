@@ -1,16 +1,14 @@
-import { PlayButton } from "./controller/PlayButton";
 import { Player } from "./player/Player";
 import { SoundEffectPlayer } from "./SoundEffectPlayer";
 import { SoundCloud } from "./source/SoundCloud";
 import { YouTube } from "./source/YouTube";
 import { Score } from "./type/Score";
 
-const RestartButton = (args: { onRestart: () => void }) => {
+const Button = (name: string, action: () => void) => {
   const element = document.createElement("div");
-  element.classList.add("restart-button");
-
-  element.addEventListener("pointerup", args.onRestart);
-  return { element };
+  element.classList.add("button", name);
+  element.addEventListener("pointerup", action);
+  return element;
 };
 
 type Source = YouTube | SoundCloud;
@@ -22,10 +20,11 @@ const InGameMenu = (args: {
   const element = document.createElement("div");
   element.classList.add("in-game-menu");
 
-  const playButton = PlayButton(args);
-  const restartButton = RestartButton(args);
-
-  element.append(playButton.element, restartButton.element);
+  element.append(
+    Button("pause", args.onPause),
+    Button("play", args.onPlay),
+    Button("restart", args.onRestart)
+  );
   return { element };
 };
 
