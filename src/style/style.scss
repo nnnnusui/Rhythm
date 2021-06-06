@@ -99,13 +99,14 @@ body {
   display: flex;
   justify-content: center;
   align-items: center;
-  perspective: 100px;
-  perspective-origin: 50% 25%;
+  perspective: 10vmin;
+  perspective-origin: top;
 }
 .lanes {
   position: absolute;
   width: 100%;
-  height: 100%;
+  bottom: 0;
+  aspect-ratio: 16 / 9; // Experimental in webkit
   display: flex;
   justify-content: center;
   align-items: center;
@@ -116,7 +117,7 @@ body {
 }
 .judge-line {
   position: absolute;
-  top: 92%;
+  top: 96%;
   width: 100%;
   height: 0%;
   border-style: solid;
@@ -168,7 +169,7 @@ body {
 
   .judge {
     width: 100%;
-    aspect-ratio: 2 / 1;
+    aspect-ratio: 4 / 1;
   }
   .perfect {
     width: 100%;
