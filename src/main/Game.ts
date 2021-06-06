@@ -5,17 +5,27 @@ import { SoundCloud } from "./source/SoundCloud";
 import { YouTube } from "./source/YouTube";
 import { Score } from "./type/Score";
 
+const RestartButton = (args: { onRestart: () => void }) => {
+  const element = document.createElement("div");
+  element.classList.add("restart-button");
+
+  element.addEventListener("pointerup", args.onRestart);
+  return { element };
+};
+
 type Source = YouTube | SoundCloud;
-const InGameMenu = (args: { source: Source }) => {
+const InGameMenu = (args: {
+  onPlay: () => void;
+  onPause: () => void;
+  onRestart: () => void;
+}) => {
   const element = document.createElement("div");
   element.classList.add("in-game-menu");
 
-  const playButton = PlayButton({
-    onPlay: args.source.play,
-    onPause: args.source.pause,
-  });
+  const playButton = PlayButton(args);
+  const restartButton = RestartButton(args);
 
-  element.append(playButton.element);
+  element.append(playButton.element, restartButton.element);
   return { element };
 };
 
@@ -42,8 +52,15 @@ const Game = (args: { score: Score }) => {
         height: document.body.clientHeight,
       },
       onReady: () => element.classList.remove("loading"),
-      onPlay: () => element.classList.add("playing"),
+      onPlay: () => {
+        element.classList.remove("restarting");
+        element.classList.add("playing");
+      },
       onPause: () => element.classList.remove("playing"),
+      onRestart: () => {
+        element.classList.add("restarting");
+        player.reset();
+      },
     };
     switch (args.score.source.kind) {
       case "YouTube":
@@ -58,7 +75,11 @@ const Game = (args: { score: Score }) => {
         });
     }
   })();
-  const inGameMenu = InGameMenu({ source });
+  const inGameMenu = InGameMenu({
+    onPlay: source.play,
+    onPause: source.pause,
+    onRestart: source.restart,
+  });
   element.append(source.element, player.element, inGameMenu.element);
   return { element };
 };
