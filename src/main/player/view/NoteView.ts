@@ -8,9 +8,10 @@ const JudgeView = (args: { evaluation: string; onJudge: OnJudge }) => {
   return { element };
 };
 
-const NoteView = (args: { onJudge: OnJudge }) => {
+const NoteView = (args: { delay: number; onJudge: OnJudge }) => {
   const element = document.createElement("div");
   element.classList.add("note");
+  element.style.setProperty("--delay", `${args.delay}`);
   element.addEventListener("pointerdown", () =>
     element.classList.add("judged")
   );
@@ -20,9 +21,8 @@ const NoteView = (args: { onJudge: OnJudge }) => {
   element.append(...judges.map((it) => it.element));
   return {
     element,
-    activate: (delay: number) => {
+    activate: () => {
       element.classList.add("active");
-      element.style.setProperty("--delay", `${delay}`);
     },
   };
 };

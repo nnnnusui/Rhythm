@@ -19,13 +19,12 @@ const LanesView = (args: { score: Score; onJudge: OnJudge }) => {
   element.classList.add("lanes");
   const lanes = [...Array(args.score.amount).keys()].map(LaneView);
   const notes = args.score.notes.map((it) => {
-    const note = NoteView({ onJudge: args.onJudge });
+    const note = NoteView({ delay: it.timing, onJudge: args.onJudge });
     lanes[it.position].element.prepend(note.element);
     return {
       element: note,
-      play: (currentTime?: number) => {
-        const wait = currentTime ? it.timing - currentTime : it.timing;
-        note.activate(wait);
+      play: () => {
+        note.activate();
       },
     };
   });
