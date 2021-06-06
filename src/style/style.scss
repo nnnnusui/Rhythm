@@ -162,6 +162,7 @@ body {
   display: flex;
   flex-direction: column;
   &.judged {
+    pointer-events: none;
     opacity: 0;
   }
 
