@@ -28,7 +28,7 @@ const SoundCloud = (args: {
   const widget = SC.Widget(element);
   widget.bind(SC.Widget.Events.READY, () => {
     widget.setVolume(50);
-    args.onReady();
+    setTimeout(args.onReady, 1000);
   });
 
   widget.bind(SC.Widget.Events.PLAY, args.onPlay);
