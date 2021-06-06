@@ -14,7 +14,7 @@ const getJudgeSoundEffectPlayAction = (player: SoundEffectPlayer) => {
 
 const Game = (args: { score: Score }) => {
   const element = document.createElement("div");
-  element.classList.add("game");
+  element.classList.add("game", "loading");
 
   const audioContext = new (window.AudioContext ||
     (<any>window).webkitAudioContext)();
@@ -28,7 +28,7 @@ const Game = (args: { score: Score }) => {
         width: document.body.clientWidth,
         height: document.body.clientHeight,
       },
-      onReady: () => playButton.activate(),
+      onReady: () => element.classList.remove("loading"),
       onPlay: () => element.classList.add("playing"),
       onPause: () => element.classList.remove("playing"),
     };

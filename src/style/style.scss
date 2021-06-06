@@ -24,6 +24,11 @@ body {
 .game {
   -webkit-user-select: none;
   user-select: none;
+  &.loading {
+    .play-button {
+      pointer-events: none;
+    }
+  }
   &.playing {
     .note {
       animation-play-state: running;
@@ -41,6 +46,7 @@ body {
 }
 
 .play-button {
+  pointer-events: auto;
   opacity: 0.2;
   background-color: white;
   &.playing {

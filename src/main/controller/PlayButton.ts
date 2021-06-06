@@ -1,24 +1,18 @@
 const PlayButton = (args: { onPlay: () => void; onPause: () => void }) => {
-  const it = document.createElement("div");
-  it.classList.add("play-button", "invalid");
+  const element = document.createElement("div");
+  element.classList.add("play-button");
   let playing = false;
-  return {
-    element: it,
-    playing: () => playing,
-    activate: () => {
-      it.classList.remove("invalid");
-      it.addEventListener("pointerup", () => {
-        if (playing) {
-          it.classList.remove("playing");
-          args.onPause();
-        } else {
-          it.classList.add("playing");
-          args.onPlay();
-        }
-        playing = !playing;
-      });
-    },
-  };
+  element.addEventListener("pointerup", () => {
+    if (playing) {
+      element.classList.remove("playing");
+      args.onPause();
+    } else {
+      element.classList.add("playing");
+      args.onPlay();
+    }
+    playing = !playing;
+  });
+  return { element };
 };
 type PlayButton = ReturnType<typeof PlayButton>;
 export { PlayButton };
