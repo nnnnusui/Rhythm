@@ -12,7 +12,7 @@ const Player = (args: { score: Score; onJudge: OnJudge }) => {
     onJudge: (judge) => view.setJudge(judge),
   });
   element.append(view.element, actionDetector.element);
-  return { element };
+  return { element, reset: view.reset };
 };
 
 type Player = ReturnType<typeof Player>;

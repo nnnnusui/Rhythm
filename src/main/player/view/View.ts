@@ -18,12 +18,10 @@ const LanesView = (args: { score: Score; onJudge: OnJudge }) => {
   const element = document.createElement("div");
   element.classList.add("lanes");
   const lanes = [...Array(args.score.amount).keys()].map(LaneView);
-  args.score.notes.map((it) => {
+  const notes = args.score.notes.map((it) => {
     const note = NoteView({ delay: it.timing, onJudge: args.onJudge });
-    lanes[it.position].element.prepend(note.element);
-    return {
-      element: note,
-    };
+    lanes[it.position].element.append(note.element);
+    return note;
   });
   const judgeLineView = JudgeLineView();
   element.append(...lanes.map((it) => it.element), judgeLineView.element);
@@ -31,6 +29,7 @@ const LanesView = (args: { score: Score; onJudge: OnJudge }) => {
   return {
     element,
     judgeLineView,
+    reset: () => notes.forEach((it) => it.reset()),
   };
 };
 
@@ -50,6 +49,7 @@ const View = (args: { score: Score; onJudge: OnJudge }) => {
     element,
     setJudge: judgeView.set,
     judgeLineView: lanesView.judgeLineView,
+    reset: () => lanesView.reset(),
   };
 };
 

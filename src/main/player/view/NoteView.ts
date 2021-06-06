@@ -21,6 +21,7 @@ const NoteView = (args: { delay: number; onJudge: OnJudge }) => {
   element.append(...judges.map((it) => it.element));
   return {
     element,
+    reset: () => element.classList.remove("judged"),
   };
 };
 
