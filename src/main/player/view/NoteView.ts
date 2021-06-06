@@ -21,9 +21,6 @@ const NoteView = (args: { delay: number; onJudge: OnJudge }) => {
   element.append(...judges.map((it) => it.element));
   return {
     element,
-    activate: () => {
-      element.classList.add("active");
-    },
   };
 };
 

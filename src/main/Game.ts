@@ -17,8 +17,8 @@ const Game = (args: { score: Score }) => {
         height: document.body.clientHeight,
       },
       onReady: () => playButton.activate(),
-      onPlay: () => player.play(),
-      onPause: () => player.pause(),
+      onPlay: () => element.classList.add("playing"),
+      onPause: () => element.classList.remove("playing"),
     };
     switch (args.score.source.kind) {
       case "YouTube":
@@ -35,11 +35,9 @@ const Game = (args: { score: Score }) => {
   })();
   const playButton = PlayButton({
     onPlay: () => {
-      element.classList.remove("pause");
       source.play();
     },
     onPause: () => {
-      element.classList.add("pause");
       source.pause();
     },
   });

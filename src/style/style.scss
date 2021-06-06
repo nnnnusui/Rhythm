@@ -24,7 +24,13 @@ body {
 .game {
   -webkit-user-select: none;
   user-select: none;
+  &.playing {
+    .note {
+      animation-play-state: running;
+    }
+  }
 }
+
 .game,
 .source,
 .player,
@@ -120,9 +126,6 @@ body {
   position: absolute;
   width: 100%;
   height: 10em;
-  &.active {
-    animation-play-state: running;
-  }
   &.judged {
     opacity: 0;
   }
@@ -143,13 +146,5 @@ body {
     width: 100%;
     height: 100%;
     background-color: orange;
-  }
-}
-
-.game {
-  &.pause {
-    .note {
-      animation-play-state: paused;
-    }
   }
 }
