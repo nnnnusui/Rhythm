@@ -5,6 +5,20 @@ import { SoundCloud } from "./source/SoundCloud";
 import { YouTube } from "./source/YouTube";
 import { Score } from "./type/Score";
 
+type Source = YouTube | SoundCloud;
+const InGameMenu = (args: { source: Source }) => {
+  const element = document.createElement("div");
+  element.classList.add("in-game-menu");
+
+  const playButton = PlayButton({
+    onPlay: args.source.play,
+    onPause: args.source.pause,
+  });
+
+  element.append(playButton.element);
+  return { element };
+};
+
 const getJudgeSoundEffectPlayAction = (player: SoundEffectPlayer) => {
   player.storeByFetch("judge.default", "sound/weakSnare.wav");
   player.storeByFetch("judge.perfect", "sound/rim.wav");
@@ -21,8 +35,7 @@ const Game = (args: { score: Score }) => {
   const sePlayer = SoundEffectPlayer(audioContext);
   const playJudgeSe = getJudgeSoundEffectPlayAction(sePlayer);
   const player = Player({ score: args.score, onJudge: playJudgeSe });
-
-  const source = (() => {
+  const source: Source = (() => {
     const base = {
       size: {
         width: document.body.clientWidth,
@@ -45,15 +58,8 @@ const Game = (args: { score: Score }) => {
         });
     }
   })();
-  const playButton = PlayButton({
-    onPlay: () => {
-      source.play();
-    },
-    onPause: () => {
-      source.pause();
-    },
-  });
-  element.append(source.element, player.element, playButton.element);
+  const inGameMenu = InGameMenu({ source });
+  element.append(source.element, player.element, inGameMenu.element);
   return { element };
 };
 

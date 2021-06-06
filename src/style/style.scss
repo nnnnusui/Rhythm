@@ -25,11 +25,18 @@ body {
   -webkit-user-select: none;
   user-select: none;
   &.loading {
-    .play-button {
+    .in-game-menu {
       pointer-events: none;
     }
   }
   &.playing {
+    .in-game-menu {
+      width: 2em;
+      height: 2em;
+      left: 0;
+      top: 0;
+      opacity: 1;
+    }
     .note {
       animation-play-state: running;
     }
@@ -39,23 +46,20 @@ body {
 .game,
 .source,
 .player,
-.play-button {
+.in-game-menu {
   position: absolute;
   width: 100%;
   height: 100%;
 }
 
-.play-button {
+.in-game-menu {
   pointer-events: auto;
+}
+.play-button {
+  width: 100%;
+  height: 100%;
   opacity: 0.2;
   background-color: white;
-  &.playing {
-    width: 2em;
-    height: 2em;
-    left: 0;
-    top: 0;
-    opacity: 1;
-  }
 }
 
 .action-detector {
