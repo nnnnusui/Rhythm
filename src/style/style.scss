@@ -109,6 +109,9 @@ body {
   }
 }
 .note {
+  --offset: 0;
+  --delay: 0;
+  animation-delay: calc(calc(var(--offset) + var(--delay)) * 1s);
   animation-name: fall;
   animation-duration: 1s;
   animation-timing-function: linear;

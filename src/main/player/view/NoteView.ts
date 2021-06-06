@@ -22,7 +22,7 @@ const NoteView = (args: { onJudge: OnJudge }) => {
     element,
     activate: (delay: number) => {
       element.classList.add("active");
-      element.style.animationDelay = `${delay}s`;
+      element.style.setProperty("--delay", `${delay}`);
     },
   };
 };
