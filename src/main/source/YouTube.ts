@@ -6,6 +6,7 @@ const YouTube = (args: {
   onReady: () => void;
   onPlay: () => void;
   onPause: () => void;
+  onRestart: () => void;
 }) => {
   const element = document.createElement("div");
   element.classList.add("source");
@@ -25,11 +26,20 @@ const YouTube = (args: {
         break;
     }
   });
+
+  const play = () => source.playVideo();
+  const pause = () => source.pauseVideo();
+  const restart = () => {
+    source.stopVideo();
+    args.onRestart();
+    setTimeout(play, 1000);
+  };
   return {
     kind: "YouTube" as const,
     element,
-    play: () => source.playVideo(),
-    pause: () => source.pauseVideo(),
+    play,
+    pause,
+    restart,
   };
 };
 

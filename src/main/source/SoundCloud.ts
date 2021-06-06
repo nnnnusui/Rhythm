@@ -11,6 +11,7 @@ const SoundCloud = (args: {
   onReady: () => void;
   onPlay: () => void;
   onPause: () => void;
+  onRestart: () => void;
 }) => {
   const element = document.createElement("iframe");
   element.classList.add("source");
@@ -34,11 +35,20 @@ const SoundCloud = (args: {
   widget.bind(SC.Widget.Events.PLAY, args.onPlay);
   widget.bind(SC.Widget.Events.PAUSE, args.onPause);
 
+  const play = () => widget.play();
+  const pause = () => widget.pause();
+  const restart = () => {
+    pause();
+    widget.seekTo(0);
+    args.onRestart();
+    setTimeout(play, 1000);
+  };
   return {
     kind: "SoundCloud" as const,
     element,
-    play: () => widget.play(),
-    pause: () => widget.pause(),
+    play,
+    pause,
+    restart,
   };
 };
 
