@@ -27,23 +27,6 @@ const ActionDetector = (args: {
   element.addEventListener("pointerup", dispatchEvent);
   element.addEventListener("pointercancel", dispatchEvent);
 
-  const audioContext = new (window.AudioContext ||
-    (<any>window).webkitAudioContext)();
-  const clap = audioContext.createBufferSource();
-  fetch("clap.wav").then((it) => {
-    it.arrayBuffer().then((it) => {
-      audioContext.decodeAudioData(it).then((it) => {
-        clap.buffer = it;
-      });
-    });
-  });
-  element.addEventListener("pointerdown", () => {
-    const source = audioContext.createBufferSource();
-    source.buffer = clap.buffer;
-    source.connect(audioContext.destination);
-    source.start();
-  });
-
   return { element };
 };
 
