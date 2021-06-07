@@ -20,7 +20,7 @@ const LanesView = (args: { score: Score; onJudge: OnJudge }) => {
   const lanes = [...Array(args.score.amount).keys()].map(LaneView);
   const notes = args.score.notes.map((it) => {
     const note = NoteView({ delay: it.timing, onJudge: args.onJudge });
-    lanes[it.position].element.append(note.element);
+    lanes[it.position].element.prepend(note.element);
     return note;
   });
   const judgeLineView = JudgeLineView();
