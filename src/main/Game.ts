@@ -11,7 +11,10 @@ const getJudgeSoundEffectPlayAction = (player: SoundEffectPlayer) => {
   player.storeByFetch("judge.default", "sound/weakSnare.wav");
   player.storeByFetch("judge.perfect", "sound/rim.wav");
 
-  return (judge: string) => player.play(`judge.${judge}`);
+  return (judge: string) => {
+    if (judge === "miss") return;
+    player.play(`judge.${judge}`);
+  };
 };
 
 const Game = (args: { score: Score }) => {

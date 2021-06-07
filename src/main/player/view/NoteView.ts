@@ -12,16 +12,22 @@ const NoteView = (args: { delay: number; onJudge: OnJudge }) => {
   const element = document.createElement("div");
   element.classList.add("note");
   element.style.setProperty("--delay", `${args.delay}`);
-  element.addEventListener("pointerdown", () =>
-    element.classList.add("judged")
-  );
+  element.dataset["judge"] = "";
+  const onJudge: OnJudge = (judge) => {
+    element.dataset["judge"] = judge;
+    args.onJudge(judge);
+  };
+  element.addEventListener("animationend", () => {
+    if (element.dataset["judge"]) return;
+    onJudge("miss");
+  });
   const judges = ["great", "perfect", "great", "good"].map((evaluation) =>
-    JudgeView({ evaluation, onJudge: args.onJudge })
+    JudgeView({ evaluation, onJudge })
   );
   element.append(...judges.map((it) => it.element));
   return {
     element,
-    reset: () => element.classList.remove("judged"),
+    reset: () => (element.dataset["judge"] = ""),
   };
 };
 
