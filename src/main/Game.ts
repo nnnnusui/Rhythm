@@ -1,97 +1,11 @@
+import { InGameMenu } from "./controller/InGameMenu";
 import { Player } from "./player/Player";
 import { SoundEffectPlayer } from "./SoundEffectPlayer";
 import { SoundCloud } from "./source/SoundCloud";
 import { YouTube } from "./source/YouTube";
 import { Score } from "./type/Score";
 
-const Button = (name: string, action: () => void) => {
-  const element = document.createElement("div");
-  element.classList.add("button", name);
-  element.addEventListener("pointerup", action);
-  return element;
-};
-
-const rangeCoveredNumberInput = (args: {
-  useInput: (value: string) => void;
-  value: number;
-  step?: number;
-  max?: number;
-  min?: number;
-}) => {
-  const element = document.createElement("div");
-  element.classList.add("range-covered-input");
-
-  const direct = document.createElement("input");
-  direct.classList.add("direct");
-  direct.type = "number";
-  direct.step = `${args.step}`;
-  direct.value = `${args.value}`;
-
-  const range = document.createElement("input");
-  range.type = "range";
-  range.min = `${args.min}`;
-  range.max = `${args.max}`;
-  range.step = direct.step;
-  range.value = direct.value;
-
-  const setValue = (value: string) => {
-    args.useInput(value);
-    direct.value = value;
-    range.value = value;
-  };
-  const onInput = (event: HTMLElementEventMap["input"]) => {
-    const target = event.target as HTMLInputElement;
-    console.log(`inputed: ${target}`);
-    setValue(target.value);
-  };
-  direct.addEventListener("input", onInput);
-  range.addEventListener("input", onInput);
-
-  element.append(direct, range);
-  return { element, direct };
-};
-
-const OffsetSetter = (args: { setOffset: (value: string) => void }) => {
-  const element = document.createElement("label");
-  element.classList.add("offset");
-
-  const covered = rangeCoveredNumberInput({
-    useInput: args.setOffset,
-    value: 0,
-    step: 0.01,
-    max: 2,
-    min: -2,
-  });
-
-  element.append(covered.element);
-  return { element };
-};
-
 type Source = YouTube | SoundCloud;
-const InGameMenu = (args: {
-  onPlay: () => void;
-  onPause: () => void;
-  onRestart: () => void;
-  setOffset: (value: string) => void;
-}) => {
-  const element = document.createElement("div");
-  element.classList.add("controller");
-
-  const menu = document.createElement("div");
-  menu.classList.add("in-game-menu");
-
-  const buttons = document.createElement("div");
-  buttons.classList.add("buttons");
-  buttons.append(
-    Button("play", args.onPlay),
-    Button("restart", args.onRestart)
-  );
-  const offsetSetter = OffsetSetter(args);
-  menu.append(buttons, offsetSetter.element);
-
-  element.append(Button("pause", args.onPause), menu);
-  return { element };
-};
 
 const getJudgeSoundEffectPlayAction = (player: SoundEffectPlayer) => {
   player.storeByFetch("judge.default", "sound/weakSnare.wav");

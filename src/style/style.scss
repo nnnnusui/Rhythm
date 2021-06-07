@@ -1,6 +1,5 @@
-// :root {
-//   all: unset;
-// }
+@use "controller";
+
 iframe {
   border-style: none;
 }
@@ -73,67 +72,6 @@ body {
   position: absolute;
   width: 100%;
   height: 100%;
-}
-
-.pause {
-  background-color: white;
-}
-.range-covered-input {
-  position: relative;
-  width: 100%;
-  .direct {
-    width: 100%;
-    height: 100%;
-    padding: 0;
-    text-align: center;
-  }
-  input[type="range"] {
-    appearance: none;
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    height: 0;
-    border-style: solid;
-    border-width: 0;
-    border-top-width: 1px;
-
-    &::-webkit-slider-thumb {
-      -webkit-appearance: none;
-      width: 1em;
-      height: 0.55em;
-      background-color: white;
-      border-radius: 0 0 25% 25%;
-    }
-  }
-}
-.in-game-menu {
-  pointer-events: auto;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  .buttons,
-  .offset {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-  }
-  .button {
-    width: 100%;
-    height: 100%;
-  }
-  .buttons {
-    opacity: 0.2;
-  }
-  .play {
-    background-color: white;
-  }
-  .restart {
-    background-color: black;
-  }
 }
 
 .player {
