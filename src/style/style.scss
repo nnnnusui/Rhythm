@@ -1,4 +1,5 @@
 @use "controller";
+@use "state";
 
 iframe {
   border-style: none;
@@ -31,37 +32,6 @@ body {
   position: relative;
   width: 100%;
   height: 100%;
-
-  &.loading {
-    .in-game-menu {
-      pointer-events: none;
-    }
-  }
-  &.playing {
-    .controller {
-      width: 2em;
-      height: 2em;
-      left: 0;
-      top: 0;
-      opacity: 1;
-    }
-    .pause {
-      display: block;
-      width: 100%;
-      height: 100%;
-    }
-    .in-game-menu {
-      display: none;
-    }
-    .note {
-      animation-play-state: running;
-    }
-  }
-  &.restarting {
-    .note {
-      animation: none;
-    }
-  }
 }
 
 .source,
@@ -137,13 +107,20 @@ body {
   }
 }
 .note {
+  animation-play-state: paused;
+  @include state.playing {
+    animation-play-state: running;
+  }
+  animation-name: fall;
+  @include state.restarting {
+    animation: none;
+  }
+
   transform: translateY(-100%);
   animation-delay: calc(calc(var(--offset) + var(--delay)) * 1s);
-  animation-name: fall;
   animation-duration: 1s;
   animation-timing-function: linear;
   animation-fill-mode: forwards;
-  animation-play-state: paused;
   position: absolute;
   width: 100%;
   display: flex;

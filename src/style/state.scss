@@ -1,0 +1,16 @@
+$container: ".game";
+@mixin loading {
+  #{$container}.loading & {
+    @content;
+  }
+}
+@mixin playing {
+  #{$container}.playing & {
+    @content;
+  }
+}
+@mixin restarting {
+  #{$container}.restarting & {
+    @content;
+  }
+}
