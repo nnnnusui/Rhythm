@@ -29,6 +29,8 @@ const ActionDetector = (args: {
 
   // enableContinuousTouch
   element.addEventListener("touchend", (e) => e.preventDefault());
+  // suppressTouchMove
+  element.addEventListener("touchmove", (e) => e.preventDefault());
 
   return { element };
 };
