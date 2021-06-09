@@ -17,7 +17,7 @@ const LaneView = () => {
 const LanesView = (args: { score: Score; onJudge: OnJudge }) => {
   const element = document.createElement("div");
   element.classList.add("lanes");
-  const lanes = [...Array(args.score.amount).keys()].map(LaneView);
+  const lanes = [...Array(args.score.laneAmount).keys()].map(LaneView);
   const notes = args.score.notes.map((it) => {
     const note = NoteView({ delay: it.timing, onJudge: args.onJudge });
     lanes[it.position].element.prepend(note.element);
