@@ -3,7 +3,7 @@ import { Player } from "./player/Player";
 import { SoundEffectPlayer } from "./SoundEffectPlayer";
 import { SoundCloud } from "./source/SoundCloud";
 import { YouTube } from "./source/YouTube";
-import { Score } from "./type/Score";
+import { Score } from "./score/Score";
 
 type Source = YouTube | SoundCloud;
 

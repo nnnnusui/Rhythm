@@ -1,4 +1,4 @@
-import { Score } from "../../type/Score";
+import { Score } from "../../score/Score";
 import { OnJudge } from "../type/OnJudge";
 import { JudgeLineView } from "./JudgeLineView";
 import { JudgeView } from "./JudgeView";

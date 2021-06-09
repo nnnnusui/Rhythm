@@ -1,5 +1,5 @@
-import { Context } from "../score/Context";
-import { Order } from "../score/Order";
+import { Context } from "./Context";
+import { Order } from "./Order";
 
 type Source =
   | { kind: "YouTube"; id: string }
