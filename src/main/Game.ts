@@ -21,6 +21,18 @@ const Game = (args: { score: Score }) => {
   const element = document.createElement("div");
   element.classList.add("game", "loading");
 
+  const getResult = () =>
+    Array(...element.getElementsByClassName("note"))
+      .map((it) => it as HTMLElement)
+      .map((it) => it.dataset["judge"])
+      .filter((it) => it)
+      .map((it) => it as string)
+      .reduce((map, it) => {
+        const before = map.get(it);
+        const next = (before ? before : 0) + 1;
+        return map.set(it, next);
+      }, new Map<string, number>());
+
   const audioContext = new (window.AudioContext ||
     (<any>window).webkitAudioContext)();
   const sePlayer = SoundEffectPlayer(audioContext);
@@ -37,7 +49,10 @@ const Game = (args: { score: Score }) => {
         element.classList.remove("restarting");
         element.classList.add("playing");
       },
-      onPause: () => element.classList.remove("playing"),
+      onPause: () => {
+        element.classList.remove("playing");
+        getResult();
+      },
       onRestart: () => {
         element.classList.add("restarting");
         player.reset();
