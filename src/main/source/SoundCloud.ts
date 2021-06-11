@@ -6,7 +6,7 @@ document.head.prepend(tag);
 declare let SC: any;
 
 const SoundCloud = (args: {
-  id: string;
+  trackId: string;
   size: { width: number; height: number };
   onReady: () => void;
   onPlay: () => void;
@@ -19,7 +19,7 @@ const SoundCloud = (args: {
   element.height = `${args.size.height}`;
   element.allow = "autoplay";
   const parameters = [
-    ["url", `https://api.soundcloud.com/tracks/${args.id}`],
+    ["url", `https://api.soundcloud.com/tracks/${args.trackId}`],
     ["visual", true],
   ] as const;
   const urlParameters = parameters

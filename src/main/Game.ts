@@ -67,7 +67,7 @@ const Game = (args: { score: Score }) => {
       case "SoundCloud":
         return SoundCloud({
           ...base,
-          id: args.score.source.id,
+          trackId: args.score.source.id,
         });
     }
   })();
