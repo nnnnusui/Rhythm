@@ -62,12 +62,12 @@ const Game = (args: { score: Score }) => {
       case "YouTube":
         return YouTube({
           ...base,
-          videoId: args.score.source.id,
+          ...args.score.source,
         });
       case "SoundCloud":
         return SoundCloud({
           ...base,
-          trackId: args.score.source.id,
+          ...args.score.source,
         });
     }
   })();

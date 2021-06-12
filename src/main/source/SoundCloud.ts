@@ -5,14 +5,19 @@ tag.async = true;
 document.head.prepend(tag);
 declare let SC: any;
 
-const SoundCloud = (args: {
+type Props = {
+  kind: "SoundCloud";
   trackId: string;
-  size: { width: number; height: number };
-  onReady: () => void;
-  onPlay: () => void;
-  onPause: () => void;
-  onRestart: () => void;
-}) => {
+};
+const SoundCloud = (
+  args: Props & {
+    size: { width: number; height: number };
+    onReady: () => void;
+    onPlay: () => void;
+    onPause: () => void;
+    onRestart: () => void;
+  }
+) => {
   const element = document.createElement("iframe");
   element.classList.add("source");
   element.width = `${args.size.width}`;
@@ -44,7 +49,7 @@ const SoundCloud = (args: {
     setTimeout(play, 1000);
   };
   return {
-    kind: "SoundCloud" as const,
+    kind: args.kind,
     element,
     play,
     pause,
@@ -53,4 +58,4 @@ const SoundCloud = (args: {
 };
 
 type SoundCloud = ReturnType<typeof SoundCloud>;
-export { SoundCloud };
+export { SoundCloud, Props as SoundCloudProps };

@@ -1,9 +1,6 @@
+import { Source } from "../source/Source";
 import { Context } from "./Context";
 import { Order } from "./Order";
-
-type Source =
-  | { kind: "YouTube"; id: string }
-  | { kind: "SoundCloud"; id: string };
 
 type Score = {
   source: Source;
