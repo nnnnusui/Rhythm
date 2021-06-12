@@ -14,18 +14,28 @@ const generateNotes = (context: Context): Note[] => {
 
   switch (order.method) {
     case "parallel": {
+      const next = (order: Order) => {
+        const flatten = (() => {
+          if (context.order.flatten === undefined) return order.flatten;
+          if (order.flatten !== undefined) return order.flatten;
+          return context.order.flatten;
+        })();
+        return { ...order, flatten };
+      };
       const beat = order.beat ? order.beat : 1;
       const base = context.base * beat;
       return order.orders.flatMap((it) => {
         if (Array.isArray(it) || isOrder(it))
           return generateNotes({
             ...context,
-            order: isOrder(it)
-              ? it
-              : {
-                  method: "serial" as const,
-                  orders: it,
-                },
+            order: next(
+              isOrder(it)
+                ? it
+                : {
+                    method: "serial" as const,
+                    orders: it,
+                  }
+            ),
             base,
           });
         return [{ timing: context.offset, position: it }];
