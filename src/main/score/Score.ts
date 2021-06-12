@@ -13,14 +13,14 @@ type Score = {
 
 const Score = {
   build: (
-    args: Omit<Score, "notes"> & {
-      order: Order;
-      bpm: number;
-    }
+    args: Omit<Score, "notes"> &
+      Order & {
+        bpm: number;
+      }
   ): Score => ({
     ...args,
     notes: Context.generateNotes({
-      order: args.order,
+      order: args,
       offset: 0,
       division: 1,
       base: 60,
