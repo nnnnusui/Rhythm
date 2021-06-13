@@ -4,6 +4,7 @@ import { SoundEffectPlayer } from "./SoundEffectPlayer";
 import { SoundCloud } from "./source/SoundCloud";
 import { YouTube } from "./source/YouTube";
 import { Score } from "./score/Score";
+import { Button } from "./ui/Button";
 
 type Source = YouTube | SoundCloud;
 
@@ -72,13 +73,16 @@ const Game = (args: { score: Score }) => {
     }
   })();
   const inGameMenu = InGameMenu({
-    onPlay: source.play,
     onPause: source.pause,
-    onRestart: source.restart,
     setOffset: (value) => element.style.setProperty("--offset", value),
+    actions: [
+      Button("play", source.play),
+      Button("restart", source.restart),
+      Button("exit", () => element.remove()),
+    ],
   });
   element.append(source.element, player.element, inGameMenu.element);
-  return { element };
+  return { element, preview: () => source.play() };
 };
 
 type Game = ReturnType<typeof Game>;

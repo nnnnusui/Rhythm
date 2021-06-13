@@ -1,9 +1,4 @@
-const Button = (name: string, action: () => void) => {
-  const element = document.createElement("div");
-  element.classList.add("button", name);
-  element.addEventListener("pointerup", action);
-  return element;
-};
+import { Button } from "../ui/Button";
 
 const rangeCoveredNumberInput = (args: {
   useInput: (value: string) => void;
@@ -101,13 +96,10 @@ const ParameterInput = (name: string) => {
   legend.addEventListener("click", () => input.focus());
 };
 
-const Actions = (args: { onPlay: () => void; onRestart: () => void }) => {
+const Actions = (buttons: Button[]) => {
   const element = document.createElement("fieldset");
   element.classList.add("actions");
-  element.append(
-    Button("play", args.onPlay),
-    Button("restart", args.onRestart)
-  );
+  element.append(...buttons);
   return { element };
 };
 const Parameters = (args: { setOffset: (value: string) => void }) => {
@@ -119,9 +111,8 @@ const Parameters = (args: { setOffset: (value: string) => void }) => {
 };
 
 const InGameMenu = (args: {
-  onPlay: () => void;
   onPause: () => void;
-  onRestart: () => void;
+  actions: Button[];
   setOffset: (value: string) => void;
 }) => {
   const element = document.createElement("div");
@@ -130,7 +121,7 @@ const InGameMenu = (args: {
   const menu = document.createElement("div");
   menu.classList.add("in-game-menu");
 
-  const actions = Actions(args);
+  const actions = Actions(args.actions);
   const parameters = Parameters(args);
   menu.append(actions.element, parameters.element);
 
