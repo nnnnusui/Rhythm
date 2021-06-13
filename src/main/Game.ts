@@ -5,6 +5,7 @@ import { SoundCloud } from "./source/SoundCloud";
 import { YouTube } from "./source/YouTube";
 import { Score } from "./score/Score";
 import { Button } from "./ui/Button";
+import { NumberInputter } from "./ui/NumberInputter";
 
 type Source = YouTube | SoundCloud;
 
@@ -74,11 +75,17 @@ const Game = (args: { score: Score }) => {
   })();
   const inGameMenu = InGameMenu({
     onPause: source.pause,
-    setOffset: (value) => element.style.setProperty("--offset", value),
     actions: [
       Button("play", source.play),
       Button("restart", source.restart),
       Button("exit", () => element.remove()),
+    ],
+    parameters: [
+      NumberInputter(
+        "offset",
+        (value) => element.style.setProperty("--offset", value),
+        { value: 0, step: 0.01, max: 2, min: -2 }
+      ),
     ],
   });
   element.append(source.element, player.element, inGameMenu.element);
