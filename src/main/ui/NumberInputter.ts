@@ -1,6 +1,6 @@
 const NumberInputter = (
   name: string,
-  useInput: (value: string) => void,
+  useInput: (value: number) => void,
   options?: {
     value?: number;
     step?: number;
@@ -27,7 +27,7 @@ const NumberInputter = (
 
   const onChange = (event: HTMLElementEventMap["change"]) => {
     const target = event.target as HTMLInputElement;
-    useInput(target.value);
+    useInput(Number(target.value));
   };
   const onInput = (event: HTMLElementEventMap["input"]) => {
     const target = event.target as HTMLInputElement;
