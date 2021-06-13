@@ -1,18 +1,11 @@
 import youTubePlayerFactory from "youtube-player";
+import { SourceBuilder } from "./Source";
 
 type Props = {
   kind: "YouTube";
   videoId: string;
 };
-const YouTube = (
-  args: Props & {
-    size: { width: number; height: number };
-    onReady: () => void;
-    onPlay: () => void;
-    onPause: () => void;
-    onRestart: () => void;
-  }
-) => {
+const YouTube: SourceBuilder<Props> = (args) => {
   const element = document.createElement("div");
   element.classList.add("source");
   const source = youTubePlayerFactory(element, {
@@ -40,7 +33,6 @@ const YouTube = (
     setTimeout(play, 1000);
   };
   return {
-    kind: args.kind,
     element,
     play,
     pause,

@@ -1,23 +1,20 @@
-import { SoundCloud, SoundCloudProps } from "./SoundCloud";
-import { YouTube, YouTubeProps } from "./YouTube";
-
-type KindAndArgument<T extends (...args: any) => any> = {
-  kind: ReturnType<T>["kind"];
-} & Parameters<T>[0];
-type Arguments =
-  | KindAndArgument<typeof SoundCloud>
-  | KindAndArgument<typeof YouTube>;
+import { SoundCloudProps } from "./SoundCloud";
+import { YouTubeProps } from "./YouTube";
 
 type Source = SoundCloudProps | YouTubeProps;
-const Source = (args: Arguments) => {
-  const element = document.createElement("div");
-  element.classList.add("source");
-  switch (args.kind) {
-    case "SoundCloud":
-      return SoundCloud(args);
-    case "YouTube":
-      return YouTube(args);
+type SourceBuilder<Props> = (
+  args: Omit<Props, "kind"> & {
+    size: { width: number; height: number };
+    onReady: () => void;
+    onPlay: () => void;
+    onPause: () => void;
+    onRestart: () => void;
   }
+) => {
+  element: HTMLElement;
+  play: () => void;
+  pause: () => void;
+  restart: () => void;
 };
 
-export { Source };
+export { Source, SourceBuilder };

@@ -1,3 +1,5 @@
+import { SourceBuilder } from "./Source";
+
 const tag = document.createElement("script");
 tag.src = "https://w.soundcloud.com/player/api.js";
 tag.type = "text/javascript";
@@ -9,15 +11,7 @@ type Props = {
   kind: "SoundCloud";
   trackId: string;
 };
-const SoundCloud = (
-  args: Props & {
-    size: { width: number; height: number };
-    onReady: () => void;
-    onPlay: () => void;
-    onPause: () => void;
-    onRestart: () => void;
-  }
-) => {
+const SoundCloud: SourceBuilder<Props> = (args) => {
   const element = document.createElement("iframe");
   element.classList.add("source");
   element.width = `${args.size.width}`;
@@ -49,7 +43,6 @@ const SoundCloud = (
     setTimeout(play, 1000);
   };
   return {
-    kind: args.kind,
     element,
     play,
     pause,
