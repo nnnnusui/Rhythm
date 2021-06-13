@@ -73,6 +73,16 @@ const Game = (args: { score: Score }) => {
         });
     }
   })();
+  const progressIndicator = (() => {
+    const progress = document.createElement("div");
+    progress.classList.add("progress");
+    progress.style.setProperty("--duration", `${args.score.length}`);
+    progress.addEventListener("animationend", () => {
+      console.log(getResult());
+      element.remove();
+    });
+    return progress;
+  })();
   const inGameMenu = InGameMenu({
     onPause: source.pause,
     actions: [
@@ -88,7 +98,12 @@ const Game = (args: { score: Score }) => {
       ),
     ],
   });
-  element.append(source.element, player.element, inGameMenu.element);
+  element.append(
+    source.element,
+    player.element,
+    progressIndicator,
+    inGameMenu.element
+  );
   return { element, preview: () => source.play() };
 };
 

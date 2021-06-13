@@ -48,6 +48,35 @@ body {
   -webkit-user-select: none;
   user-select: none;
 }
+
+.progress {
+  --duration: 0;
+  position: absolute;
+  width: 100%;
+  height: 1px;
+  bottom: 0;
+  background-color: #222;
+
+  @keyframes progress {
+    from {
+      width: 100%;
+    }
+    to {
+      width: 0%;
+    }
+  }
+  animation-play-state: paused;
+  @include state.playing {
+    animation-play-state: running;
+  }
+  animation-name: progress;
+  @include state.restarting {
+    animation: none;
+  }
+  animation-duration: calc(var(--duration) * 1s);
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
 .view {
   position: absolute;
   width: 100%;
