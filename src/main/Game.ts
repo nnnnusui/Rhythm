@@ -6,8 +6,7 @@ import { YouTube } from "./source/YouTube";
 import { Score } from "./score/Score";
 import { Button } from "./ui/Button";
 import { NumberInputter } from "./ui/NumberInputter";
-
-type Source = YouTube | SoundCloud;
+import { ResultView } from "./game/result/ResultView";
 
 const getJudgeSoundEffectPlayAction = (player: SoundEffectPlayer) => {
   player.storeByFetch("judge.default", "sound/weakSnare.wav");
@@ -40,7 +39,7 @@ const Game = (args: { score: Score }) => {
   const sePlayer = SoundEffectPlayer(audioContext);
   const playJudgeSe = getJudgeSoundEffectPlayAction(sePlayer);
   const player = Player({ score: args.score, onJudge: playJudgeSe });
-  const source: Source = (() => {
+  const source = (() => {
     const base = {
       size: {
         width: document.body.clientWidth,
@@ -78,8 +77,9 @@ const Game = (args: { score: Score }) => {
     progress.classList.add("progress");
     progress.style.setProperty("--duration", `${args.score.length}`);
     progress.addEventListener("animationend", () => {
-      console.log(getResult());
-      element.remove();
+      player.element.replaceWith(
+        ResultView(getResult(), [Button("close", () => element.remove())])
+      );
     });
     return progress;
   })();

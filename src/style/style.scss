@@ -38,7 +38,8 @@ body {
 .player,
 .controller,
 .in-game-menu,
-.action-detector {
+.action-detector,
+.result {
   position: absolute;
   width: 100%;
   height: 100%;
@@ -47,6 +48,25 @@ body {
 .player {
   -webkit-user-select: none;
   user-select: none;
+}
+.result {
+  background: rgba(#333, 0.6);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  .judge-count {
+    display: grid;
+    justify-content: center;
+    align-content: center;
+    column-gap: 1.2em;
+    .judge {
+      grid-column: 1;
+    }
+    .count {
+      grid-column: 2;
+    }
+  }
 }
 
 .progress {
