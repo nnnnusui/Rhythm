@@ -23,7 +23,7 @@ const Score = {
       order: args,
       offset: 0,
       division: 1,
-      base: 60,
+      base: 60 * 1000,
       bpm: args.bpm,
     });
     return {
