@@ -194,13 +194,14 @@ body {
     opacity: 0;
   }
 
+  --note-shrink: calc(var(--duration) / 1000);
   .judge {
     width: 100%;
-    aspect-ratio: 4 / 1;
+    aspect-ratio: calc(4 * var(--note-shrink)) / 1;
   }
   .perfect {
     width: 100%;
-    aspect-ratio: 8 / 1;
+    aspect-ratio: calc(8 * var(--note-shrink)) / 1;
     background-color: orange;
   }
 }

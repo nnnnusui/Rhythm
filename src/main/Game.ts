@@ -96,6 +96,11 @@ const Game = (args: { score: Score }) => {
         (value) => element.style.setProperty("--offset", `${value * 1000}`),
         { value: 0, step: 0.01, max: 2, min: -2 }
       ),
+      NumberInputter(
+        "duration",
+        (value) => element.style.setProperty("--duration", `${value * 1000}`),
+        { value: 1, step: 0.1, max: 20, min: 0 }
+      ),
     ],
   });
   element.append(
