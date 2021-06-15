@@ -28,6 +28,7 @@ body {
 
   --offset: 0;
   --delay: 0;
+  --duration: 1000;
 
   position: relative;
   width: 100%;
@@ -178,8 +179,10 @@ body {
   }
 
   transform: translateY(-100%);
-  animation-delay: calc(calc(var(--offset) + var(--delay)) * 1ms);
-  animation-duration: 1s;
+  animation-delay: calc(
+    calc(var(--offset) + var(--delay) - var(--duration)) * 1ms
+  );
+  animation-duration: calc(var(--duration) * 1ms);
   animation-timing-function: linear;
   animation-fill-mode: forwards;
   position: absolute;
