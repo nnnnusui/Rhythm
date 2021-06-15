@@ -45,6 +45,19 @@ body {
   height: 100%;
 }
 
+.game + .game-select-menu {
+  display: none;
+}
+.game-select-menu {
+  position: absolute;
+  right: 0;
+  padding: 1em;
+
+  .game-selector {
+    font-size: 150%;
+    height: 2em;
+  }
+}
 .player {
   -webkit-user-select: none;
   user-select: none;
