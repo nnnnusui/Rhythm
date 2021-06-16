@@ -161,12 +161,10 @@ body {
 
 @keyframes fall {
   from {
-    top: 0%;
     transform: translateY(0);
   }
   to {
-    top: 100%;
-    transform: translateY(0);
+    transform: translateY(100%);
   }
 }
 .note {
@@ -203,14 +201,11 @@ body {
 
   --judge-shrink: calc(var(--duration) / 1000);
   .judge {
-    --judge-ms: 40;
+    --judge-ms: 60;
     width: 100%;
     height: calc(var(--judge-ms) / (10 * var(--judge-shrink)) * 1%);
   }
   .perfect {
-    --judge-ms: 20;
-    width: 100%;
-    height: calc(var(--judge-ms) / (10 * var(--judge-shrink)) * 1%);
     background-color: orange;
   }
 }
