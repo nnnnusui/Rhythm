@@ -39,6 +39,7 @@ const NumberInputter = (
   direct.addEventListener("input", onInput);
   range.addEventListener("change", onChange);
   range.addEventListener("input", onInput);
+  if (options?.value) useInput(options.value);
 
   legend.addEventListener("click", () => direct.focus());
   element.append(legend, direct, range);
