@@ -8,10 +8,15 @@ const JudgeView = (args: { evaluation: string; onJudge: OnJudge }) => {
   return { element };
 };
 
-const NoteView = (args: { delay: number; onJudge: OnJudge }) => {
+const NoteView = (args: {
+  position: number;
+  delay: number;
+  onJudge: OnJudge;
+}) => {
   const element = document.createElement("div");
   element.classList.add("note");
   element.style.setProperty("--delay", `${args.delay}`);
+  element.style.setProperty("--position", `${args.position}`);
   element.dataset["judge"] = "";
   const onJudge: OnJudge = (judge) => {
     element.dataset["judge"] = judge;

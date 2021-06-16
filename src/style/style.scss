@@ -125,15 +125,13 @@ body {
 .lanes {
   position: absolute;
   width: 100%;
-  bottom: 0;
-  aspect-ratio: 16 / 9; // Experimental in webkit
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  height: 100%;
   transform: rotateX(45deg);
   transform-origin: bottom;
   overflow: hidden;
   background: rgba($color: #000000, $alpha: 0.2);
+  display: grid;
+  grid-template-columns: repeat(var(--lane-amount), auto);
 }
 .judge-line {
   position: absolute;
@@ -163,10 +161,12 @@ body {
 
 @keyframes fall {
   from {
-    top: 0;
+    top: 0%;
+    transform: translateY(0);
   }
   to {
     top: 100%;
+    transform: translateY(0);
   }
 }
 .note {
@@ -186,8 +186,14 @@ body {
   animation-duration: calc(var(--duration) * 1ms);
   animation-timing-function: linear;
   animation-fill-mode: forwards;
-  position: absolute;
+
+  transform: translateY(-100%);
+  grid-column: calc(1 + var(--position));
+  grid-row: 1;
+  position: relative;
   width: 100%;
+  height: 100%;
+
   display: flex;
   flex-direction: column;
   &:not([data-judge=""]) {
@@ -195,14 +201,16 @@ body {
     opacity: 0;
   }
 
-  --note-shrink: calc(var(--duration) / 1000);
+  --judge-shrink: calc(var(--duration) / 1000);
   .judge {
+    --judge-ms: 40;
     width: 100%;
-    aspect-ratio: calc(4 * var(--note-shrink)) / 1;
+    height: calc(var(--judge-ms) / (10 * var(--judge-shrink)) * 1%);
   }
   .perfect {
+    --judge-ms: 20;
     width: 100%;
-    aspect-ratio: calc(8 * var(--note-shrink)) / 1;
+    height: calc(var(--judge-ms) / (10 * var(--judge-shrink)) * 1%);
     background-color: orange;
   }
 }
