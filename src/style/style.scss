@@ -26,6 +26,7 @@ body {
     all: unset;
   }
 
+  --over-wait: 3000;
   --offset: 0;
   --delay: 0;
   --duration: 1000;
@@ -107,7 +108,7 @@ body {
   @include state.restarting {
     animation: none;
   }
-  animation-duration: calc(var(--duration) * 1ms);
+  animation-duration: calc((var(--duration) + var(--over-wait)) * 1ms);
   animation-timing-function: linear;
   animation-fill-mode: forwards;
 }

@@ -29,7 +29,7 @@ const Score = {
     return {
       ...args,
       notes,
-      length: notes.reverse()[0].timing + 5000,
+      length: notes.reverse()[0].timing,
     };
   },
 };
