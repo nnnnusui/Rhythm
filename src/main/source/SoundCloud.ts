@@ -31,15 +31,14 @@ const SoundCloud: SourceBuilder<Props> = (args) => {
     setTimeout(args.onReady, 1000);
   });
 
-  widget.bind(SC.Widget.Events.PLAY, args.onPlay);
-  widget.bind(SC.Widget.Events.PAUSE, args.onPause);
+  let onRestart = () => {};
 
   const play = () => widget.play();
   const pause = () => widget.pause();
   const restart = () => {
     pause();
     widget.seekTo(0);
-    args.onRestart();
+    onRestart();
     setTimeout(play, 1000);
   };
   return {
@@ -47,6 +46,19 @@ const SoundCloud: SourceBuilder<Props> = (args) => {
     play,
     pause,
     restart,
+    addEventListener: (kind, callback) => {
+      switch (kind) {
+        case "play":
+          widget.bind(SC.Widget.Events.PLAY, callback);
+          break;
+        case "pause":
+          widget.bind(SC.Widget.Events.PAUSE, callback);
+          break;
+        case "restart":
+          onRestart = callback;
+          break;
+      }
+    },
   };
 };
 

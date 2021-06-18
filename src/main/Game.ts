@@ -46,18 +46,6 @@ const Game = (args: { score: Score }) => {
         height: document.body.clientHeight,
       },
       onReady: () => element.classList.remove("loading"),
-      onPlay: () => {
-        element.classList.remove("restarting");
-        element.classList.add("playing");
-      },
-      onPause: () => {
-        element.classList.remove("playing");
-        getResult();
-      },
-      onRestart: () => {
-        element.classList.add("restarting");
-        player.reset();
-      },
     };
     switch (args.score.source.kind) {
       case "YouTube":
@@ -72,6 +60,18 @@ const Game = (args: { score: Score }) => {
         });
     }
   })();
+  source.addEventListener("play", () => {
+    element.classList.remove("restarting");
+    element.classList.add("playing");
+  });
+  source.addEventListener("pause", () => {
+    element.classList.remove("playing");
+    getResult();
+  });
+  source.addEventListener("restart", () => {
+    element.classList.add("restarting");
+    player.reset();
+  });
   const progressIndicator = (() => {
     const progress = document.createElement("div");
     progress.classList.add("progress");
