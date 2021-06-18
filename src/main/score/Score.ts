@@ -1,9 +1,9 @@
-import { Source } from "../source/Source";
+import { SourceProps } from "../source/Source";
 import { Context } from "./Context";
 import { Order } from "./Order";
 
 type Score = {
-  source: Source;
+  source: SourceProps;
   laneAmount: number;
   notes: {
     timing: number;

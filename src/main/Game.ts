@@ -1,12 +1,11 @@
 import { InGameMenu } from "./controller/InGameMenu";
 import { Player } from "./player/Player";
 import { SoundEffectPlayer } from "./SoundEffectPlayer";
-import { SoundCloud } from "./source/SoundCloud";
-import { YouTube } from "./source/YouTube";
 import { Score } from "./score/Score";
 import { Button } from "./ui/Button";
 import { NumberInputter } from "./ui/NumberInputter";
 import { ResultView } from "./game/result/ResultView";
+import { Source } from "./source/Source";
 
 const getJudgeSoundEffectPlayAction = (player: SoundEffectPlayer) => {
   player.storeByFetch("judge.default", "sound/weakSnare.wav");
@@ -39,27 +38,14 @@ const Game = (args: { score: Score }) => {
   const sePlayer = SoundEffectPlayer(audioContext);
   const playJudgeSe = getJudgeSoundEffectPlayAction(sePlayer);
   const player = Player({ score: args.score, onJudge: playJudgeSe });
-  const source = (() => {
-    const base = {
-      size: {
-        width: document.body.clientWidth,
-        height: document.body.clientHeight,
-      },
-      onReady: () => element.classList.remove("loading"),
-    };
-    switch (args.score.source.kind) {
-      case "YouTube":
-        return YouTube({
-          ...base,
-          ...args.score.source,
-        });
-      case "SoundCloud":
-        return SoundCloud({
-          ...base,
-          ...args.score.source,
-        });
-    }
-  })();
+  const source = Source.from({
+    ...args.score.source,
+    size: {
+      width: document.body.clientWidth,
+      height: document.body.clientHeight,
+    },
+    onReady: () => element.classList.remove("loading"),
+  });
   source.addEventListener("play", () => {
     element.classList.remove("restarting");
     element.classList.add("playing");
