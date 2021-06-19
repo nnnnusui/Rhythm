@@ -1,11 +1,11 @@
-import { InGameMenu } from "./controller/InGameMenu";
+import { InGameMenu } from "./InGameMenu";
 import { Player } from "./player/Player";
-import { SoundEffectPlayer } from "./SoundEffectPlayer";
-import { Score } from "./score/Score";
-import { Button } from "./ui/Button";
-import { NumberInputter } from "./ui/NumberInputter";
-import { ResultView } from "./game/result/ResultView";
-import { Source } from "./source/Source";
+import { SoundEffectPlayer } from "../SoundEffectPlayer";
+import { Score } from "../score/Score";
+import { Button } from "../ui/Button";
+import { NumberInputter } from "../ui/NumberInputter";
+import { ResultView } from "./result/ResultView";
+import { Source } from "../source/Source";
 
 const getJudgeSoundEffectPlayAction = (player: SoundEffectPlayer) => {
   player.storeByFetch("judge.default", "sound/weakSnare.wav");

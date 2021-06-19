@@ -1,5 +1,5 @@
 import { scoreList } from "./sample-score";
-import { Game } from "./Game";
+import { Game } from "./game/Game";
 import { Score } from "./score/Score";
 
 const root = document.body;
