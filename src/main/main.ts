@@ -1,5 +1,6 @@
 import { Game } from "./game/Game";
 import { Score } from "./score/Score";
+import { Source } from "./source/Source";
 
 const root = document.body;
 const starter = document.createElement("div");
@@ -16,7 +17,15 @@ starter.onclick = () => {
     .then((it) => it.json())
     .then((it) => {
       const score = Score.build(it);
-      const game = Game({ score });
-      root.prepend(game.element);
+      const source = Source.from({
+        ...score.source,
+        size: {
+          width: document.body.clientWidth,
+          height: document.body.clientHeight,
+        },
+        onReady: () => {},
+      });
+      const game = Game({ source, score });
+      root.append(source.element, game.element);
     });
 };

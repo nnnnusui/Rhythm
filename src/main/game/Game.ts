@@ -18,7 +18,8 @@ const getJudgeSoundEffectPlayAction = (player: SoundEffectPlayer) => {
   };
 };
 
-const Game = (args: { score: Score }) => {
+const Game = (args: { source: Source; score: Score }) => {
+  const { source } = args;
   const element = document.createElement("div");
   element.classList.add("game");
 
@@ -57,14 +58,7 @@ const Game = (args: { score: Score }) => {
   const playJudgeSe = getJudgeSoundEffectPlayAction(sePlayer);
   const player = Player({ score: args.score, onJudge: playJudgeSe });
   const resultView = ResultView(new Map(), []);
-  const source = Source.from({
-    ...args.score.source,
-    size: {
-      width: document.body.clientWidth,
-      height: document.body.clientHeight,
-    },
-    onReady: () => state("readied"),
-  });
+
   source.addEventListener("play", () => {
     state("playing");
   });
@@ -76,6 +70,7 @@ const Game = (args: { score: Score }) => {
     state("restarting");
     player.reset();
   });
+
   const progressIndicator = (() => {
     const progress = document.createElement("div");
     progress.classList.add("progress");
