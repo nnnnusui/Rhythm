@@ -52,7 +52,10 @@ const View = (args: { score: Score; onJudge: OnJudge }) => {
     element,
     setJudge: judgeView.set,
     judgeLineView: lanesView.judgeLineView,
-    reset: () => lanesView.reset(),
+    reset: () => {
+      judgeView.set("");
+      lanesView.reset();
+    },
   };
 };
 
