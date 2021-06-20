@@ -13,12 +13,12 @@ const YouTube: SourceBuilder<Props> = (args) => {
     height: args.size.height,
     videoId: args.videoId,
   });
-  source.on("ready", () => {
-    args.onReady();
-    setTimeout(() => source.playVideo(), 1000);
-  });
 
   let onRestart = () => {};
+  let readied = false;
+  source.on("ready", () => {
+    readied = true;
+  });
 
   const play = () => source.playVideo();
   const pause = () => source.pauseVideo();
@@ -34,6 +34,10 @@ const YouTube: SourceBuilder<Props> = (args) => {
     restart,
     addEventListener: (kind, callback) => {
       switch (kind) {
+        case "ready":
+          source.on("ready", callback);
+          if (readied) callback();
+          break;
         case "play":
           source.on("stateChange", (event) => {
             if (event.data !== 1) return;

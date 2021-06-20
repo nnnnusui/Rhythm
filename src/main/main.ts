@@ -18,7 +18,6 @@ fetch(scorePath ? scorePath : "")
         width: document.body.clientWidth,
         height: document.body.clientHeight,
       },
-      onReady: () => {},
     });
 
     const starter = document.createElement("div");
@@ -28,6 +27,7 @@ fetch(scorePath ? scorePath : "")
 
     starter.onclick = () => {
       starter.remove();
+      source.addEventListener("ready", () => source.play());
       const game = Game({ source, score });
       root.append(game.element);
     };

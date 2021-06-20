@@ -1,7 +1,7 @@
 import { SoundCloud, SoundCloudProps } from "./SoundCloud";
 import { YouTube, YouTubeProps } from "./YouTube";
 
-type EventKinds = "play" | "pause" | "restart";
+type EventKinds = "ready" | "play" | "pause" | "restart";
 type Source = {
   element: HTMLElement;
   play: () => void;
@@ -11,7 +11,6 @@ type Source = {
 };
 type CommonProps = {
   size: { width: number; height: number };
-  onReady: () => void;
 };
 type SourceBuilder<Props> = (args: Omit<Props, "kind"> & CommonProps) => Source;
 
@@ -26,4 +25,4 @@ const Source = {
     }
   },
 };
-export { Source, SourceBuilder, SourceProps };
+export { Source, SourceBuilder, SourceProps, CommonProps };

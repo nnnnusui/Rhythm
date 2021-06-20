@@ -26,15 +26,15 @@ const SoundCloud: SourceBuilder<Props> = (args) => {
     .join("&");
   element.src = `https://w.soundcloud.com/player/?${urlParameters}`;
   const widget = SC.Widget(element);
+
+  let onRestart = () => {};
+  let readied = false;
   widget.bind(SC.Widget.Events.READY, () => {
     widget.setVolume(50);
     setTimeout(() => {
-      args.onReady();
-      widget.play();
+      readied = true;
     }, 1000);
   });
-
-  let onRestart = () => {};
 
   const play = () => widget.play();
   const pause = () => widget.pause();
@@ -46,11 +46,19 @@ const SoundCloud: SourceBuilder<Props> = (args) => {
   };
   return {
     element,
+    onReadied: (callback: () => void) => {
+      while (!readied);
+      callback();
+    },
     play,
     pause,
     restart,
     addEventListener: (kind, callback) => {
       switch (kind) {
+        case "ready":
+          widget.bind(SC.Widget.Events.READY, callback);
+          if (readied) callback();
+          break;
         case "play":
           widget.bind(SC.Widget.Events.PLAY, callback);
           break;
