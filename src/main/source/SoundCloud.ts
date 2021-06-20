@@ -1,10 +1,5 @@
 import { SourceBuilder } from "./Source";
 
-const tag = document.createElement("script");
-tag.src = "https://w.soundcloud.com/player/api.js";
-tag.type = "text/javascript";
-tag.async = true;
-document.head.prepend(tag);
 declare let SC: any;
 
 type Props = {
@@ -31,9 +26,7 @@ const SoundCloud: SourceBuilder<Props> = (args) => {
   let readied = false;
   widget.bind(SC.Widget.Events.READY, () => {
     widget.setVolume(50);
-    setTimeout(() => {
-      readied = true;
-    }, 1000);
+    readied = true;
   });
 
   const play = () => widget.play();
@@ -46,10 +39,6 @@ const SoundCloud: SourceBuilder<Props> = (args) => {
   };
   return {
     element,
-    onReadied: (callback: () => void) => {
-      while (!readied);
-      callback();
-    },
     play,
     pause,
     restart,
