@@ -19,7 +19,30 @@ const getJudgeSoundEffectPlayAction = (player: SoundEffectPlayer) => {
 
 const Game = (args: { score: Score }) => {
   const element = document.createElement("div");
-  element.classList.add("game", "loading");
+  element.classList.add("game");
+
+  const states = [
+    "loading",
+    "readied",
+    "playing",
+    "paused",
+    "restarting",
+    "overed",
+  ] as const;
+  type State = typeof states[number];
+  const state = (() => {
+    let current: State = "loading";
+    element.classList.add(current);
+    return (next?: State): State => {
+      if (next === undefined) return current;
+      if (next !== current) {
+        element.classList.remove(current);
+        current = next;
+        element.classList.add(current);
+      }
+      return current;
+    };
+  })();
 
   const getResult = () =>
     Array(...element.getElementsByClassName("note"))
@@ -38,24 +61,24 @@ const Game = (args: { score: Score }) => {
   const sePlayer = SoundEffectPlayer(audioContext);
   const playJudgeSe = getJudgeSoundEffectPlayAction(sePlayer);
   const player = Player({ score: args.score, onJudge: playJudgeSe });
+  const resultView = ResultView(new Map(), []);
   const source = Source.from({
     ...args.score.source,
     size: {
       width: document.body.clientWidth,
       height: document.body.clientHeight,
     },
-    onReady: () => element.classList.remove("loading"),
+    onReady: () => state("readied"),
   });
   source.addEventListener("play", () => {
-    element.classList.remove("restarting");
-    element.classList.add("playing");
+    state("playing");
   });
   source.addEventListener("pause", () => {
-    element.classList.remove("playing");
+    state("paused");
     getResult();
   });
   source.addEventListener("restart", () => {
-    element.classList.add("restarting");
+    state("restarting");
     player.reset();
   });
   const progressIndicator = (() => {
@@ -63,7 +86,8 @@ const Game = (args: { score: Score }) => {
     progress.classList.add("progress");
     progress.style.setProperty("--duration", `${args.score.length}`);
     progress.addEventListener("animationend", () => {
-      player.element.replaceWith(
+      state("overed");
+      resultView.replaceWith(
         ResultView(getResult(), [Button("close", () => element.remove())])
       );
     });
@@ -93,7 +117,8 @@ const Game = (args: { score: Score }) => {
     source.element,
     player.element,
     progressIndicator,
-    inGameMenu.element
+    inGameMenu.element,
+    resultView
   );
   return { element, preview: () => source.play() };
 };

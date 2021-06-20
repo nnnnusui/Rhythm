@@ -4,13 +4,28 @@ $container: ".game";
     @content;
   }
 }
+@mixin readied {
+  #{$container}.readied & {
+    @content;
+  }
+}
 @mixin playing {
   #{$container}.playing & {
     @content;
   }
 }
+@mixin paused {
+  #{$container}.paused & {
+    @content;
+  }
+}
 @mixin restarting {
   #{$container}.restarting & {
+    @content;
+  }
+}
+@mixin overed {
+  #{$container}.overed & {
     @content;
   }
 }
