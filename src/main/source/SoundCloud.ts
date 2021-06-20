@@ -28,7 +28,10 @@ const SoundCloud: SourceBuilder<Props> = (args) => {
   const widget = SC.Widget(element);
   widget.bind(SC.Widget.Events.READY, () => {
     widget.setVolume(50);
-    setTimeout(args.onReady, 1000);
+    setTimeout(() => {
+      args.onReady();
+      widget.play();
+    }, 1000);
   });
 
   let onRestart = () => {};

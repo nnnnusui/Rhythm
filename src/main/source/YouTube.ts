@@ -13,7 +13,10 @@ const YouTube: SourceBuilder<Props> = (args) => {
     height: args.size.height,
     videoId: args.videoId,
   });
-  source.on("ready", args.onReady);
+  source.on("ready", () => {
+    args.onReady();
+    setTimeout(() => source.playVideo(), 1000);
+  });
 
   let onRestart = () => {};
 
