@@ -6,6 +6,7 @@ import { Button } from "../ui/Button";
 import { NumberInputter } from "../ui/NumberInputter";
 import { ResultView } from "./result/ResultView";
 import { Source } from "../source/Source";
+import { ObservableProperty } from "../template/ObservableProperty";
 
 const getJudgeSoundEffectPlayAction = (player: SoundEffectPlayer) => {
   player.storeByFetch("judge.default", "sound/weakSnare.wav");
@@ -30,19 +31,13 @@ const Game = (args: { score: Score }) => {
     "overed",
   ] as const;
   type State = typeof states[number];
-  const state = (() => {
-    let current: State = "loading";
-    element.classList.add(current);
-    return (next?: State): State => {
-      if (next === undefined) return current;
-      if (next !== current) {
-        element.classList.remove(current);
-        current = next;
-        element.classList.add(current);
-      }
-      return current;
-    };
-  })();
+  const state = ObservableProperty<State>({
+    init: "loading",
+    onChange: (next, before) => {
+      element.classList.remove(before);
+      element.classList.add(next);
+    },
+  });
 
   const getResult = () =>
     Array(...element.getElementsByClassName("note"))
