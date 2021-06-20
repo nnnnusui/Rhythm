@@ -27,7 +27,7 @@ fetch(scorePath ? scorePath : "")
 
     starter.onclick = () => {
       starter.remove();
-      source.addEventListener("ready", () => source.play());
+      source.addEventListener("ready", source.play);
       const game = Game({ source, score });
       root.append(game.element);
     };

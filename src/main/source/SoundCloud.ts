@@ -22,12 +22,10 @@ const SoundCloud: SourceBuilder<Props> = (args) => {
   element.src = `https://w.soundcloud.com/player/?${urlParameters}`;
   const widget = SC.Widget(element);
 
-  let onRestart = () => {};
-  let readied = false;
   widget.bind(SC.Widget.Events.READY, () => {
     widget.setVolume(50);
-    readied = true;
   });
+  let onRestart = () => {};
 
   const play = () => widget.play();
   const pause = () => widget.pause();
@@ -45,8 +43,7 @@ const SoundCloud: SourceBuilder<Props> = (args) => {
     addEventListener: (kind, callback) => {
       switch (kind) {
         case "ready":
-          widget.bind(SC.Widget.Events.READY, callback);
-          if (readied) callback();
+          widget.bind(SC.Widget.Events.READY, setTimeout(callback, 2000));
           break;
         case "play":
           widget.bind(SC.Widget.Events.PLAY, callback);
