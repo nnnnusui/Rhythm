@@ -59,6 +59,7 @@ const Game = (args: { source: Source; score: Score }) => {
   const player = Player({ score: args.score, onJudge: playJudgeSe });
   const resultView = ResultView(new Map(), []);
 
+  source.addEventListener("ready", () => state("readied"));
   source.addEventListener("play", () => {
     state("playing");
   });
@@ -104,7 +105,6 @@ const Game = (args: { source: Source; score: Score }) => {
     ],
   });
   element.append(
-    source.element,
     player.element,
     progressIndicator,
     inGameMenu.element,
