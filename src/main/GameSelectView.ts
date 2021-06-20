@@ -3,6 +3,7 @@ import { Score } from "./score/Score";
 const GameSelectView = (args: {
   rootElement: HTMLElement;
   scorePaths: string[];
+  onPreview: (score: Score) => void;
   onSelect: (score: Score) => void;
 }) => {
   const element = document.createElement("div");
@@ -11,6 +12,14 @@ const GameSelectView = (args: {
     const element = document.createElement("div");
     element.classList.add("game-selector");
     element.textContent = url;
+    element.addEventListener("pointerenter", () => {
+      fetch(url)
+        .then((it) => it.json())
+        .then((it) => {
+          const score = Score.build(it);
+          args.onPreview(score);
+        });
+    });
     element.addEventListener("pointerup", () => {
       fetch(url)
         .then((it) => it.json())
