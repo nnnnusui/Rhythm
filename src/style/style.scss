@@ -66,11 +66,14 @@ body {
   user-select: none;
 }
 .result {
-  background: rgba(#333, 0.6);
-  display: flex;
+  display: none;
+  @include state.overed {
+    display: flex;
+  }
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  background: rgba(#333, 0.6);
   .judge-count {
     display: grid;
     justify-content: center;

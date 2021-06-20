@@ -8,6 +8,9 @@
     top: 0;
     opacity: 1;
   }
+  @include state.overed {
+    display: none;
+  }
   .number-inputter {
     position: relative;
     width: 100%;
@@ -54,15 +57,11 @@
     background-color: white;
   }
   .in-game-menu {
-    pointer-events: auto;
-    @include state.loading {
-      pointer-events: none;
-    }
+    display: flex;
     @include state.playing {
       display: none;
     }
 
-    display: flex;
     justify-content: center;
     align-items: center;
     flex-direction: column;
