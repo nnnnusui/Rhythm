@@ -14,6 +14,8 @@
     "youtube-player": "^5.5.2"
   },
   "staticFiles": {
-    "staticPath": ["public"]
+    "staticPath": [
+      "public"
+    ]
   }
 }
