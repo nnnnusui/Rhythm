@@ -1,5 +1,6 @@
 .DS_Store
+.cache
 node_modules
-out
+dist
 
 src/main/sample-score.ts
