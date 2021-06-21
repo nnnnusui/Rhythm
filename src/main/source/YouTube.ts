@@ -12,6 +12,9 @@ const YouTube: SourceBuilder<Props> = (args) => {
     width: args.size.width,
     height: args.size.height,
     videoId: args.videoId,
+    playerVars: {
+      playsinline: 1,
+    },
   });
 
   let onRestart = () => {};
