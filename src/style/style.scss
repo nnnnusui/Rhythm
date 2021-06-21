@@ -203,11 +203,11 @@ body {
     opacity: 0;
   }
 
-  --judge-shrink: calc(var(--duration) / 1000);
+  --judge-shrink: calc(var(--duration) * 10 / 1000);
   .judge {
     --judge-ms: 60;
     width: 100%;
-    height: calc(var(--judge-ms) / (10 * var(--judge-shrink)) * 1%);
+    height: calc(var(--judge-ms) / var(--judge-shrink) * 1%);
   }
   .perfect {
     background-color: orange;
