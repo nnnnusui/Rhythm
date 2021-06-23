@@ -34,7 +34,10 @@ const NoteView = (args: {
   element.append(...judges.map((it) => it.element));
   return {
     element,
-    reset: () => (element.dataset["judge"] = ""),
+    reset: () => {
+      element.dataset["judge"] = ""
+      element.classList.add("wait")
+    },
   };
 };
 
