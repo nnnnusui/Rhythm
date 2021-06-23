@@ -65,7 +65,7 @@ const Game = (args: { source: Source; score: Score }) => {
   });
   source.addEventListener("pause", () => {
     state("paused");
-    getResult();
+    console.log(getResult());
   });
   source.addEventListener("restart", () => {
     state("restarting");

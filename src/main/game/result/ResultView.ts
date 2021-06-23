@@ -3,7 +3,7 @@ import { Button } from "../../ui/Button";
 const JudgeCountView = (resultMap: Map<string, number>) => {
   const element = document.createElement("div");
   element.classList.add("judge-count");
-  Array(...resultMap.entries()).forEach(([key, value]) => {
+  resultMap.forEach((value, key) => {
     const judge = document.createElement("div");
     judge.classList.add("judge");
     judge.textContent = key;
