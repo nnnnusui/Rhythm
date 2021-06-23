@@ -4,7 +4,6 @@ const JudgeView = (args: { evaluation: string; onJudge: OnJudge }) => {
   const element = document.createElement("div");
   element.classList.add("judge", args.evaluation);
   element.dataset["judge"] = args.evaluation;
-  element.addEventListener("pointerdown", () => args.onJudge(args.evaluation));
   return { element };
 };
 
