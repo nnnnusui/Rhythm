@@ -1,0 +1,116 @@
+level = length(split(" ", selector())) - 1
+headsSelector = "^["+ level +"]"
+tailsSelector = "^["+ (level + 1) +"..-1]"
+
+gameState(state)
+  stateSelector = match("^!", state) ? ":not(."+ slice(state, 1) + ")" : "."+ state
+  {headsSelector}{stateSelector} {tailsSelector}
+    {block}
+
+&
+  --over-wait 3000
+  --offset 0
+  --delay 0
+  --duration 1000
+  --judge-line-y 0.96
+
+.view
+  position absolute
+  width 100%
+  height 100%
+
+.result
+  position absolute
+  width 100%
+  height 100%
+  visibility hidden
+  +gameState(overed)
+    visibility visible
+
+.lanes
+  position absolute
+  width 100%
+  height 100%
+  display grid
+  grid-template-columns repeat(var(--lane-amount), 1fr)
+  grid-template-rows 1fr
+
+@keyframes fall
+  from
+    transform translateY(0)
+  to
+    transform translateY(100%)
+.note
+  &.wait
+  &:not([data-judge=""])
+    visibility hidden
+  
+  animation-name fall
+  animation-play-state paused
+  animation-delay calc((var(--offset) + var(--delay) - var(--duration) * var(--judge-line-y)) * 1ms)
+  animation-duration calc(var(--duration) * 1ms)
+  animation-timing-function linear
+  +gameState(restarting)
+    animation none
+  +gameState(playing)
+    animation-play-state running
+
+  grid-column calc(1 + var(--position))
+  grid-row 1
+  position relative
+  width 100%
+  height 100%
+
+  display flex
+  flex-direction column
+  .judge
+    --judge-shrink calc(var(--duration) * 10 / 1000)
+    --judge-ms 60
+    width 100%
+    height calc(var(--judge-ms) / var(--judge-shrink) * 1%)
+    &.perfect
+      background-color orange
+
+.judge-line
+  position absolute
+  top calc(100% * var(--judge-line-y))
+
+@keyframes progress
+  from
+    width 0
+  to
+    width 100%
+.progress
+  position absolute
+  width 0
+
+  animation-name progress
+  animation-play-state paused
+  animation-duration calc((var(--duration) + var(--over-wait)) * 1ms)
+  animation-timing-function linear
+  animation-fill-mode forwards
+  +gameState(restarting)
+    animation none
+  +gameState(playing)
+    animation-play-state running
+
+
+.controller
+  position absolute
+  left 0
+  top 0
+  width 100%
+  height 100%
+  +gameState(playing)
+    width 2em
+    height 2em
+  +gameState(overed)
+    display none
+
+.pause
+  +gameState("!playing")
+    display none
+
+.in-game-menu
+  +gameState(playing)
+    display none
