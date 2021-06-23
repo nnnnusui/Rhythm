@@ -14,7 +14,7 @@ const NoteView = (args: {
   onJudge: OnJudge;
 }) => {
   const element = document.createElement("div");
-  element.classList.add("note");
+  element.classList.add("note", "wait");
   element.style.setProperty("--delay", `${args.delay}`);
   element.style.setProperty("--position", `${args.position}`);
   element.dataset["judge"] = "";
@@ -22,6 +22,9 @@ const NoteView = (args: {
     element.dataset["judge"] = judge;
     args.onJudge(judge);
   };
+  element.addEventListener("animationstart", () => {
+    element.classList.remove("wait");
+  });
   element.addEventListener("animationend", () => {
     if (element.dataset["judge"]) return;
     onJudge("miss");
