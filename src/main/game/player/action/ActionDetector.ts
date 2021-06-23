@@ -35,11 +35,6 @@ const ActionDetector = (args: {
   element.addEventListener("pointerup", dispatchEvent);
   element.addEventListener("pointercancel", dispatchEvent);
 
-  // enableContinuousTouch
-  element.addEventListener("touchend", (e) => e.preventDefault());
-  // suppressTouchMove
-  element.addEventListener("touchmove", (e) => e.preventDefault());
-
   return { element };
 };
 
