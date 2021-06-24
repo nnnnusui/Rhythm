@@ -23,14 +23,17 @@ const ActionDetector = (args: {
   const element = document.createElement("div");
   element.classList.add("action-detector");
   const dispatchEvent = dispatchPointerEventTo(args.judgeLineView.y);
-  element.addEventListener("pointerdown", dispatchEvent);
+  element.addEventListener("pointerdown", (event) => {
+    const clientY = args.judgeLineView.y();
+    const judgeElement = 
+      document.elementsFromPoint(event.clientX, clientY)
+        .find(it => it.classList.contains("judge")) as HTMLElement;
+    const judge = judgeElement.dataset["judge"]
+    args.onJudge(judge)
+    judgeElement.parentElement.dataset["judge"] = judge
+  });
   element.addEventListener("pointerup", dispatchEvent);
   element.addEventListener("pointercancel", dispatchEvent);
-
-  // enableContinuousTouch
-  element.addEventListener("touchend", (e) => e.preventDefault());
-  // suppressTouchMove
-  element.addEventListener("touchmove", (e) => e.preventDefault());
 
   return { element };
 };

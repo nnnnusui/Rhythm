@@ -4,7 +4,6 @@ const JudgeView = (args: { evaluation: string; onJudge: OnJudge }) => {
   const element = document.createElement("div");
   element.classList.add("judge", args.evaluation);
   element.dataset["judge"] = args.evaluation;
-  element.addEventListener("pointerdown", () => args.onJudge(args.evaluation));
   return { element };
 };
 
@@ -35,7 +34,10 @@ const NoteView = (args: {
   element.append(...judges.map((it) => it.element));
   return {
     element,
-    reset: () => (element.dataset["judge"] = ""),
+    reset: () => {
+      element.dataset["judge"] = ""
+      element.classList.add("wait")
+    },
   };
 };
 
