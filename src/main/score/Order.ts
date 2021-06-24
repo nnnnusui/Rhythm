@@ -5,9 +5,6 @@ type Order = {
   flatten?: boolean;
   orders: NArray<number | Order>;
 };
-/* eslint-disable @typescript-eslint/explicit-module-boundary-types */
-/* eslint-disable @typescript-eslint/no-explicit-any */
-const isOrder = (it: any): it is Order => it?.orders !== undefined;
-/* eslint-enable */
+const isOrder = (it: unknown): it is Order => it["orders"] !== undefined;
 
 export { Order, isOrder };
