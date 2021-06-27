@@ -11,6 +11,7 @@ const judge =
     const judgeElement = document
       .elementsFromPoint(pos.x, pos.y)
       .find((it) => it.classList.contains("judge")) as HTMLElement;
+    if (!judgeElement) return;
     const judge = judgeElement.dataset["judge"];
     judgeElement.parentElement.dataset["judge"] = judge;
     onJudge(judge);
