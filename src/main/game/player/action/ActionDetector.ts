@@ -1,19 +1,19 @@
 import { OnJudge } from "../type/OnJudge";
 import { JudgeLineView } from "../view/JudgeLineView";
 
-const dispatchPointerEventTo =
-  (getClientY: () => number) => (event: PointerEvent) => {
-    if (event.target !== event.currentTarget) return;
-    const clientY = getClientY();
-    const onJudgeLine = document.elementsFromPoint(event.clientX, clientY)[2];
-    if (!onJudgeLine) return;
-    const newEvent = new PointerEvent(event.type, {
-      bubbles: true,
-      cancelable: true,
-      clientX: event.clientX,
-      clientY: clientY,
-    });
-    onJudgeLine.dispatchEvent(newEvent);
+const judge =
+  <E extends Event>(
+    onJudge: OnJudge,
+    getJudgePos: (event: E) => { x: number; y: number }
+  ) =>
+  (event: E) => {
+    const pos = getJudgePos(event);
+    const judgeElement = document
+      .elementsFromPoint(pos.x, pos.y)
+      .find((it) => it.classList.contains("judge")) as HTMLElement;
+    const judge = judgeElement.dataset["judge"];
+    judgeElement.parentElement.dataset["judge"] = judge;
+    onJudge(judge);
   };
 
 const ActionDetector = (args: {
@@ -22,18 +22,13 @@ const ActionDetector = (args: {
 }) => {
   const element = document.createElement("div");
   element.classList.add("action-detector");
-  const dispatchEvent = dispatchPointerEventTo(args.judgeLineView.y);
-  element.addEventListener("pointerdown", (event) => {
-    const clientY = args.judgeLineView.y();
-    const judgeElement = 
-      document.elementsFromPoint(event.clientX, clientY)
-        .find(it => it.classList.contains("judge")) as HTMLElement;
-    const judge = judgeElement.dataset["judge"]
-    args.onJudge(judge)
-    judgeElement.parentElement.dataset["judge"] = judge
-  });
-  element.addEventListener("pointerup", dispatchEvent);
-  element.addEventListener("pointercancel", dispatchEvent);
+  element.addEventListener(
+    "pointerdown",
+    judge<PointerEvent>(args.onJudge, (event) => ({
+      x: event.clientX,
+      y: args.judgeLineView.y(),
+    }))
+  );
 
   return { element };
 };
