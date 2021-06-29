@@ -28,15 +28,21 @@ const NoteView = (args: {
     if (element.dataset["judge"]) return;
     onJudge("miss");
   });
-  const judges = ["great", "perfect", "great", "good"].map((evaluation) =>
+  const judgeContainer = document.createElement("div");
+  judgeContainer.classList.add("judge-container");
+  const judges = ["good", "great", "perfect", "great", "good"];
+  const judgeViews = judges.map((evaluation) =>
     JudgeView({ evaluation, onJudge })
   );
-  element.append(...judges.map((it) => it.element));
+  judgeContainer.append(...judgeViews.map((it) => it.element));
+  const view = document.createElement("div");
+  view.classList.add("view");
+  element.append(view, judgeContainer);
   return {
     element,
     reset: () => {
-      element.dataset["judge"] = ""
-      element.classList.add("wait")
+      element.dataset["judge"] = "";
+      element.classList.add("wait");
     },
   };
 };

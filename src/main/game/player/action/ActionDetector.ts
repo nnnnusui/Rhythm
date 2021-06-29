@@ -8,7 +8,7 @@ const getJudgeEvent = (onJudge: OnJudge) => (pos: { x: number; y: number }) => {
     .find((it) => it.classList.contains("judge")) as HTMLElement;
   if (!judgeElement) return;
   const judge = judgeElement.dataset["judge"];
-  judgeElement.parentElement.dataset["judge"] = judge;
+  judgeElement.parentElement.parentElement.dataset["judge"] = judge;
   onJudge(judge);
 };
 
