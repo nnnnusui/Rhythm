@@ -45,6 +45,10 @@ gameState(state)
   &:not([data-judge=""])
     visibility hidden
   
+  will-change transform
+  &:not([data-judge=""])
+    will-change auto
+
   animation-name fall
   animation-play-state paused
   animation-delay calc((var(--offset) + var(--delay) - var(--duration) * var(--judge-line-y)) * 1ms)
