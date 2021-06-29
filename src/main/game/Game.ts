@@ -79,7 +79,10 @@ const Game = (args: { source: Source; score: Score }) => {
     progress.addEventListener("animationend", () => {
       state("overed");
       resultView.replaceWith(
-        ResultView(getResult(), [Button("close", () => element.remove())])
+        ResultView(getResult(), [
+          Button("restart", source.restart),
+          Button("close", () => element.remove()),
+        ])
       );
     });
     return progress;
