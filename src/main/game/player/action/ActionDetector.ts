@@ -2,11 +2,7 @@ import { OnJudge } from "../type/OnJudge";
 import { JudgeLineView } from "../view/JudgeLineView";
 import { keyPositionMap } from "./keyPositionMap";
 
-const judge = (
-  onJudge: OnJudge,
-  getJudgePos: () => { x: number; y: number }
-) => {
-  const pos = getJudgePos();
+const getJudgeEvent = (onJudge: OnJudge) => (pos: { x: number; y: number }) => {
   const judgeElement = document
     .elementsFromPoint(pos.x, pos.y)
     .find((it) => it.classList.contains("judge")) as HTMLElement;
@@ -56,24 +52,23 @@ const ActionDetector = (args: {
   });
 
   // Judge Events
+  const judge = getJudgeEvent(args.onJudge);
   element.addEventListener("pointerdown", (event) =>
-    judge(args.onJudge, () => ({
+    judge({
       x: event.clientX,
       y: args.judgeLineView.y(),
-    }))
-  );
-  element.addEventListener("keydown", (event) =>
-    judge(args.onJudge, () => {
-      const keyMaxX = 11;
-      const keyPos = keyPositionMap.get(event.code);
-      if (!keyPos || keyMaxX <= keyPos.x) return;
-
-      return {
-        x: element.clientWidth * (keyPos.x / keyMaxX),
-        y: args.judgeLineView.y(),
-      };
     })
   );
+  element.addEventListener("keydown", (event) => {
+    const keyMaxX = 11;
+    const keyPos = keyPositionMap.get(event.code);
+    if (!keyPos || keyMaxX <= keyPos.x) return;
+
+    judge({
+      x: element.clientWidth * (keyPos.x / keyMaxX),
+      y: args.judgeLineView.y(),
+    });
+  });
 
   return { element };
 };
