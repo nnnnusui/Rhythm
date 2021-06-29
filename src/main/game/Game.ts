@@ -78,12 +78,14 @@ const Game = (args: { source: Source; score: Score }) => {
     progress.style.setProperty("--duration", `${args.score.length}`);
     progress.addEventListener("animationend", () => {
       state("overed");
-      resultView.replaceWith(
-        ResultView(getResult(), [
-          Button("restart", source.restart),
-          Button("close", () => element.remove()),
-        ])
-      );
+      element
+        .getElementsByClassName("result")[0]
+        ?.replaceWith(
+          ResultView(getResult(), [
+            Button("restart", source.restart),
+            Button("close", () => element.remove()),
+          ])
+        );
     });
     return progress;
   })();
