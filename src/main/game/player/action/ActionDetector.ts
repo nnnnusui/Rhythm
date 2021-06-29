@@ -27,7 +27,7 @@ const ActionDetector = (args: {
   element.tabIndex = 0;
 
   // tap effect
-  const findEffectById = (id: number) =>
+  const findEffectById = (id: string) =>
     Array(...element.children)
       .map((it) => it as HTMLElement)
       .find((it) => it.dataset["id"] === `${id}`);
@@ -42,14 +42,14 @@ const ActionDetector = (args: {
     element.append(effect);
   });
   element.addEventListener("pointermove", (event) => {
-    const effect = findEffectById(event.pointerId);
+    const effect = findEffectById(`${event.pointerId}`);
     const x = event.clientX / element.clientWidth;
     const y = event.clientY / element.clientHeight;
     effect.style.setProperty("--x", `${x}`);
     effect.style.setProperty("--y", `${y}`);
   });
   element.addEventListener("pointerup", (event) => {
-    findEffectById(event.pointerId).remove();
+    findEffectById(`${event.pointerId}`).remove();
   });
 
   // Judge Events
