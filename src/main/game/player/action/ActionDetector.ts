@@ -41,13 +41,14 @@ const ActionDetector = (args: {
   });
   element.addEventListener("pointermove", (event) => {
     const effect = findEffectById(`${event.pointerId}`);
+    if (!effect) return;
     const x = event.clientX / element.clientWidth;
     const y = event.clientY / element.clientHeight;
     effect.style.setProperty("--x", `${x}`);
     effect.style.setProperty("--y", `${y}`);
   });
   element.addEventListener("pointerup", (event) => {
-    findEffectById(`${event.pointerId}`).remove();
+    findEffectById(`${event.pointerId}`)?.remove();
   });
 
   // Judge Events
