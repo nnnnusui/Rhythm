@@ -16,6 +16,7 @@ const NoteView = (args: {
   element.classList.add("note", "wait");
   element.style.setProperty("--delay", `${args.delay}`);
   element.style.setProperty("--position", `${args.position}`);
+  element.style.willChange = "transform";
   element.dataset["judge"] = "";
   const onJudge: OnJudge = (judge) => {
     element.dataset["judge"] = judge;
@@ -25,6 +26,7 @@ const NoteView = (args: {
     element.classList.remove("wait");
   });
   element.addEventListener("animationend", () => {
+    element.style.willChange = "auto";
     if (element.dataset["judge"]) return;
     onJudge("miss");
   });
