@@ -100,7 +100,7 @@ const Game = (args: { source: Source; score: Score }) => {
       NumberInputter(
         "offset",
         (value) => element.style.setProperty("--offset", `${value * 1000}`),
-        { value: 0.4, step: 0.01, max: 2, min: -2 }
+        { value: 0, step: 0.01, max: 2, min: -2 }
       ),
       NumberInputter(
         "duration",
