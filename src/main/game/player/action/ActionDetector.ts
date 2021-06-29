@@ -50,6 +50,19 @@ const ActionDetector = (args: {
   element.addEventListener("pointerup", (event) => {
     findEffectById(`${event.pointerId}`)?.remove();
   });
+  element.addEventListener("keydown", (event) => {
+    if (event.repeat) return;
+    const keyMaxX = 11;
+    const keyPos = keyPositionMap.get(event.code);
+    if (!keyPos || keyMaxX <= keyPos.x) return;
+    appendEffect(event.code, {
+      x: (element.clientWidth * (keyPos.x / keyMaxX)) / element.clientWidth,
+      y: args.judgeLineView.y() / element.clientHeight,
+    });
+  });
+  element.addEventListener("keyup", (event) => {
+    findEffectById(event.code)?.remove();
+  });
 
   // Judge Events
   const judge = getJudgeEvent(args.onJudge);
