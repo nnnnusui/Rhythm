@@ -60,6 +60,7 @@ const ActionDetector = (args: {
     })
   );
   element.addEventListener("keydown", (event) => {
+    if (event.repeat) return;
     const keyMaxX = 11;
     const keyPos = keyPositionMap.get(event.code);
     if (!keyPos || keyMaxX <= keyPos.x) return;
