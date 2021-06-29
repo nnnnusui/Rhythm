@@ -1,5 +1,6 @@
 import { OnJudge } from "../type/OnJudge";
 import { JudgeLineView } from "../view/JudgeLineView";
+import { keyPositionMap } from "./keyPositionMap";
 
 const judge =
   <E extends Event>(
@@ -23,12 +24,29 @@ const ActionDetector = (args: {
 }) => {
   const element = document.createElement("div");
   element.classList.add("action-detector");
+  element.tabIndex = 0;
+
+  // Judge Events
   element.addEventListener(
     "pointerdown",
     judge<PointerEvent>(args.onJudge, (event) => ({
       x: event.clientX,
       y: args.judgeLineView.y(),
     }))
+  );
+  element.addEventListener(
+    "keydown",
+    judge<KeyboardEvent>(args.onJudge, (event) => {
+      console.log(event.code);
+      const keyMaxX = 11;
+      const keyPos = keyPositionMap.get(event.code);
+      if (!keyPos || keyMaxX <= keyPos.x) return;
+
+      return {
+        x: element.clientWidth * (keyPos.x / keyMaxX),
+        y: args.judgeLineView.y(),
+      };
+    })
   );
 
   return { element };
