@@ -34,10 +34,10 @@ const NoteView = (args: {
   const judgeViews = judges.map((evaluation) =>
     JudgeView({ evaluation, onJudge })
   );
-  judgeContainer.append(...judgeViews.map((it) => it.element));
   const view = document.createElement("div");
   view.classList.add("view");
-  element.append(view, judgeContainer);
+  judgeContainer.append(view, ...judgeViews.map((it) => it.element));
+  element.append(judgeContainer);
   return {
     element,
     reset: () => {
