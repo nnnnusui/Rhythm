@@ -2,21 +2,19 @@ import { OnJudge } from "../type/OnJudge";
 import { JudgeLineView } from "../view/JudgeLineView";
 import { keyPositionMap } from "./keyPositionMap";
 
-const judge =
-  <E extends Event>(
-    onJudge: OnJudge,
-    getJudgePos: (event: E) => { x: number; y: number }
-  ) =>
-  (event: E) => {
-    const pos = getJudgePos(event);
-    const judgeElement = document
-      .elementsFromPoint(pos.x, pos.y)
-      .find((it) => it.classList.contains("judge")) as HTMLElement;
-    if (!judgeElement) return;
-    const judge = judgeElement.dataset["judge"];
-    judgeElement.parentElement.dataset["judge"] = judge;
-    onJudge(judge);
-  };
+const judge = (
+  onJudge: OnJudge,
+  getJudgePos: () => { x: number; y: number }
+) => {
+  const pos = getJudgePos();
+  const judgeElement = document
+    .elementsFromPoint(pos.x, pos.y)
+    .find((it) => it.classList.contains("judge")) as HTMLElement;
+  if (!judgeElement) return;
+  const judge = judgeElement.dataset["judge"];
+  judgeElement.parentElement.dataset["judge"] = judge;
+  onJudge(judge);
+};
 
 const ActionDetector = (args: {
   judgeLineView: JudgeLineView;
@@ -53,17 +51,14 @@ const ActionDetector = (args: {
   });
 
   // Judge Events
-  element.addEventListener(
-    "pointerdown",
-    judge<PointerEvent>(args.onJudge, (event) => ({
+  element.addEventListener("pointerdown", (event) =>
+    judge(args.onJudge, () => ({
       x: event.clientX,
       y: args.judgeLineView.y(),
     }))
   );
-  element.addEventListener(
-    "keydown",
-    judge<KeyboardEvent>(args.onJudge, (event) => {
-      console.log(event.code);
+  element.addEventListener("keydown", (event) =>
+    judge(args.onJudge, () => {
       const keyMaxX = 11;
       const keyPos = keyPositionMap.get(event.code);
       if (!keyPos || keyMaxX <= keyPos.x) return;
