@@ -25,19 +25,23 @@ const ActionDetector = (args: {
   element.tabIndex = 0;
 
   // tap effect
+  const appendEffect = (id: string, pos: { x: number; y: number }) => {
+    const effect = document.createElement("div");
+    effect.classList.add("tap-effect");
+    effect.dataset["id"] = id;
+    effect.style.setProperty("--x", `${pos.x}`);
+    effect.style.setProperty("--y", `${pos.y}`);
+    element.append(effect);
+  };
   const findEffectById = (id: string) =>
     Array(...element.children)
       .map((it) => it as HTMLElement)
       .find((it) => it.dataset["id"] === `${id}`);
   element.addEventListener("pointerdown", (event) => {
-    const effect = document.createElement("div");
-    effect.classList.add("tap-effect");
-    effect.dataset["id"] = `${event.pointerId}`;
-    const x = event.clientX / element.clientWidth;
-    const y = event.clientY / element.clientHeight;
-    effect.style.setProperty("--x", `${x}`);
-    effect.style.setProperty("--y", `${y}`);
-    element.append(effect);
+    appendEffect(`${event.pointerId}`, {
+      x: event.clientX / element.clientWidth,
+      y: event.clientY / element.clientHeight,
+    });
   });
   element.addEventListener("pointermove", (event) => {
     const effect = findEffectById(`${event.pointerId}`);
