@@ -44,9 +44,7 @@ const Game = (args: { source: Source; score: Score }) => {
     Array(...element.getElementsByClassName("note"))
       .map((it) => it as HTMLElement)
       .map((it) => it.dataset["judge"])
-      .filter((it) => it)
-      .map((it) => it as string)
-      .map((it) => (it === "" ? "miss" : it))
+      .map((it) => (it ? it : "miss"))
       .reduce((map, it) => {
         const before = map.get(it);
         const next = (before ? before : 0) + 1;
