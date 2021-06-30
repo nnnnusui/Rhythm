@@ -54,6 +54,7 @@ gameState(state)
   animation-delay calc((var(--offset) + var(--delay) - var(--duration) * var(--judge-line-y)) * 1ms)
   animation-duration calc(var(--duration) * 1ms)
   animation-timing-function linear
+  animation-fill-mode forwards
   +gameState(restarting)
     animation none
   +gameState(playing)

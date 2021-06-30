@@ -24,10 +24,6 @@ const NoteView = (args: {
   element.addEventListener("animationstart", () => {
     element.classList.remove("wait");
   });
-  element.addEventListener("animationend", () => {
-    if (element.dataset["judge"]) return;
-    onJudge("miss");
-  });
   const judgeContainer = document.createElement("div");
   judgeContainer.classList.add("judge-container");
   const judges = ["good", "great", "perfect", "great", "good"];

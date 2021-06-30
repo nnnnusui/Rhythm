@@ -46,6 +46,7 @@ const Game = (args: { source: Source; score: Score }) => {
       .map((it) => it.dataset["judge"])
       .filter((it) => it)
       .map((it) => it as string)
+      .map((it) => (it === "" ? "miss" : it))
       .reduce((map, it) => {
         const before = map.get(it);
         const next = (before ? before : 0) + 1;
