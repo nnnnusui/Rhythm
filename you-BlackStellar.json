@@ -1,4 +1,4 @@
-{
+;;{
   "title": "BlackStellar",
   "laneAmount": 5,
   "source": {
@@ -7,7 +7,7 @@
   },
   "bpm": 75,
   "beat": 4,
-  "offset": 0.83,
+  "offset": 1.25,
   "orders": [
     {
       "method": "parallel",
