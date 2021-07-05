@@ -1,12 +1,23 @@
 import { SourceBuilder } from "./Source";
 
 declare let SC: any;
+const reAppendScript = () => {
+  Array(...document.head.children)
+    .filter((it) => it.id === "sound-cloud-player-api-script")
+    .forEach((it) => it.remove());
+  const element = document.createElement("script");
+  element.id = "sound-cloud-player-api-script";
+  element.src = "https://w.soundcloud.com/player/api.js";
+  document.head.prepend(element);
+};
+reAppendScript();
 
 type Props = {
   kind: "SoundCloud";
   trackId: string;
 };
 const SoundCloud: SourceBuilder<Props> = (args) => {
+  reAppendScript();
   const element = document.createElement("iframe");
   element.classList.add("source");
   element.width = `${args.size.width}`;
