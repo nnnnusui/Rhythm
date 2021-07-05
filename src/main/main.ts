@@ -32,7 +32,6 @@ const load = () => {
       });
       source.addEventListener("ready", () => source.play());
     };
-    sourceReGen();
 
     const element = document.createElement("section");
     element.classList.add("choice");
@@ -49,6 +48,7 @@ const load = () => {
         root.insertBefore(game.element, scoreSelectMenu);
         game.start();
       } else {
+        sourceReGen();
         Array(...scoreSelectMenu.getElementsByClassName("choice")).forEach(
           (it) => it.classList.remove("chosen")
         );
