@@ -30,10 +30,9 @@ const SoundCloud: SourceBuilder<Props> = (args) => {
   const play = () => widget.play();
   const pause = () => widget.pause();
   const restart = () => {
-    pause();
-    widget.seekTo(0);
     onRestart();
-    setTimeout(play, 1000);
+    widget.seekTo(0);
+    play();
   };
   return {
     element,
