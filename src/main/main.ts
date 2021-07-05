@@ -19,18 +19,16 @@ const load = () => {
           height: document.body.clientHeight,
         },
       });
+      source.addEventListener("ready", () => source.play());
 
-      const starter = document.createElement("div");
-      starter.classList.add("starter");
-      starter.textContent = "Click to start";
-      root.append(source.element, starter);
-
-      starter.onclick = () => {
-        starter.remove();
-        source.addEventListener("ready", source.play);
+      const startButton = document.createElement("button");
+      startButton.classList.add("start");
+      startButton.addEventListener("click", () => {
         const game = Game({ source, score });
-        root.append(game.element);
-      };
+        game.start();
+        root.insertBefore(game.element, startButton);
+      });
+      root.append(source.element, startButton);
     });
 };
 window.addEventListener("load", load);

@@ -21,7 +21,7 @@ const getJudgeSoundEffectPlayAction = (player: SoundEffectPlayer) => {
 const Game = (args: { source: Source; score: Score }) => {
   const { source } = args;
   const element = document.createElement("div");
-  element.classList.add("game");
+  element.classList.add("game", "preview");
 
   const states = [
     "loading",
@@ -93,7 +93,10 @@ const Game = (args: { source: Source; score: Score }) => {
     actions: [
       Button("play", source.play),
       Button("restart", source.restart),
-      Button("exit", () => element.remove()),
+      Button("exit", () => {
+        element.classList.add("preview");
+        source.play();
+      }),
     ],
     parameters: [
       NumberInputter(
@@ -114,7 +117,13 @@ const Game = (args: { source: Source; score: Score }) => {
     inGameMenu.element,
     resultView
   );
-  return { element, preview: () => source.play() };
+  return {
+    element,
+    start: () => {
+      element.classList.remove("preview");
+      source.restart();
+    }
+  };
 };
 
 type Game = ReturnType<typeof Game>;
