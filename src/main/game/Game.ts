@@ -7,6 +7,7 @@ import { NumberInputter } from "../ui/NumberInputter";
 import { ResultView } from "./result/ResultView";
 import { Source } from "../source/Source";
 import { ObservableProperty } from "../template/ObservableProperty";
+import { ScreenTransitionView } from "../ScreenTransitionView";
 
 const getJudgeSoundEffectPlayAction = (player: SoundEffectPlayer) => {
   player.storeByFetch("judge.default", "sound/weakSnare.wav");
@@ -18,7 +19,11 @@ const getJudgeSoundEffectPlayAction = (player: SoundEffectPlayer) => {
   };
 };
 
-const Game = (args: { source: Source; score: Score }) => {
+const Game = (args: {
+  source: Source;
+  score: Score;
+  screenTransitionView: ScreenTransitionView;
+}) => {
   const { source } = args;
   const element = document.createElement("div");
   element.classList.add("game", "preview");
@@ -120,9 +125,12 @@ const Game = (args: { source: Source; score: Score }) => {
   return {
     element,
     start: () => {
-      element.classList.remove("preview");
-      source.restart();
-    }
+      args.screenTransitionView.transition(
+        "game-start",
+        () => element.classList.remove("preview"),
+        () => source.restart()
+      );
+    },
   };
 };
 

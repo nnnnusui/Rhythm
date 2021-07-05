@@ -1,5 +1,6 @@
 import { Game } from "./game/Game";
 import { Score } from "./score/Score";
+import { ScreenTransitionView } from "./ScreenTransitionView";
 import { Source } from "./source/Source";
 
 const scorePath = new URLSearchParams(
@@ -21,14 +22,15 @@ const load = () => {
       });
       source.addEventListener("ready", () => source.play());
 
+      const screenTransitionView = ScreenTransitionView();
       const startButton = document.createElement("button");
       startButton.classList.add("start");
       startButton.addEventListener("click", () => {
-        const game = Game({ source, score });
+        const game = Game({ source, score, screenTransitionView });
         game.start();
         root.insertBefore(game.element, startButton);
       });
-      root.append(source.element, startButton);
+      root.append(source.element, startButton, screenTransitionView.element);
     });
 };
 window.addEventListener("load", load);
