@@ -43,7 +43,7 @@ const SoundCloud: SourceBuilder<Props> = (args) => {
     addEventListener: (kind, callback) => {
       switch (kind) {
         case "ready":
-          widget.bind(SC.Widget.Events.READY, setTimeout(callback, 2000));
+          widget.bind(SC.Widget.Events.READY, callback);
           break;
         case "play":
           widget.bind(SC.Widget.Events.PLAY, callback);
