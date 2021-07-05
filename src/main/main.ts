@@ -7,6 +7,8 @@ const scorePath = new URLSearchParams(
   document.location.search.substring(1)
 ).get("scorePath");
 
+const defaultScoreRepository =
+  "https://raw.githubusercontent.com/nnnnusui/Rhythm/score/list.json";
 const load = () => {
   const root = document.body;
   const scoreSelectMenu = (() => {
@@ -62,7 +64,7 @@ const load = () => {
     scoreSelectMenu.append(element);
   };
 
-  fetch("score/list.json")
+  fetch(defaultScoreRepository)
     .then((it) => it.json())
     .then((it: string[]) =>
       it.forEach((url) =>
