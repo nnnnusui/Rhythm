@@ -16,12 +16,24 @@
 .game
   @import "game/main"
 
-.game:not(.preview) + button.start
+.game:not(.preview) + .score-select-menu
   display none
-button.start
+.score-select-menu
   position absolute
   width 100%
   height 100%
+  display flex
+  align-items center
+  >h1
+    display none
+  .choice
+    width 10em
+    height 10em
+    border 1px solid black
+    background rgba(black, 0.4)
+    &.chosen
+      color black
+      background rgba(white, 0.4)
 
 .screen-transition
   position absolute

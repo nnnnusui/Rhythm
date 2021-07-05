@@ -9,11 +9,21 @@ const scorePath = new URLSearchParams(
 
 const load = () => {
   const root = document.body;
-  fetch(scorePath ? scorePath : "")
-    .then((it) => it.json())
-    .then((it) => {
-      const score = Score.build(it);
-      const source = Source.from({
+  const scoreSelectMenu = (() => {
+    const element = document.createElement("div");
+    element.classList.add("score-select-menu");
+    const header = document.createElement("h1");
+    header.textContent = "Score select menu";
+    element.append(header);
+    return element;
+  })();
+  const screenTransitionView = ScreenTransitionView();
+  root.append(scoreSelectMenu, screenTransitionView.element);
+
+  const appendChoice = (score: Score) => {
+    var source: Source;
+    const sourceReGen = () => {
+      source = Source.from({
         ...score.source,
         size: {
           width: document.body.clientWidth,
@@ -21,16 +31,46 @@ const load = () => {
         },
       });
       source.addEventListener("ready", () => source.play());
+    };
+    sourceReGen();
 
-      const screenTransitionView = ScreenTransitionView();
-      const startButton = document.createElement("button");
-      startButton.classList.add("start");
-      startButton.addEventListener("click", () => {
+    const element = document.createElement("section");
+    element.classList.add("choice");
+    const header = document.createElement("h1");
+    header.textContent = score.title;
+    element.append(header);
+
+    element.addEventListener("click", () => {
+      if (element.classList.contains("chosen")) {
         const game = Game({ source, score, screenTransitionView });
+        Array(...root.children)
+          .filter((it) => it.classList.contains("game"))
+          .forEach((it) => it.remove());
+        root.insertBefore(game.element, scoreSelectMenu);
         game.start();
-        root.insertBefore(game.element, startButton);
-      });
-      root.append(source.element, startButton, screenTransitionView.element);
+      } else {
+        Array(...scoreSelectMenu.getElementsByClassName("choice")).forEach(
+          (it) => it.classList.remove("chosen")
+        );
+        element.classList.add("chosen");
+        Array(...root.children)
+          .filter((it) => it.classList.contains("source"))
+          .forEach((it) => it.remove());
+        root.prepend(source.element);
+      }
     });
+    scoreSelectMenu.append(element);
+  };
+
+  fetch("score/list.json")
+    .then((it) => it.json())
+    .then((it: string[]) =>
+      it.forEach((url) =>
+        fetch(url)
+          .then((it) => it.json())
+          .then(Score.build)
+          .then(appendChoice)
+      )
+    );
 };
 window.addEventListener("load", load);
