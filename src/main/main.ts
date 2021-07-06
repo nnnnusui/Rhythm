@@ -37,6 +37,7 @@ const load = () => {
     const soundEffectPlayer = SoundEffectPlayer(audioContext);
     soundEffectPlayer.storeByFetch("judge.default", "sound/weakSnare.wav");
     soundEffectPlayer.storeByFetch("judge.perfect", "sound/rim.wav");
+    soundEffectPlayer.storeByFetch("select", "sound/select.mp3");
     const appendChoice = (score: Score) => {
       var source: Source;
       const sourceReGen = () => {
@@ -70,6 +71,7 @@ const load = () => {
           root.insertBefore(game.element, scoreSelectMenu);
           game.start();
         } else {
+          soundEffectPlayer.play("select");
           sourceReGen();
           Array(...scoreSelectMenu.getElementsByClassName("choice")).forEach(
             (it) => it.classList.remove("chosen")
