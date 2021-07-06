@@ -1,6 +1,7 @@
 import { Game } from "./game/Game";
 import { Score } from "./score/Score";
 import { ScreenTransitionView } from "./ScreenTransitionView";
+import { SoundEffectPlayer } from "./SoundEffectPlayer";
 import { Source } from "./source/Source";
 
 const scorePath = new URLSearchParams(
@@ -31,6 +32,11 @@ const load = () => {
 
   starter.addEventListener("click", () => {
     starter.remove();
+    const audioContext = new (window.AudioContext ||
+      (<any>window).webkitAudioContext)();
+    const soundEffectPlayer = SoundEffectPlayer(audioContext);
+    soundEffectPlayer.storeByFetch("judge.default", "sound/weakSnare.wav");
+    soundEffectPlayer.storeByFetch("judge.perfect", "sound/rim.wav");
     const appendChoice = (score: Score) => {
       var source: Source;
       const sourceReGen = () => {
@@ -52,7 +58,12 @@ const load = () => {
 
       element.addEventListener("click", () => {
         if (element.classList.contains("chosen")) {
-          const game = Game({ source, score, screenTransitionView });
+          const game = Game({
+            source,
+            score,
+            screenTransitionView,
+            soundEffectPlayer,
+          });
           Array(...root.children)
             .filter((it) => it.classList.contains("game"))
             .forEach((it) => it.remove());

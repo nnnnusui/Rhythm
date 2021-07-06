@@ -10,9 +10,6 @@ import { ObservableProperty } from "../template/ObservableProperty";
 import { ScreenTransitionView } from "../ScreenTransitionView";
 
 const getJudgeSoundEffectPlayAction = (player: SoundEffectPlayer) => {
-  player.storeByFetch("judge.default", "sound/weakSnare.wav");
-  player.storeByFetch("judge.perfect", "sound/rim.wav");
-
   return (judge: string) => {
     if (judge === "miss") return;
     player.play(`judge.${judge}`);
@@ -23,6 +20,7 @@ const Game = (args: {
   source: Source;
   score: Score;
   screenTransitionView: ScreenTransitionView;
+  soundEffectPlayer: SoundEffectPlayer;
 }) => {
   const { source } = args;
   const element = document.createElement("div");
@@ -56,10 +54,7 @@ const Game = (args: {
         return map.set(it, next);
       }, new Map<string, number>());
 
-  const audioContext = new (window.AudioContext ||
-    (<any>window).webkitAudioContext)();
-  const sePlayer = SoundEffectPlayer(audioContext);
-  const playJudgeSe = getJudgeSoundEffectPlayAction(sePlayer);
+  const playJudgeSe = getJudgeSoundEffectPlayAction(args.soundEffectPlayer);
   const player = Player({ score: args.score, onJudge: playJudgeSe });
   const resultView = ResultView(new Map(), []);
 
