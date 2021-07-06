@@ -21,59 +21,68 @@ const load = () => {
     return element;
   })();
   const screenTransitionView = ScreenTransitionView();
-  root.append(scoreSelectMenu, screenTransitionView.element);
+  const starter = (() => {
+    const element = document.createElement("button");
+    element.classList.add("starter");
+    element.textContent = "Click or tap to start.";
+    return element;
+  })();
+  root.append(scoreSelectMenu, screenTransitionView.element, starter);
 
-  const appendChoice = (score: Score) => {
-    var source: Source;
-    const sourceReGen = () => {
-      source = Source.from({
-        ...score.source,
-        size: {
-          width: document.body.clientWidth,
-          height: document.body.clientHeight,
-        },
+  starter.addEventListener("click", () => {
+    starter.remove();
+    const appendChoice = (score: Score) => {
+      var source: Source;
+      const sourceReGen = () => {
+        source = Source.from({
+          ...score.source,
+          size: {
+            width: document.body.clientWidth,
+            height: document.body.clientHeight,
+          },
+        });
+        source.addEventListener("ready", () => source.play());
+      };
+
+      const element = document.createElement("section");
+      element.classList.add("choice");
+      const header = document.createElement("h1");
+      header.textContent = score.title;
+      element.append(header);
+
+      element.addEventListener("click", () => {
+        if (element.classList.contains("chosen")) {
+          const game = Game({ source, score, screenTransitionView });
+          Array(...root.children)
+            .filter((it) => it.classList.contains("game"))
+            .forEach((it) => it.remove());
+          root.insertBefore(game.element, scoreSelectMenu);
+          game.start();
+        } else {
+          sourceReGen();
+          Array(...scoreSelectMenu.getElementsByClassName("choice")).forEach(
+            (it) => it.classList.remove("chosen")
+          );
+          element.classList.add("chosen");
+          Array(...root.children)
+            .filter((it) => it.classList.contains("source"))
+            .forEach((it) => it.remove());
+          root.prepend(source.element);
+        }
       });
-      source.addEventListener("ready", () => source.play());
+      scoreSelectMenu.append(element);
     };
 
-    const element = document.createElement("section");
-    element.classList.add("choice");
-    const header = document.createElement("h1");
-    header.textContent = score.title;
-    element.append(header);
-
-    element.addEventListener("click", () => {
-      if (element.classList.contains("chosen")) {
-        const game = Game({ source, score, screenTransitionView });
-        Array(...root.children)
-          .filter((it) => it.classList.contains("game"))
-          .forEach((it) => it.remove());
-        root.insertBefore(game.element, scoreSelectMenu);
-        game.start();
-      } else {
-        sourceReGen();
-        Array(...scoreSelectMenu.getElementsByClassName("choice")).forEach(
-          (it) => it.classList.remove("chosen")
-        );
-        element.classList.add("chosen");
-        Array(...root.children)
-          .filter((it) => it.classList.contains("source"))
-          .forEach((it) => it.remove());
-        root.prepend(source.element);
-      }
-    });
-    scoreSelectMenu.append(element);
-  };
-
-  fetch(defaultScoreRepository)
-    .then((it) => it.json())
-    .then((it: string[]) =>
-      [scorePath, ...it].forEach((url) =>
-        fetch(url)
-          .then((it) => it.json())
-          .then(Score.build)
-          .then(appendChoice)
-      )
-    );
+    fetch(defaultScoreRepository)
+      .then((it) => it.json())
+      .then((it: string[]) =>
+        [scorePath, ...it].forEach((url) =>
+          fetch(url)
+            .then((it) => it.json())
+            .then(Score.build)
+            .then(appendChoice)
+        )
+      );
+  });
 };
 window.addEventListener("load", load);
