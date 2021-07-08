@@ -7,17 +7,19 @@ const ScreenTransitionView = () => {
     element,
     transition: (args: {
       name: string;
+      onStart?: () => void;
       onMiddle?: () => void;
-      onEnd: () => void;
+      onEnd?: () => void;
     }) => {
       element.classList.add("during", "intro", args.name);
+      if (args.onStart) args.onStart();
       afterAnimation(() => {
         element.classList.remove("intro");
         element.classList.add("outro");
         if (args.onMiddle) args.onMiddle();
         afterAnimation(() => {
           element.classList.remove("during", "outro", args.name);
-          args.onEnd();
+          if (args.onEnd) args.onEnd();
         });
       });
     },
