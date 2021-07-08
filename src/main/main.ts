@@ -3,6 +3,7 @@ import { Score } from "./score/Score";
 import { ScreenTransitionView } from "./ScreenTransitionView";
 import { SoundEffectPlayer } from "./SoundEffectPlayer";
 import { Source } from "./source/Source";
+import { SourceContainer } from "./SourceContainer";
 
 const scorePath = new URLSearchParams(
   document.location.search.substring(1)
@@ -13,30 +14,7 @@ const defaultScoreRepository =
 
 const load = () => {
   const root = document.body;
-  const sources = (() => {
-    const element = document.createElement("div");
-    element.classList.add("sources");
-    const store = new Map<string, Source>();
-    return {
-      element,
-      set: (id: string, source: Source) => {
-        element.append(source.element);
-        store.get(id)?.element.remove();
-        store.set(id, source);
-      },
-      select: (id: string) => {
-        store.forEach((value, key) => {
-          if (id === key) {
-            value.element.classList.add("chosen");
-            value.restart();
-          } else {
-            value.element.classList.remove("chosen");
-            value.pause();
-          }
-        });
-      },
-    };
-  })();
+  const sourceContainer = SourceContainer();
   const scoreSelectMenu = (() => {
     const element = document.createElement("div");
     element.classList.add("score-select-menu");
@@ -53,7 +31,7 @@ const load = () => {
     return element;
   })();
   root.append(
-    sources.element,
+    sourceContainer.element,
     scoreSelectMenu,
     screenTransitionView.element,
     starter
@@ -75,7 +53,7 @@ const load = () => {
           height: document.body.clientHeight,
         },
       });
-      sources.set(url, source);
+      sourceContainer.set(url, source);
 
       const element = document.createElement("section");
       element.classList.add("choice");
@@ -102,7 +80,7 @@ const load = () => {
             (it) => it.classList.remove("chosen")
           );
           element.classList.add("chosen");
-          sources.select(url);
+          sourceContainer.select(url);
         }
       });
       scoreSelectMenu.append(element);
