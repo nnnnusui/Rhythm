@@ -26,7 +26,8 @@ const load = () => {
     soundEffectPlayer.storeByFetch("judge.default", "sound/weakSnare.wav");
     soundEffectPlayer.storeByFetch("judge.perfect", "sound/rim.wav");
     soundEffectPlayer.storeByFetch("select", "sound/select.mp3");
-    const appendChoice = (score: Score, url: string) => {
+
+    const appendSelection = (score: Score) => {
       const source = Source.from({
         ...score.source,
         size: {
@@ -34,12 +35,12 @@ const load = () => {
           height: document.body.clientHeight,
         },
       });
-      sourceContainer.set(url, source);
+      sourceContainer.set(score.url, source);
 
       gameSelectMenu.appendSelection({
         score,
         onSelect: () => {
-          sourceContainer.select(url);
+          sourceContainer.select(score.url);
           soundEffectPlayer.play("select");
         },
         onLaunch: () => {
@@ -64,8 +65,8 @@ const load = () => {
         [scorePath, ...it].forEach((url) =>
           fetch(url)
             .then((it) => it.json())
-            .then(Score.build)
-            .then((it) => appendChoice(it, url))
+            .then((it) => Score.build({ ...it, url }))
+            .then(appendSelection)
         )
       );
   });
