@@ -120,11 +120,11 @@ const Game = (args: {
   return {
     element,
     start: () => {
-      args.screenTransitionView.transition(
-        "game-start",
-        () => element.classList.remove("preview"),
-        () => source.restart()
-      );
+      args.screenTransitionView.transition({
+        name: "game-start",
+        onMiddle: () => element.classList.remove("preview"),
+        onEnd: () => source.restart(),
+      });
     },
   };
 };
