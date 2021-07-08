@@ -26,6 +26,7 @@ const SoundCloud: SourceBuilder<Props> = (args) => {
   const parameters = [
     ["url", `https://api.soundcloud.com/tracks/${args.trackId}`],
     ["visual", true],
+    ["show_teaser", false],
   ] as const;
   const urlParameters = parameters
     .map(([key, value]) => `${key}=${encodeURI(value.toString())}`)
