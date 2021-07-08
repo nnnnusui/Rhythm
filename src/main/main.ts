@@ -1,5 +1,6 @@
 import { Game } from "./game/Game";
 import { GameSelectMenu } from "./GameSelectMenu";
+import { Launcher } from "./Launcher";
 import { Score } from "./score/Score";
 import { ScreenTransitionView } from "./ScreenTransitionView";
 import { SoundEffectPlayer } from "./SoundEffectPlayer";
@@ -18,21 +19,7 @@ const load = () => {
   const sourceContainer = SourceContainer();
   const gameSelectMenu = GameSelectMenu();
   const screenTransitionView = ScreenTransitionView();
-  const starter = (() => {
-    const element = document.createElement("button");
-    element.classList.add("starter");
-    element.textContent = "Click or tap to start.";
-    return element;
-  })();
-  root.append(
-    sourceContainer.element,
-    gameSelectMenu.element,
-    screenTransitionView.element,
-    starter
-  );
-
-  starter.addEventListener("click", () => {
-    starter.remove();
+  const launcher = Launcher(screenTransitionView, () => {
     const audioContext = new (window.AudioContext ||
       (<any>window).webkitAudioContext)();
     const soundEffectPlayer = SoundEffectPlayer(audioContext);
@@ -82,5 +69,12 @@ const load = () => {
         )
       );
   });
+
+  root.append(
+    sourceContainer.element,
+    gameSelectMenu.element,
+    screenTransitionView.element,
+    launcher.element
+  );
 };
 window.addEventListener("load", load);
