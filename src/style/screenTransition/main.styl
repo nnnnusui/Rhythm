@@ -4,3 +4,21 @@
   pointer-events none
 
 // &.launch
+
+&.game-start
+  @keyframes intro
+    from
+      transform translateX(100%)
+    to
+      transform translateX(0)
+  @keyframes outro
+    from
+      transform translateX(0)
+    to
+      transform translateX(100%)
+  animation-duration 1s
+  background rgba(white, 0.8)
+  &.intro
+    animation-name intro
+  &.outro
+    animation-name outro
