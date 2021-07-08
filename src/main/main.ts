@@ -1,4 +1,5 @@
 import { Game } from "./game/Game";
+import { GameSelectMenu } from "./GameSelectMenu";
 import { Score } from "./score/Score";
 import { ScreenTransitionView } from "./ScreenTransitionView";
 import { SoundEffectPlayer } from "./SoundEffectPlayer";
@@ -15,14 +16,7 @@ const defaultScoreRepository =
 const load = () => {
   const root = document.body;
   const sourceContainer = SourceContainer();
-  const scoreSelectMenu = (() => {
-    const element = document.createElement("div");
-    element.classList.add("score-select-menu");
-    const header = document.createElement("h1");
-    header.textContent = "Score select menu";
-    element.append(header);
-    return element;
-  })();
+  const gameSelectMenu = GameSelectMenu();
   const screenTransitionView = ScreenTransitionView();
   const starter = (() => {
     const element = document.createElement("button");
@@ -32,7 +26,7 @@ const load = () => {
   })();
   root.append(
     sourceContainer.element,
-    scoreSelectMenu,
+    gameSelectMenu.element,
     screenTransitionView.element,
     starter
   );
@@ -55,14 +49,13 @@ const load = () => {
       });
       sourceContainer.set(url, source);
 
-      const element = document.createElement("section");
-      element.classList.add("choice");
-      const header = document.createElement("h1");
-      header.textContent = score.title;
-      element.append(header);
-
-      element.addEventListener("click", () => {
-        if (element.classList.contains("chosen")) {
+      gameSelectMenu.appendSelection({
+        score,
+        onSelect: () => {
+          sourceContainer.select(url);
+          soundEffectPlayer.play("select");
+        },
+        onLaunch: () => {
           const game = Game({
             source,
             score,
@@ -72,18 +65,10 @@ const load = () => {
           Array(...root.children)
             .filter((it) => it.classList.contains("game"))
             .forEach((it) => it.remove());
-          root.insertBefore(game.element, scoreSelectMenu);
+          root.insertBefore(game.element, gameSelectMenu.element);
           game.start();
-        } else {
-          soundEffectPlayer.play("select");
-          Array(...scoreSelectMenu.getElementsByClassName("choice")).forEach(
-            (it) => it.classList.remove("chosen")
-          );
-          element.classList.add("chosen");
-          sourceContainer.select(url);
-        }
+        },
       });
-      scoreSelectMenu.append(element);
     };
 
     fetch(defaultScoreRepository)
