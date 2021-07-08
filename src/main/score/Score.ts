@@ -3,6 +3,7 @@ import { Context } from "./Context";
 import { Order } from "./Order";
 
 type Score = {
+  url: string;
   title: string;
   source: SourceProps;
   laneAmount: number;
