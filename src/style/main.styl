@@ -6,14 +6,25 @@
   height 100%
   overflow hidden
 
-.source,
-.starter,
-.game
+.sources
+  position absolute
+  width 100%
+  height 100%
+  .source
+    width 100%
+    height 100%
+    &:not(.chosen)
+      display none
+
+.starter
   position absolute
   width 100%
   height 100%
 
 .game
+  position absolute
+  width 100%
+  height 100%
   @import "game/main"
 
 .game:not(.preview) + .score-select-menu

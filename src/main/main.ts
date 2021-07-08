@@ -13,6 +13,30 @@ const defaultScoreRepository =
 
 const load = () => {
   const root = document.body;
+  const sources = (() => {
+    const element = document.createElement("div");
+    element.classList.add("sources");
+    const store = new Map<string, Source>();
+    return {
+      element,
+      set: (id: string, source: Source) => {
+        element.append(source.element);
+        store.get(id)?.element.remove();
+        store.set(id, source);
+      },
+      select: (id: string) => {
+        store.forEach((value, key) => {
+          if (id === key) {
+            value.element.classList.add("chosen");
+            value.restart();
+          } else {
+            value.element.classList.remove("chosen");
+            value.pause();
+          }
+        });
+      },
+    };
+  })();
   const scoreSelectMenu = (() => {
     const element = document.createElement("div");
     element.classList.add("score-select-menu");
@@ -28,7 +52,12 @@ const load = () => {
     element.textContent = "Click or tap to start.";
     return element;
   })();
-  root.append(scoreSelectMenu, screenTransitionView.element, starter);
+  root.append(
+    sources.element,
+    scoreSelectMenu,
+    screenTransitionView.element,
+    starter
+  );
 
   starter.addEventListener("click", () => {
     starter.remove();
@@ -38,18 +67,15 @@ const load = () => {
     soundEffectPlayer.storeByFetch("judge.default", "sound/weakSnare.wav");
     soundEffectPlayer.storeByFetch("judge.perfect", "sound/rim.wav");
     soundEffectPlayer.storeByFetch("select", "sound/select.mp3");
-    const appendChoice = (score: Score) => {
-      var source: Source;
-      const sourceReGen = () => {
-        source = Source.from({
-          ...score.source,
-          size: {
-            width: document.body.clientWidth,
-            height: document.body.clientHeight,
-          },
-        });
-        source.addEventListener("ready", () => source.play());
-      };
+    const appendChoice = (score: Score, url: string) => {
+      const source = Source.from({
+        ...score.source,
+        size: {
+          width: document.body.clientWidth,
+          height: document.body.clientHeight,
+        },
+      });
+      sources.set(url, source);
 
       const element = document.createElement("section");
       element.classList.add("choice");
@@ -72,15 +98,11 @@ const load = () => {
           game.start();
         } else {
           soundEffectPlayer.play("select");
-          sourceReGen();
           Array(...scoreSelectMenu.getElementsByClassName("choice")).forEach(
             (it) => it.classList.remove("chosen")
           );
           element.classList.add("chosen");
-          Array(...root.children)
-            .filter((it) => it.classList.contains("source"))
-            .forEach((it) => it.remove());
-          root.prepend(source.element);
+          sources.select(url);
         }
       });
       scoreSelectMenu.append(element);
@@ -93,7 +115,7 @@ const load = () => {
           fetch(url)
             .then((it) => it.json())
             .then(Score.build)
-            .then(appendChoice)
+            .then((it) => appendChoice(it, url))
         )
       );
   });
