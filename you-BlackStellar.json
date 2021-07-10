@@ -7,7 +7,7 @@
   },
   "bpm": 75,
   "beat": 4,
-  "offset": 1.25,
+  "offset": 1.2,
   "orders": [
     {
       "method": "parallel",
