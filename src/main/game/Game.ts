@@ -88,6 +88,15 @@ const Game = (args: {
     });
     return progress;
   })();
+  const localStorage = {
+    get: (name: string, or?: unknown) => {
+      const value = window.localStorage.getItem(name);
+      return value ? value : `${or}`;
+    },
+    set: (name: string, value: unknown) => {
+      window.localStorage.setItem(name, `${value}`);
+    },
+  };
   const inGameMenu = InGameMenu({
     onPause: source.pause,
     actions: [
@@ -101,13 +110,19 @@ const Game = (args: {
     parameters: [
       NumberInputter(
         "offset",
-        (value) => element.style.setProperty("--offset", `${value * 1000}`),
-        { value: 0, step: 0.01, max: 2, min: -2 }
+        (value) => {
+          element.style.setProperty("--offset", `${value * 1000}`);
+          localStorage.set("offset", value);
+        },
+        { value: Number(localStorage.get("offset", 0)), step: 0.01, max: 2, min: -2 }
       ),
       NumberInputter(
         "duration",
-        (value) => element.style.setProperty("--duration", `${value * 1000}`),
-        { value: 2.5, step: 0.1, max: 20, min: 0 }
+        (value) => {
+          element.style.setProperty("--duration", `${value * 1000}`);
+          localStorage.set("duration", value);
+        },
+        { value: Number(localStorage.get("duration", 2.5)), step: 0.1, max: 20, min: 0 }
       ),
     ],
   });
