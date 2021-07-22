@@ -20,7 +20,8 @@ const ActionDetector = (args: {
   element.classList.add("action-detector");
   element.tabIndex = 0;
 
-  // tap effect
+  const judge = getJudgeEvent(args.onJudge);
+  const actionMap = args.judgeLineView.actionPosGetterMap;
   const appendEffect = (id: string, pos: { x: number; y: number }) => {
     const effect = document.createElement("div");
     effect.classList.add("tap-effect");
@@ -33,7 +34,12 @@ const ActionDetector = (args: {
     Array(...element.children)
       .map((it) => it as HTMLElement)
       .find((it) => it.dataset["id"] === `${id}`);
+
   element.addEventListener("pointerdown", (event) => {
+    judge({
+      x: event.clientX,
+      y: args.judgeLineView.y(),
+    });
     appendEffect(`${event.pointerId}`, {
       x: event.clientX / element.clientWidth,
       y: event.clientY / element.clientHeight,
@@ -55,33 +61,17 @@ const ActionDetector = (args: {
     const keyMaxX = 11;
     const keyPos = keyPositionMap.get(event.code);
     if (!keyPos || keyMaxX <= keyPos.x) return;
+    const getPos = actionMap.get(keyPos.x);
+    if (!getPos) return;
+    const pos = getPos();
+    judge(pos);
     appendEffect(event.code, {
-      x: (element.clientWidth * (keyPos.x / keyMaxX)) / element.clientWidth,
-      y: args.judgeLineView.y() / element.clientHeight,
+      x: pos.x / element.clientWidth,
+      y: pos.y / element.clientHeight,
     });
   });
   element.addEventListener("keyup", (event) => {
     findEffectById(event.code)?.remove();
-  });
-
-  // Judge Events
-  const judge = getJudgeEvent(args.onJudge);
-  element.addEventListener("pointerdown", (event) =>
-    judge({
-      x: event.clientX,
-      y: args.judgeLineView.y(),
-    })
-  );
-  element.addEventListener("keydown", (event) => {
-    if (event.repeat) return;
-    const keyMaxX = 11;
-    const keyPos = keyPositionMap.get(event.code);
-    if (!keyPos || keyMaxX <= keyPos.x) return;
-
-    judge({
-      x: element.clientWidth * (keyPos.x / keyMaxX),
-      y: args.judgeLineView.y(),
-    });
   });
 
   return { element };

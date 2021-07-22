@@ -4,20 +4,11 @@ import { JudgeLineView } from "./JudgeLineView";
 import { JudgeView } from "./JudgeView";
 import { NoteView } from "./NoteView";
 
-const LaneView = () => {
-  const element = document.createElement("div");
-  element.classList.add("lane");
-  const startAction = () => element.classList.add("action");
-  const endAction = () => element.classList.remove("action");
-  element.addEventListener("pointerdown", startAction);
-  element.addEventListener("pointerup", endAction);
-  element.addEventListener("pointercancel", endAction);
-  return { element };
-};
 const LanesView = (args: { score: Score; onJudge: OnJudge }) => {
+  const laneAmount = args.score.laneAmount;
   const element = document.createElement("div");
   element.classList.add("lanes");
-  element.style.setProperty("--lane-amount", `${args.score.laneAmount}`);
+  element.style.setProperty("--lane-amount", `${laneAmount}`);
   const notes = args.score.notes.map((it) => {
     const note = NoteView({
       position: it.position,
@@ -26,7 +17,7 @@ const LanesView = (args: { score: Score; onJudge: OnJudge }) => {
     });
     return note;
   });
-  const judgeLineView = JudgeLineView();
+  const judgeLineView = JudgeLineView(laneAmount);
   element.append(...notes.map((it) => it.element), judgeLineView.element);
 
   return {
