@@ -1,4 +1,5 @@
 import { Game } from "./game/Game";
+import { GamePad } from "./game/player/action/Gamepad";
 import { GameSelectMenu } from "./GameSelectMenu";
 import { Launcher } from "./Launcher";
 import { Score } from "./score/Score";
@@ -14,6 +15,7 @@ const scorePath = new URLSearchParams(
 const defaultScoreRepository =
   "https://raw.githubusercontent.com/nnnnusui/Rhythm/score/list.json";
 
+GamePad.enable();
 const load = () => {
   const root = document.body;
   const sourceContainer = SourceContainer();

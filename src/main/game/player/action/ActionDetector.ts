@@ -1,5 +1,6 @@
 import { OnJudge } from "../type/OnJudge";
 import { JudgeLineView } from "../view/JudgeLineView";
+import { GamePad } from "./Gamepad";
 import { keyPositionMap } from "./keyPositionMap";
 
 const getJudgeEvent = (onJudge: OnJudge) => (pos: { x: number; y: number }) => {
@@ -72,6 +73,42 @@ const ActionDetector = (args: {
   });
   element.addEventListener("keyup", (event) => {
     findEffectById(event.code)?.remove();
+  });
+
+  GamePad.addEventListener("poll", (event) => {
+    if (event.index !== 0) return;
+    const gamepadId = event.index;
+    [2, 4, 0, 6, 1, 5]
+      .map((it, index) => {
+        const current = event.current.buttons[it];
+        const before = event.before.buttons[it];
+        return { buttonId: it, position: index, current, before } as const;
+      })
+      .map(({ position, buttonId, current, before }) => {
+        const state = (() => {
+          if (before.pressed && current.pressed) return "repeat";
+          if (before.pressed && !current.pressed) return "up";
+          if (!before.pressed && current.pressed) return "down";
+          return "none";
+        })();
+        const getPos = actionMap.get(position);
+        if (!getPos) return;
+        const pos = getPos();
+        const effectId = `gamepadId${gamepadId}button${buttonId}`;
+        switch (state) {
+          case "down": {
+            judge(pos);
+            appendEffect(effectId, {
+              x: pos.x / element.clientWidth,
+              y: pos.y / element.clientHeight,
+            });
+            console.log(event.current);
+          }
+          case "up": {
+            findEffectById(effectId)?.remove();
+          }
+        }
+      });
   });
 
   return { element, focus: () => element.focus() };
