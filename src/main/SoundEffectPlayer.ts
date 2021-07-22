@@ -9,6 +9,9 @@ const SoundEffectPlayer = (context: AudioContext) => {
     const byId = store.get(id);
     return byId ? byId : getDefault(id);
   };
+
+  const gainNode = context.createGain();
+  gainNode.gain.value = 0.6;
   return {
     storeByFetch: (id: Id, url: string) => {
       const source = context.createBufferSource();
@@ -26,8 +29,15 @@ const SoundEffectPlayer = (context: AudioContext) => {
       if (!sound) return;
       const source = context.createBufferSource();
       source.buffer = sound.buffer;
-      source.connect(context.destination);
+      source.connect(gainNode);
+      gainNode.connect(context.destination);
       source.start();
+    },
+    volume: (value?: number) => {
+      if (value !== undefined) {
+        gainNode.gain.value = value;
+      }
+      return gainNode.gain.value;
     },
   };
 };

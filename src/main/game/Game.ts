@@ -135,6 +135,21 @@ const Game = (args: {
           min: 0,
         }
       ),
+      NumberInputter(
+        "SE - volume",
+        (value) => {
+          args.soundEffectPlayer.volume(value);
+          localStorage.set("SE - volume", value);
+        },
+        {
+          value: Number(
+            localStorage.get("SE - volume", args.soundEffectPlayer.volume())
+          ),
+          step: 0.01,
+          max: 1,
+          min: 0,
+        }
+      ),
     ],
   });
   player.actionDetector.element.addEventListener("keydown", (event) => {
