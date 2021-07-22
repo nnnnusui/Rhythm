@@ -74,7 +74,7 @@ const ActionDetector = (args: {
     findEffectById(event.code)?.remove();
   });
 
-  return { element };
+  return { element, focus: () => element.focus() };
 };
 
 type ActionDetector = ReturnType<typeof ActionDetector>;

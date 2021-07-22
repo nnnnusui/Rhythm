@@ -60,6 +60,7 @@ const Game = (args: {
 
   source.addEventListener("ready", () => state("readied"));
   source.addEventListener("play", () => {
+    player.actionDetector.focus();
     state("playing");
   });
   source.addEventListener("pause", () => {
@@ -114,7 +115,12 @@ const Game = (args: {
           element.style.setProperty("--offset", `${value * 1000}`);
           localStorage.set("offset", value);
         },
-        { value: Number(localStorage.get("offset", 0)), step: 0.01, max: 2, min: -2 }
+        {
+          value: Number(localStorage.get("offset", 0)),
+          step: 0.01,
+          max: 2,
+          min: -2,
+        }
       ),
       NumberInputter(
         "duration",
@@ -122,7 +128,12 @@ const Game = (args: {
           element.style.setProperty("--duration", `${value * 1000}`);
           localStorage.set("duration", value);
         },
-        { value: Number(localStorage.get("duration", 2.5)), step: 0.1, max: 20, min: 0 }
+        {
+          value: Number(localStorage.get("duration", 2.5)),
+          step: 0.1,
+          max: 20,
+          min: 0,
+        }
       ),
     ],
   });

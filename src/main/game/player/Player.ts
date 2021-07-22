@@ -10,12 +10,12 @@ const Player = (args: { score: Score; onJudge: OnJudge }) => {
   const actionDetector = ActionDetector({
     judgeLineView: view.judgeLineView,
     onJudge: (judge) => {
-      view.setJudge(judge)
-      args.onJudge(judge)
+      view.setJudge(judge);
+      args.onJudge(judge);
     },
   });
   element.append(view.element, actionDetector.element);
-  return { element, reset: view.reset };
+  return { element, actionDetector, reset: view.reset };
 };
 
 type Player = ReturnType<typeof Player>;
