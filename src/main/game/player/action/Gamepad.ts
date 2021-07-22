@@ -19,6 +19,7 @@ const addEventListener = <K extends keyof EventMap>(
 };
 
 const map = new Map<number, Gamepad>();
+let enable = false;
 const poll = () => {
   const currents = navigator.getGamepads();
   map.forEach((before, index) => {
@@ -27,7 +28,7 @@ const poll = () => {
     map.set(index, current);
     eventListeners.forEach((it) => it({ index, current, before }));
   });
-  requestAnimationFrame(poll);
+  if (enable) requestAnimationFrame(poll);
 };
 const connectListener = (e: GamepadEvent) => {
   map.set(e.gamepad.index, e.gamepad);
@@ -39,10 +40,12 @@ const disconnectListener = (e: GamepadEvent) => {
 };
 const GamePad = {
   enable: () => {
+    enable = true;
     window.addEventListener("gamepadconnected", connectListener);
     window.addEventListener("gamepaddisconnected", disconnectListener);
   },
   disable: () => {
+    enable = false;
     window.removeEventListener("gamepadconnected", connectListener);
     window.removeEventListener("gamepaddisconnected", disconnectListener);
   },
