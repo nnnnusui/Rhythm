@@ -32,7 +32,6 @@ const poll = () => {
 };
 const connectListener = (e: GamepadEvent) => {
   map.set(e.gamepad.index, e.gamepad);
-  poll();
 };
 const disconnectListener = (e: GamepadEvent) => {
   map.delete(e.gamepad.index);
@@ -40,6 +39,7 @@ const disconnectListener = (e: GamepadEvent) => {
 const GamePad = {
   enable: () => {
     enable = true;
+    poll();
     window.addEventListener("gamepadconnected", connectListener);
     window.addEventListener("gamepaddisconnected", disconnectListener);
   },
