@@ -138,7 +138,6 @@ const Game = (args: {
     ],
   });
   player.actionDetector.element.addEventListener("keydown", (event) => {
-    console.log(event.key);
     switch (event.key) {
       case "Escape":
         source.pause();

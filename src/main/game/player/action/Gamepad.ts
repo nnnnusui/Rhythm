@@ -32,7 +32,6 @@ const poll = () => {
 };
 const connectListener = (e: GamepadEvent) => {
   map.set(e.gamepad.index, e.gamepad);
-  console.log(e.gamepad);
   poll();
 };
 const disconnectListener = (e: GamepadEvent) => {

@@ -102,7 +102,6 @@ const ActionDetector = (args: {
               x: pos.x / element.clientWidth,
               y: pos.y / element.clientHeight,
             });
-            console.log(event.current);
           }
           case "up": {
             findEffectById(effectId)?.remove();
