@@ -1,0 +1,6 @@
+.DS_Store
+.cache
+node_modules
+dist
+
+src/main/sample-score.ts
