@@ -11,7 +11,12 @@ const YouTube =
   (propsFromUrl: { videoId: string }) =>
   (args: { target: HTMLElement | string }) => {
     return new Promise<any>((resolve, reject) => {
+      let time: Property<number>;
       const onPlayerReady = ({ target: player }: { target: YT }) => {
+        time = Property.new<number>({
+          init: player.getCurrentTime(),
+          observers: [({ next }) => player.seekTo(next)],
+        });
         resolve({
           element: player.h,
           duration: player.getDuration(),
@@ -19,6 +24,7 @@ const YouTube =
             init: player.getVolume(),
             observers: [({ next }) => player.setVolume(next)],
           }).accessor,
+          time: time.accessor,
         });
       };
       new YT.Player(args.target, {
