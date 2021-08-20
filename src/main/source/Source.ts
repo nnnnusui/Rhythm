@@ -14,6 +14,7 @@ const YouTube =
       const onPlayerReady = ({ target: player }: { target: YT }) => {
         resolve({
           element: player.h,
+          duration: player.getDuration(),
           volume: Property.new<number>({
             init: 0,
             observers: [

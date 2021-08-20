@@ -17,14 +17,17 @@ const form = (() => {
   return element;
 })();
 
-window.addEventListener("load", () => {
+window.addEventListener("load", async () => {
   if (!sourcePath) {
     document.body.append(form);
     return;
   }
-  const source = Source.fromUrlString(sourcePath);
-  if (source === "Not supported.") return;
-  const target = document.createElement("div");
-  document.body.append(target);
-  source({ target });
+  const source = await (async () => {
+    const source = Source.fromUrlString(sourcePath);
+    if (source === "Not supported.") return;
+    const target = document.createElement("div");
+    document.body.append(target);
+    return await source({ target });
+  })();
+  console.log(source);
 });
