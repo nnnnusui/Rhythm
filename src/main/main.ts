@@ -23,7 +23,8 @@ window.addEventListener("load", () => {
     return;
   }
   const source = Source.fromUrlString(sourcePath);
-  console.log(source);
   if (source === "Not supported.") return;
-  document.body.append(source.element);
+  const target = document.createElement("div");
+  document.body.append(target);
+  source({ target });
 });

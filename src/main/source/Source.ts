@@ -7,38 +7,38 @@ type YT = any;
 declare const YT: YT;
 
 // https://developers.google.com/youtube/iframe_api_reference
-const YouTube = (args: { width: number; height: number; videoId: string }) => {
-  const element = document.createElement("div");
-  const onPlayerReady = ({ target }: { target: YT }) => {
-    target.setVolume(0);
-  };
-  let player = new YT.Player(element, {
-    ...args,
-    events: {
-      onReady: onPlayerReady,
-      // onStateChange: onPlayerStateChange,
-    },
-  });
-  return {
-    element: player.h,
-    volume: Property.new<number>({
-      init: 0,
-      observers: [
-        ({ next }) => {
-          console.log(next);
-          player.setVolume(next);
+const YouTube =
+  (propsFromUrl: { videoId: string }) =>
+  (args: { target: HTMLElement | string }) => {
+    return new Promise<any>((resolve, reject) => {
+      const onPlayerReady = ({ target: player }: { target: YT }) => {
+        resolve({
+          element: player.h,
+          volume: Property.new<number>({
+            init: 0,
+            observers: [
+              ({ next }) => {
+                console.log(next);
+                player.setVolume(next);
+              },
+            ],
+          }).accessor,
+        });
+      };
+      new YT.Player(args.target, {
+        videoId: propsFromUrl.videoId,
+        events: {
+          onReady: onPlayerReady,
+          // onStateChange: onPlayerStateChange,
         },
-      ],
-    }).accessor,
+      });
+    });
   };
-};
 
 const fromUrl = (url: URL) => {
   switch (url.hostname) {
     case "www.youtube.com":
       return YouTube({
-        width: window.innerWidth,
-        height: window.innerHeight,
         videoId: url.searchParams.get("v"),
       });
     default:
