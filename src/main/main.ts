@@ -24,4 +24,6 @@ window.addEventListener("load", () => {
   }
   const source = Source.fromUrlString(sourcePath);
   console.log(source);
+  if (source === "Not supported.") return;
+  document.body.append(source.element);
 });
