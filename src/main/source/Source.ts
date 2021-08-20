@@ -16,13 +16,8 @@ const YouTube =
           element: player.h,
           duration: player.getDuration(),
           volume: Property.new<number>({
-            init: 0,
-            observers: [
-              ({ next }) => {
-                console.log(next);
-                player.setVolume(next);
-              },
-            ],
+            init: player.getVolume(),
+            observers: [({ next }) => player.setVolume(next)],
           }).accessor,
         });
       };
