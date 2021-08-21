@@ -1,4 +1,5 @@
 import { SourceController } from "./controller/SourceController";
+import "./extension/HTMLElement.extension";
 
 const sourcePath = new URLSearchParams(
   document.location.search.substring(1)
@@ -41,6 +42,11 @@ window.addEventListener("load", async () => {
     element.classList.add("score-maker");
     const header = document.createElement("h1");
     header.textContent = "ScoreMaker";
+    element.addEventListener("scroll", () => {
+      const scrollPercentage = 1 - element.scrollTopPercentage;
+      source.time(source.duration * scrollPercentage);
+      console.log(element.scrollTopPercentage);
+    });
     element.append(header, rollContainer.element);
     document.body.append(element);
     rollContainer.element.style.height = `${source.duration * 50}%`;
