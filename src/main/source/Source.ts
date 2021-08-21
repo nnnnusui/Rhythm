@@ -5,6 +5,15 @@ tag.src = "https://www.youtube.com/iframe_api";
 document.head.prepend(tag);
 type YT = any;
 declare const YT: YT;
+const StateMap = {
+  "-1": "unstarted" as const,
+  "0": "ended" as const,
+  "1": "playing" as const,
+  "2": "paused" as const,
+  "3": "buffering" as const,
+  "5": "video cued" as const,
+};
+type StateMap = typeof StateMap;
 
 // https://developers.google.com/youtube/iframe_api_reference
 const YouTube =
@@ -25,6 +34,10 @@ const YouTube =
             observers: [({ next }) => player.setVolume(next)],
           }).accessor,
           time: time.accessor,
+          state: () => StateMap[player.getPlayerState()],
+          play: () => player.playVideo(),
+          pause: () => player.pauseVideo(),
+          stop: () => player.stopVideo(),
         });
       };
       new YT.Player(args.target, {

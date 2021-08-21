@@ -48,5 +48,13 @@ window.addEventListener("load", async () => {
     return { element };
   })();
 
-  console.log(source);
+  scoreMaker.element.addEventListener("click", () => {
+    console.log(source.time(50));
+    switch (source.state()) {
+      case "playing":
+        return source.pause();
+      default:
+        return source.play();
+    }
+  });
 });
