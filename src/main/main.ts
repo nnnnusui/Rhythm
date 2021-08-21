@@ -1,4 +1,5 @@
 import { SourceController } from "./controller/SourceController";
+import { Property } from "./util/Property";
 import "./extension/HTMLElement.extension";
 
 const sourcePath = new URLSearchParams(
@@ -42,24 +43,41 @@ window.addEventListener("load", async () => {
     element.classList.add("score-maker");
     const header = document.createElement("h1");
     header.textContent = "ScoreMaker";
-    element.addEventListener("scroll", () => {
+    const applyScrollProgressToSource = () => {
       const scrollPercentage = 1 - element.scrollTopPercentage;
       source.time(source.duration * scrollPercentage);
       console.log(element.scrollTopPercentage);
-    });
+    };
     element.append(header, rollContainer.element);
     document.body.append(element);
     rollContainer.element.style.height = `${source.duration * 50}%`;
     element.scrollTop = element.scrollHeight;
-    return { element };
+    return {
+      element,
+      linkingWithVideo: Property.new({
+        init: false,
+        observers: [
+          ({ next }) => {
+            if (next)
+              element.addEventListener("scroll", applyScrollProgressToSource);
+            else
+              element.removeEventListener(
+                "scroll",
+                applyScrollProgressToSource
+              );
+          },
+        ],
+      }).accessor,
+    };
   })();
 
   scoreMaker.element.addEventListener("click", () => {
-    console.log(source.time(50));
     switch (source.state()) {
       case "playing":
+        scoreMaker.linkingWithVideo(true);
         return source.pause();
       default:
+        scoreMaker.linkingWithVideo(false);
         return source.play();
     }
   });
