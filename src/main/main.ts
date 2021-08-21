@@ -1,4 +1,4 @@
-import { Source } from "./source/Source";
+import { SourceController } from "./controller/SourceController";
 
 const sourcePath = new URLSearchParams(
   document.location.search.substring(1)
@@ -22,14 +22,9 @@ window.addEventListener("load", async () => {
     document.body.append(form);
     return;
   }
-  const source = await (async () => {
-    const source = Source.fromUrlString(sourcePath);
-    if (source === "Not supported.") return;
-    const target = document.createElement("div");
-    target.classList.add("source");
-    document.body.append(target);
-    return await source({ target });
-  })();
+  const sourceController = SourceController;
+  document.body.append(SourceController.element);
+  const source = await sourceController.set(sourcePath);
 
   const rollContainer = (() => {
     const element = document.createElement("section");
