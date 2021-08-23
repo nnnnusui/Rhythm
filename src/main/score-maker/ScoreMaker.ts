@@ -1,10 +1,10 @@
-const RollContainer = () => {
+const ScrollContent = (height: string) => {
   const element = document.createElement("section");
-  element.classList.add("roll-container");
+  element.classList.add("scroll-content");
   const header = document.createElement("h1");
-  header.textContent = "RollContainer";
+  header.textContent = "ScrollContent";
   element.append(header);
-
+  element.style.height = height;
   return { element };
 };
 
@@ -20,12 +20,10 @@ const createElement = () => {
 const ScoreMaker = {
   new: (args: { target: HTMLElement; source: any }) => {
     const { source } = args;
-    const rollContainer = RollContainer();
     const element = createElement();
-    element.append(rollContainer.element);
+    element.append(ScrollContent(`${source.duration * 50}%`).element);
     args.target.append(element);
 
-    rollContainer.element.style.height = `${source.duration * 50}%`;
     element.scrollTop = element.scrollHeight;
 
     const applyScrollProgressToSource = () => {
