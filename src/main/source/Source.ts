@@ -21,10 +21,10 @@ const YouTube =
   (args: { target: HTMLElement | string }) => {
     return new Promise<any>((resolve, reject) => {
       const onPlayerReady = ({ target: player }: { target: YT }) => {
-        const duration = player.getDuration();
+        const duration = player.getDuration() * 1000;
         const time = Property.new<number>({
-          init: player.getCurrentTime(),
-          observers: [({ next }) => player.seekTo(next)],
+          init: player.getCurrentTime() * 1000,
+          observers: [({ next }) => player.seekTo(next / 1000)],
         }).accessor;
         resolve({
           element: player.h,

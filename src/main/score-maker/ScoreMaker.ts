@@ -21,7 +21,7 @@ const ScoreMaker = {
   new: (args: { target: HTMLElement; source: any }) => {
     const { source } = args;
     const element = createElement();
-    element.append(ScrollContent(`${source.duration * 50}%`).element);
+    element.append(ScrollContent(`${(source.duration / 1000) * 50}%`).element);
     args.target.append(element);
 
     element.scrollTop = element.scrollHeight;
@@ -41,10 +41,7 @@ const ScoreMaker = {
           element.addEventListener("scroll", applyScrollProgressToSource);
           return source.pause();
         default:
-          scrollEventCanceller = element.scrollTopLinearly(
-            0,
-            source.duration * 1000
-          );
+          scrollEventCanceller = element.scrollTopLinearly(0, source.duration);
           element.removeEventListener("scroll", applyScrollProgressToSource);
           return source.play();
       }
