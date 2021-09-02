@@ -43,21 +43,22 @@ const ScoreMaker = {
       init: source.time(),
       observers: [applyTimeToSourceObserver],
     });
-    const timer = Timer.new({
-      onTimer: time,
-      onStart: () =>
-        timeObservers
-          .filter((it) => it === applyTimeToSourceObserver)
-          .forEach((_, index) => timeObservers.splice(index)),
-      onStop: () => timeObservers.push(applyTimeToSourceObserver),
-    });
 
-    const applyScrollProgressToTime = () => {
-      const scrollPercentage = 1 - element.scrollTopPercentage;
-      time(duration() * scrollPercentage);
-    };
     type Mode = "play" | "edit" | "preview";
     const mode = (() => {
+      const applyScrollProgressToTime = () => {
+        const scrollPercentage = 1 - element.scrollTopPercentage;
+        time(duration() * scrollPercentage);
+      };
+
+      const timer = Timer.new({
+        onTimer: time,
+        onStart: () =>
+          timeObservers
+            .filter((it) => it === applyTimeToSourceObserver)
+            .forEach((_, index) => timeObservers.splice(index)),
+        onStop: () => timeObservers.push(applyTimeToSourceObserver),
+      });
       const play = () => {
         scrollEventCanceller = element.scrollTopLinearly(0, source.duration);
         element.removeEventListener("scroll", applyScrollProgressToTime);
@@ -70,6 +71,7 @@ const ScoreMaker = {
         source.pause();
         timer.stop();
       };
+
       return Property.new<Mode>({
         init: "edit",
         observers: [
