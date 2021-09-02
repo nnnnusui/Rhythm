@@ -1,3 +1,5 @@
+import { Property } from "../util/Property";
+
 const ScrollContent = (height: string) => {
   const element = document.createElement("section");
   element.classList.add("scroll-content");
@@ -34,19 +36,42 @@ const ScoreMaker = {
     let scrollEventCanceller: ReturnType<HTMLElement["scrollTopLinearly"]> = {
       cancel: () => {},
     };
+
+    type Mode = "play" | "edit" | "preview";
+    const mode = (() => {
+      const play = () => {
+        scrollEventCanceller = element.scrollTopLinearly(0, source.duration);
+        element.removeEventListener("scroll", applyScrollProgressToSource);
+        source.play();
+      };
+      const pause = () => {
+        scrollEventCanceller.cancel();
+        element.addEventListener("scroll", applyScrollProgressToSource);
+        source.pause();
+      };
+      return Property.new<Mode>({
+        init: "edit",
+        observers: [
+          ({ next }) => {
+            switch (next) {
+              case "play":
+                return play();
+              case "edit":
+                return pause();
+            }
+          },
+        ],
+      }).accessor;
+    })();
     element.addEventListener("click", () => {
       switch (source.state()) {
         case "playing":
-          scrollEventCanceller.cancel();
-          element.addEventListener("scroll", applyScrollProgressToSource);
-          return source.pause();
+          return mode("edit");
         default:
-          scrollEventCanceller = element.scrollTopLinearly(0, source.duration);
-          element.removeEventListener("scroll", applyScrollProgressToSource);
-          return source.play();
+          return mode("play");
       }
     });
-    return { element };
+    return { element, mode };
   },
 };
 export { ScoreMaker };
