@@ -23,12 +23,6 @@ const createElement = () => {
 const ScoreMaker = {
   new: (args: { target: HTMLElement; source: any }) => {
     const { source } = args;
-    const element = createElement();
-    element.append(ScrollContent(`${(source.duration / 1000) * 50}%`).element);
-    args.target.append(element);
-
-    element.scrollTop = element.scrollHeight;
-
     let scrollEventCanceller: ReturnType<HTMLElement["scrollTopLinearly"]> = {
       cancel: () => {},
     };
@@ -43,6 +37,11 @@ const ScoreMaker = {
       init: source.time(),
       observers: [applyTimeToSourceObserver],
     });
+
+    const element = createElement();
+    element.append(ScrollContent(`${(duration() / 1000) * 50}%`).element);
+    args.target.append(element);
+    element.scrollTop = element.scrollHeight;
 
     type Mode = "play" | "edit" | "preview";
     const mode = (() => {
@@ -86,9 +85,7 @@ const ScoreMaker = {
         ],
       }).accessor;
     })();
-
     element.addEventListener("click", () => {
-      console.log(time());
       switch (source.state()) {
         case "playing":
           return mode("edit");
@@ -96,6 +93,7 @@ const ScoreMaker = {
           return mode("play");
       }
     });
+
     return { element, mode };
   },
 };
