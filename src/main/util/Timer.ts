@@ -14,7 +14,7 @@ const Timer = {
       canceled = true;
       onStop();
     };
-    const start = (from: number) => {
+    const start = (from: number = 0) => {
       canceled = false;
       const startTime = performance.now();
       const loop = (nowTime) => {
