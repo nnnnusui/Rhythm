@@ -6,8 +6,9 @@ const ScrollContent = (height: string) => {
   element.classList.add("scroll-content");
   const header = document.createElement("h1");
   header.textContent = "ScrollContent";
-  element.append(header);
-  element.style.height = height;
+  const scroller = document.createElement("div");
+  element.append(header, scroller);
+  scroller.style.height = height;
   return { element };
 };
 
@@ -23,30 +24,43 @@ const createElement = () => {
 const ScoreMaker = {
   new: (args: { target: HTMLElement; source: any }) => {
     const { source } = args;
+
+    const orderContainer = (() => {
+      const element = document.createElement("section");
+      element.classList.add("order-container");
+      const header = document.createElement("h1");
+      header.textContent = "OrderContainer";
+      element.style.position = "absolute";
+      element.append(header);
+      return element;
+    })();
+
     let scrollEventCanceller: ReturnType<HTMLElement["scrollTopLinearly"]> = {
       cancel: () => {},
     };
 
-    const applyTimeToSourceObserver = ({ next }) => {
-      source.time(next);
-    };
     const duration = Property.new({
       init: source.duration,
     }).accessor;
+
+    const scrollContent = ScrollContent(`${(duration() / 1000) * 50}%`).element;
+    const applyTimeToSourceObserver = ({ next }) => {
+      source.time(next);
+    };
     const { accessor: time, observers: timeObservers } = Property.new({
       init: source.time(),
       observers: [applyTimeToSourceObserver],
     });
 
     const element = createElement();
-    element.append(ScrollContent(`${(duration() / 1000) * 50}%`).element);
+    element.append(orderContainer, scrollContent);
     args.target.append(element);
-    element.scrollTop = element.scrollHeight;
+    scrollContent.scrollTop = scrollContent.scrollHeight;
 
     type Mode = "play" | "edit" | "preview";
     const mode = (() => {
       const applyScrollProgressToTime = () => {
-        const scrollPercentage = 1 - element.scrollTopPercentage;
+        const scrollPercentage = 1 - scrollContent.scrollTopPercentage;
         time(duration() * scrollPercentage);
       };
 
@@ -60,14 +74,14 @@ const ScoreMaker = {
         onStop: () => timeObservers.push(applyTimeToSourceObserver),
       });
       const play = () => {
-        scrollEventCanceller = element.scrollTopLinearly(0, source.duration);
-        element.removeEventListener("scroll", applyScrollProgressToTime);
+        scrollEventCanceller = scrollContent.scrollTopLinearly(0, duration());
+        scrollContent.removeEventListener("scroll", applyScrollProgressToTime);
         source.play();
         timer.start(time());
       };
       const pause = () => {
         scrollEventCanceller.cancel();
-        element.addEventListener("scroll", applyScrollProgressToTime);
+        scrollContent.addEventListener("scroll", applyScrollProgressToTime);
         source.pause();
         timer.stop();
       };
