@@ -54,8 +54,9 @@ const ScoreMaker = {
         onTimer: time,
         onStart: () =>
           timeObservers
-            .filter((it) => it === applyTimeToSourceObserver)
-            .forEach((_, index) => timeObservers.splice(index)),
+            .map((it, index) => [it, index] as const)
+            .filter(([it]) => it === applyTimeToSourceObserver)
+            .forEach(([, index]) => timeObservers.splice(index, 1)),
         onStop: () => timeObservers.push(applyTimeToSourceObserver),
       });
       const play = () => {
