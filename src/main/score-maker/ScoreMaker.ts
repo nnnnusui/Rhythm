@@ -65,12 +65,22 @@ const ScoreMaker = {
     const applyTimeToAnimation = ({ next }) => {
       animations.forEach((it) => (it.currentTime = next));
     };
+    const applyTimeToScroll = ({ next }) => {
+      const progress = next / duration();
+      const scrollableHeight =
+        scrollContent.scrollHeight - scrollContent.clientHeight;
+      scrollContent.scrollTop = (1 - progress) * scrollableHeight;
+    };
     const applyTimeToSourceObserver = ({ next }) => {
       source.time(next);
     };
     const { accessor: time, observer: timeObserver } = Property.new({
       init: source.time(),
-      observers: [applyTimeToAnimation, applyTimeToSourceObserver],
+      observers: [
+        applyTimeToAnimation,
+        applyTimeToScroll,
+        applyTimeToSourceObserver,
+      ],
     });
 
     const element = createElement();
@@ -86,17 +96,21 @@ const ScoreMaker = {
       };
       const timer = Timer.new({
         onTimer: time,
-        onStart: () => timeObserver.remove(applyTimeToSourceObserver),
-        onStop: () => timeObserver.add(applyTimeToSourceObserver),
+        onStart: () => {
+          timeObserver.remove(applyTimeToSourceObserver);
+          timeObserver.add(applyTimeToScroll);
+        },
+        onStop: () => {
+          timeObserver.remove(applyTimeToScroll);
+          timeObserver.add(applyTimeToSourceObserver);
+        },
       });
       const play = () => {
-        scrollEventCanceller = scrollContent.scrollTopLinearly(0, duration());
         scrollContent.removeEventListener("scroll", applyScrollProgressToTime);
         source.play();
         timer.start(time());
       };
       const pause = () => {
-        scrollEventCanceller.cancel();
         timer.stop();
         source.pause();
         scrollContent.addEventListener("scroll", applyScrollProgressToTime);
