@@ -9,7 +9,13 @@ const ScrollContent = (height: string) => {
   const scroller = document.createElement("div");
   element.append(header, scroller);
   scroller.style.height = height;
-  return { element };
+  const scrollableHeight = () => element.scrollHeight - element.clientHeight;
+  return {
+    element,
+    scrollByProgress: (progress: number) =>
+      (element.scrollTop = (1 - progress) * scrollableHeight()),
+    progress: () => 1 - element.scrollTop / scrollableHeight(),
+  };
 };
 
 const createElement = () => {
@@ -35,10 +41,6 @@ const ScoreMaker = {
       return element;
     })();
 
-    let scrollEventCanceller: ReturnType<HTMLElement["scrollTopLinearly"]> = {
-      cancel: () => {},
-    };
-
     const duration = Property.new({
       init: source.duration,
     }).accessor;
@@ -61,59 +63,48 @@ const ScoreMaker = {
         )
       );
     });
-    const scrollContent = ScrollContent(`${(duration() / 1000) * 50}%`).element;
+    const scrollContent = ScrollContent(`${(duration() / 1000) * 50}%`);
     const applyTimeToAnimation = ({ next }) => {
       animations.forEach((it) => (it.currentTime = next));
     };
     const applyTimeToScroll = ({ next }) => {
       const progress = next / duration();
-      const scrollableHeight =
-        scrollContent.scrollHeight - scrollContent.clientHeight;
-      scrollContent.scrollTop = (1 - progress) * scrollableHeight;
+      scrollContent.scrollByProgress(progress);
     };
-    const applyTimeToSourceObserver = ({ next }) => {
+    const applyTimeToSource = ({ next }) => {
       source.time(next);
     };
     const { accessor: time, observer: timeObserver } = Property.new({
       init: source.time(),
-      observers: [
-        applyTimeToAnimation,
-        applyTimeToScroll,
-        applyTimeToSourceObserver,
-      ],
+      observers: [applyTimeToAnimation, applyTimeToScroll, applyTimeToSource],
     });
-
-    const element = createElement();
-    element.append(orderContainer, scrollContent);
-    args.target.append(element);
-    scrollContent.scrollTop = scrollContent.scrollHeight;
 
     type Mode = "play" | "edit" | "preview";
     const mode = (() => {
       const applyScrollProgressToTime = () => {
-        const scrollPercentage = 1 - scrollContent.scrollTopPercentage;
-        time(duration() * scrollPercentage);
+        time(duration() * scrollContent.progress());
       };
-      const timer = Timer.new({
-        onTimer: time,
-        onStart: () => {
-          timeObserver.remove(applyTimeToSourceObserver);
-          timeObserver.add(applyTimeToScroll);
-        },
-        onStop: () => {
-          timeObserver.remove(applyTimeToScroll);
-          timeObserver.add(applyTimeToSourceObserver);
-        },
-      });
+      const timer = Timer.new({ onTimer: time });
+
       const play = () => {
-        scrollContent.removeEventListener("scroll", applyScrollProgressToTime);
         source.play();
+        scrollContent.element.removeEventListener(
+          "scroll",
+          applyScrollProgressToTime
+        );
+        timeObserver.remove(applyTimeToSource);
+        timeObserver.add(applyTimeToScroll);
         timer.start(time());
       };
       const pause = () => {
         timer.stop();
+        timeObserver.remove(applyTimeToScroll);
+        timeObserver.add(applyTimeToSource);
+        scrollContent.element.addEventListener(
+          "scroll",
+          applyScrollProgressToTime
+        );
         source.pause();
-        scrollContent.addEventListener("scroll", applyScrollProgressToTime);
       };
 
       return Property.new<Mode>({
@@ -130,6 +121,8 @@ const ScoreMaker = {
         ],
       }).accessor;
     })();
+
+    const element = createElement();
     element.addEventListener("click", () => {
       switch (source.state()) {
         case "playing":
@@ -138,6 +131,9 @@ const ScoreMaker = {
           return mode("play");
       }
     });
+    element.append(orderContainer, scrollContent.element);
+    args.target.append(element);
+    scrollContent.scrollByProgress(0);
 
     return { element, mode };
   },
