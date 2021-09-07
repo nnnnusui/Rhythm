@@ -43,13 +43,34 @@ const ScoreMaker = {
       init: source.duration,
     }).accessor;
 
+    const animations = Array.from({ length: 100 }, (_, index) => {
+      const element = document.createElement("div");
+      element.textContent = `${index}`;
+      element.style.position = "absolute";
+      element.style.backgroundColor = "white";
+      element.style.top = "-100%";
+      orderContainer.append(element);
+      return new Animation(
+        new KeyframeEffect(
+          element,
+          { top: ["0", "100vh"] },
+          {
+            delay: index * 500,
+            duration: 2000,
+          }
+        )
+      );
+    });
     const scrollContent = ScrollContent(`${(duration() / 1000) * 50}%`).element;
+    const applyTimeToAnimation = ({ next }) => {
+      animations.forEach((it) => (it.currentTime = next));
+    };
     const applyTimeToSourceObserver = ({ next }) => {
       source.time(next);
     };
     const { accessor: time, observers: timeObservers } = Property.new({
       init: source.time(),
-      observers: [applyTimeToSourceObserver],
+      observers: [applyTimeToAnimation, applyTimeToSourceObserver],
     });
 
     const element = createElement();
