@@ -68,7 +68,7 @@ const ScoreMaker = {
     const applyTimeToSourceObserver = ({ next }) => {
       source.time(next);
     };
-    const { accessor: time, observers: timeObservers } = Property.new({
+    const { accessor: time, observer: timeObserver } = Property.new({
       init: source.time(),
       observers: [applyTimeToAnimation, applyTimeToSourceObserver],
     });
@@ -84,15 +84,10 @@ const ScoreMaker = {
         const scrollPercentage = 1 - scrollContent.scrollTopPercentage;
         time(duration() * scrollPercentage);
       };
-
       const timer = Timer.new({
         onTimer: time,
-        onStart: () =>
-          timeObservers
-            .map((it, index) => [it, index] as const)
-            .filter(([it]) => it === applyTimeToSourceObserver)
-            .forEach(([, index]) => timeObservers.splice(index, 1)),
-        onStop: () => timeObservers.push(applyTimeToSourceObserver),
+        onStart: () => timeObserver.remove(applyTimeToSourceObserver),
+        onStop: () => timeObserver.add(applyTimeToSourceObserver),
       });
       const play = () => {
         scrollEventCanceller = scrollContent.scrollTopLinearly(0, duration());
@@ -102,9 +97,9 @@ const ScoreMaker = {
       };
       const pause = () => {
         scrollEventCanceller.cancel();
-        scrollContent.addEventListener("scroll", applyScrollProgressToTime);
-        source.pause();
         timer.stop();
+        source.pause();
+        scrollContent.addEventListener("scroll", applyScrollProgressToTime);
       };
 
       return Property.new<Mode>({
