@@ -1,5 +1,3 @@
-import { Property } from "../util/Property";
-
 const ScrollContent = {
   new: () => {
     const element = document.createElement("section");
@@ -13,17 +11,9 @@ const ScrollContent = {
     const progress = () => 1 - element.scrollTop / scrollableHeight();
     const scrollByProgress = (progress: number) =>
       (element.scrollTop = (1 - progress) * scrollableHeight());
-    const length = Property.new({
-      init: 0,
-      observers: [
-        ({ next }) => {
-          // const scrollBotom = scrollableHeight() - element.scrollTop;
-          scroller.style.height = `${(next / 1000) * 50}%`;
-          // element.scrollTop = scrollableHeight() - scrollBotom;
-        },
-      ],
-    }).accessor;
-    return { element, length, progress, scrollByProgress };
+    const setHeightByMilliSecond = (value: number) =>
+      (scroller.style.height = `${(value / 1000) * 50}%`);
+    return { element, progress, scrollByProgress, setHeightByMilliSecond };
   },
 };
 

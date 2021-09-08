@@ -49,7 +49,7 @@ const ScoreMaker = {
       init: source.duration,
       observers: [
         ({ next, before }) => {
-          scrollContent.length(next);
+          scrollContent.setHeightByMilliSecond(next);
           const nextTime = time((it) => {
             if (it <= next) return it;
             return it + next - before;
@@ -133,7 +133,7 @@ const ScoreMaker = {
     })();
     element.append(orderContainer.element, scrollContent.element);
     args.target.append(element);
-    scrollContent.length(duration());
+    scrollContent.setHeightByMilliSecond(duration());
     scrollContent.scrollByProgress(0);
 
     return { element, mode };
