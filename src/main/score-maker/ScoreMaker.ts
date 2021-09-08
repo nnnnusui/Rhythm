@@ -1,22 +1,7 @@
 import { Property } from "../util/Property";
 import { Timer } from "../util/Timer";
-
-const ScrollContent = (height: string) => {
-  const element = document.createElement("section");
-  element.classList.add("scroll-content");
-  const header = document.createElement("h1");
-  header.textContent = "ScrollContent";
-  const scroller = document.createElement("div");
-  element.append(header, scroller);
-  scroller.style.height = height;
-  const scrollableHeight = () => element.scrollHeight - element.clientHeight;
-  return {
-    element,
-    scrollByProgress: (progress: number) =>
-      (element.scrollTop = (1 - progress) * scrollableHeight()),
-    progress: () => 1 - element.scrollTop / scrollableHeight(),
-  };
-};
+import { OrderContainer } from "./OrderContainer";
+import { ScrollContent } from "./ScrollContent";
 
 const createElement = () => {
   const element = document.createElement("section");
@@ -30,28 +15,16 @@ const createElement = () => {
 const ScoreMaker = {
   new: (args: { target: HTMLElement; source: any }) => {
     const { source } = args;
+    const scrollContent = ScrollContent.new();
 
-    const orderContainer = (() => {
-      const element = document.createElement("section");
-      element.classList.add("order-container");
-      const header = document.createElement("h1");
-      header.textContent = "OrderContainer";
-      element.style.position = "absolute";
-      element.append(header);
-      return element;
-    })();
-
-    const duration = Property.new({
-      init: source.duration,
-    }).accessor;
-
-    const animations = Array.from({ length: 100 }, (_, index) => {
+    const orderContainer = OrderContainer.new();
+    const animations = /* sample */ Array.from({ length: 100 }, (_, index) => {
       const element = document.createElement("div");
       element.textContent = `${index}`;
       element.style.position = "absolute";
       element.style.backgroundColor = "white";
       element.style.top = "-100%";
-      orderContainer.append(element);
+      orderContainer.element.append(element);
       return new Animation(
         new KeyframeEffect(
           element,
@@ -63,7 +36,10 @@ const ScoreMaker = {
         )
       );
     });
-    const scrollContent = ScrollContent(`${(duration() / 1000) * 50}%`);
+
+    const duration = Property.new<number>({
+      init: source.duration,
+    }).accessor;
     const applyTimeToAnimation = ({ next }) => {
       animations.forEach((it) => (it.currentTime = next));
     };
@@ -74,7 +50,7 @@ const ScoreMaker = {
     const applyTimeToSource = ({ next }) => {
       source.time(next);
     };
-    const { accessor: time, observer: timeObserver } = Property.new({
+    const { accessor: time, observer: timeObserver } = Property.new<number>({
       init: source.time(),
       observers: [applyTimeToAnimation, applyTimeToScroll, applyTimeToSource],
     });
@@ -131,8 +107,9 @@ const ScoreMaker = {
           return mode("play");
       }
     });
-    element.append(orderContainer, scrollContent.element);
+    element.append(orderContainer.element, scrollContent.element);
     args.target.append(element);
+    scrollContent.length(duration());
     scrollContent.scrollByProgress(0);
 
     return { element, mode };
