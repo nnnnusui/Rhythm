@@ -1,6 +1,5 @@
 import { SourceController } from "./controller/SourceController";
 import { ScoreMaker } from "./score-maker/ScoreMaker";
-import "./extension/HTMLElement.extension";
 
 const sourcePath = new URLSearchParams(
   document.location.search.substring(1)
