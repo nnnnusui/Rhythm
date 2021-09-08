@@ -19,12 +19,15 @@ const Property = {
       remove: (target) => (observers = observers.filter((it) => it !== target)),
     };
     const accessor: Accessor<T> = (value) => {
-      if (value === undefined) return current;
-      const before = current;
-      const next = value instanceof Function ? value(before) : value;
-      if (next === undefined) return before;
-      current = next;
-      observers.forEach((it) => it({ next, before }));
+      (() => {
+        if (value === undefined) return;
+        const before = current;
+        const next = value instanceof Function ? value(before) : value;
+        if (next === undefined) return;
+        current = next;
+        observers.forEach((it) => it({ next, before }));
+      })();
+      return current;
     };
     return { accessor, observer };
   },
