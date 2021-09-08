@@ -1,4 +1,4 @@
-type Action<T> = T | ((before: T) => T);
+type Action<T> = T | ((before: T) => T | undefined);
 type Accessor<T> = (action?: Action<T>) => T;
 type Observer<T> = (args: { next: T; before: T }) => void;
 type ObserversStore<T> = {
@@ -19,13 +19,12 @@ const Property = {
       remove: (target) => (observers = observers.filter((it) => it !== target)),
     };
     const accessor: Accessor<T> = (value) => {
-      if (value !== undefined) {
-        const before = current;
-        const next = value instanceof Function ? value(before) : value;
-        current = next;
-        observers.forEach((it) => it({ next, before }));
-      }
-      return current;
+      if (value === undefined) return current;
+      const before = current;
+      const next = value instanceof Function ? value(before) : value;
+      if (next === undefined) return before;
+      current = next;
+      observers.forEach((it) => it({ next, before }));
     };
     return { accessor, observer };
   },
