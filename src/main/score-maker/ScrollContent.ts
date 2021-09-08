@@ -8,7 +8,11 @@ const ScrollContent = {
     element.append(header, scroller);
 
     const scrollableHeight = () => element.scrollHeight - element.clientHeight;
-    const progress = () => 1 - element.scrollTop / scrollableHeight();
+    const progress = () => {
+      const scrollTop = element.scrollTop;
+      if (scrollTop <= 0) return 0;
+      return 1 - element.scrollTop / scrollableHeight();
+    };
     const scrollByProgress = (progress: number) =>
       (element.scrollTop = (1 - progress) * scrollableHeight());
     const setHeightByMilliSecond = (value: number) =>
