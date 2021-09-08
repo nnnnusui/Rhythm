@@ -37,30 +37,43 @@ const ScoreMaker = {
       );
     });
 
-    const duration = Property.new<number>({
-      init: source.duration,
-    }).accessor;
-    const applyTimeToAnimation = ({ next }) => {
-      animations.forEach((it) => (it.currentTime = next));
-    };
-    const applyTimeToScroll = ({ next }) => {
-      const progress = next / duration();
-      scrollContent.scrollByProgress(progress);
-    };
-    const applyTimeToSource = ({ next }) => {
-      source.time(next);
-    };
     const { accessor: time, observer: timeObserver } = Property.new<number>({
       init: source.time(),
-      observers: [applyTimeToAnimation, applyTimeToScroll, applyTimeToSource],
+      observers: [
+        ({ next }) => {
+          animations.forEach((it) => (it.currentTime = next));
+        },
+      ],
+    });
+    const { accessor: duration } = Property.new<number>({
+      init: source.duration,
+      observers: [
+        ({ next, before }) => {
+          scrollContent.length(next);
+          const nextTime = time((it) => {
+            if (it <= next) return it;
+            return it + next - before;
+          });
+          scrollContent.scrollByProgress(nextTime / next);
+        },
+      ],
     });
 
     type Mode = "play" | "edit" | "preview";
-    const mode = (() => {
+    const { accessor: mode } = (() => {
+      const applyTimeToScroll = ({ next }) => {
+        const progress = next / duration();
+        scrollContent.scrollByProgress(progress);
+      };
+      const applyTimeToSource = ({ next }) => {
+        source.time(next);
+      };
       const applyScrollProgressToTime = () => {
         time(duration() * scrollContent.progress());
       };
       const timer = Timer.new({ onTimer: time });
+      timeObserver.add(applyTimeToScroll);
+      timeObserver.add(applyTimeToSource);
 
       const play = () => {
         source.play();
@@ -95,7 +108,7 @@ const ScoreMaker = {
             }
           },
         ],
-      }).accessor;
+      });
     })();
 
     const element = createElement();
@@ -107,6 +120,17 @@ const ScoreMaker = {
           return mode("play");
       }
     });
+    (() => {
+      // parameter change form sample
+      const e = document.createElement("input");
+      e.name = "duration";
+      e.type = "number";
+      e.placeholder = "duration";
+      e.addEventListener("keypress", (event) => {
+        if (event.key == "Enter") duration(Number(e.value));
+      });
+      element.append(e);
+    })();
     element.append(orderContainer.element, scrollContent.element);
     args.target.append(element);
     scrollContent.length(duration());
