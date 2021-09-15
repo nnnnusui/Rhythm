@@ -1,6 +1,5 @@
-type Order = {
-  timing: number;
-};
+import { Order } from "../type/Order";
+
 type OrderAnimation = {
   animation: Animation;
   endTime: number;
@@ -11,7 +10,6 @@ const OrderContainer = {
     element.classList.add("order-container");
     const header = document.createElement("h1");
     header.textContent = "OrderContainer";
-    element.style.position = "absolute";
     element.append(header);
 
     const animations: OrderAnimation[] = [];
@@ -20,15 +18,15 @@ const OrderContainer = {
     return {
       element,
       animations: () => animations,
-      currentTime: (time: number) =>
+      currentTime: async (time: number) =>
         animations.forEach((it) => (it.animation.currentTime = time)),
       append: (order: Order) => {
         const element = document.createElement("div");
         element.style.position = "absolute";
-        element.style.backgroundColor = "white";
         element.style.top = "-100%";
-        element.style.width = "100%";
-        element.style.height = "1px";
+        element.classList.add(order.kind);
+        if (order.x) element.style.left = `${order.x * 100}%`;
+        if (order.width) element.style.width = `${order.width * 100}%`;
 
         orderContainer.append(element);
         const delay = order.timing - duration;

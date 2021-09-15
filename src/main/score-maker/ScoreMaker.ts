@@ -1,5 +1,6 @@
 import { Property } from "../util/Property";
 import { Timer } from "../util/Timer";
+import { LaneAdjuster } from "./LaneAdjuster";
 import { OrderContainer } from "./OrderContainer";
 import { ScrollContent } from "./ScrollContent";
 
@@ -19,7 +20,7 @@ const ScoreMaker = {
 
     const orderContainer = OrderContainer.new();
     /* sample */ Array.from({ length: 100 }, (_, index) =>
-      orderContainer.append({ timing: 1000 + index * 500 })
+      orderContainer.append({ kind: "bar", timing: 1000 + index * 500 })
     );
 
     const { accessor: duration } = Property.new<number>({
@@ -74,10 +75,28 @@ const ScoreMaker = {
       });
     })();
 
+    const adjuster = LaneAdjuster.new({ amount: 7 });
     const element = createElement();
+    scrollContent.element.addEventListener("click", (event) => {
+      const order = {
+        kind: "note",
+        timing: time(),
+        x: event.x / element.clientWidth,
+      };
+      const adjusted = adjuster.adjust(order);
+      console.log(adjusted);
+      orderContainer.append(adjusted);
+    });
+    element.append(
+      orderContainer.element,
+      adjuster.element,
+      scrollContent.element
+    );
     (() => {
       // parameter change form sample
-      const root = element;
+      const ui = document.createElement("section");
+      ui.classList.add("ui");
+      element.append(ui);
       (() => {
         const element = document.createElement("button");
         element.name = "state";
@@ -89,7 +108,7 @@ const ScoreMaker = {
               return mode("play");
           }
         });
-        root.append(element);
+        ui.append(element);
       })();
       (() => {
         const element = document.createElement("input");
@@ -99,10 +118,9 @@ const ScoreMaker = {
         element.addEventListener("keypress", (event) => {
           if (event.key == "Enter") duration(Number(element.value));
         });
-        root.append(element);
+        ui.append(element);
       })();
     })();
-    element.append(orderContainer.element, scrollContent.element);
     args.target.append(element);
     scrollContent.setHeightByMilliSecond(duration());
     scrollContent.scrollByProgress(0);

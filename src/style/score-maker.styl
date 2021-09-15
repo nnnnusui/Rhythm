@@ -4,17 +4,41 @@
 > h1
   display none
 .scroll-content
+  position absolute
   height 100%
+  width 100%
   overflow auto
   > h1
     display none
 
 .order-container
-  height 100%
-  width 50%
-
-.note
   position absolute
-  height 5px
-  width 10px
+  height 100%
+  width 100%
+
+.ui
+  position absolute
+  width 100%
+
+.adjuster
+  all unset
+  position absolute
+  height 100%
+  width 100%
+  &.lane
+    display flex
+    justify-content space-between
+    .guideline
+      height 100%
+      width 1px
+      background-color white
+
+.bar
+  height 1px
+  width 100%
+  background-color white
+.note
+  height 10px
+  width 50px
   background-color orange
+  transform: translate(-50%, -50%)
