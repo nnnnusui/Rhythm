@@ -88,24 +88,32 @@ const ScoreMaker = {
     })();
 
     const element = createElement();
-    element.addEventListener("click", () => {
-      switch (source.state()) {
-        case "playing":
-          return mode("edit");
-        default:
-          return mode("play");
-      }
-    });
     (() => {
       // parameter change form sample
-      const e = document.createElement("input");
-      e.name = "duration";
-      e.type = "number";
-      e.placeholder = "duration";
-      e.addEventListener("keypress", (event) => {
-        if (event.key == "Enter") duration(Number(e.value));
-      });
-      element.append(e);
+      const root = element;
+      (() => {
+        const element = document.createElement("button");
+        element.name = "state";
+        element.addEventListener("pointerdown", (event) => {
+          switch (source.state()) {
+            case "playing":
+              return mode("edit");
+            default:
+              return mode("play");
+          }
+        });
+        root.append(element);
+      })();
+      (() => {
+        const element = document.createElement("input");
+        element.name = "duration";
+        element.type = "number";
+        element.placeholder = "duration";
+        element.addEventListener("keypress", (event) => {
+          if (event.key == "Enter") duration(Number(element.value));
+        });
+        root.append(element);
+      })();
     })();
     element.append(orderContainer.element, scrollContent.element);
     args.target.append(element);
