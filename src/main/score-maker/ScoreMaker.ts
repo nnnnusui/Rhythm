@@ -18,24 +18,9 @@ const ScoreMaker = {
     const scrollContent = ScrollContent.new();
 
     const orderContainer = OrderContainer.new();
-    const animations = /* sample */ Array.from({ length: 100 }, (_, index) => {
-      const element = document.createElement("div");
-      element.textContent = `${index}`;
-      element.style.position = "absolute";
-      element.style.backgroundColor = "white";
-      element.style.top = "-100%";
-      orderContainer.element.append(element);
-      return new Animation(
-        new KeyframeEffect(
-          element,
-          { top: ["0", "100vh"] },
-          {
-            delay: index * 500,
-            duration: 2000,
-          }
-        )
-      );
-    });
+    /* sample */ Array.from({ length: 100 }, (_, index) =>
+      orderContainer.append({ timing: 1000 + index * 500 })
+    );
 
     const { accessor: duration } = Property.new<number>({
       init: source.duration,
@@ -50,15 +35,17 @@ const ScoreMaker = {
       ],
     });
 
+    const time = () => scrollContent.progress() * duration();
     type Mode = "play" | "edit" | "preview";
     const { accessor: mode } = (() => {
       const timer = Timer.new({
         onTimer: (time) => scrollContent.scrollByProgress(time / duration()),
       });
-      const time = () => scrollContent.progress() * duration();
-      const scrollToSource = () => source.time(time());
+      const scrollToSource = () => {
+        source.time(time());
+      };
       scrollContent.element.addEventListener("scroll", () =>
-        animations.forEach((it) => (it.currentTime = time()))
+        orderContainer.currentTime(time())
       );
 
       const play = () => {
