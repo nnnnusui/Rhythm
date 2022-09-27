@@ -1,0 +1,13 @@
+{
+	"name": "Rhythm",
+	"service": "workspace",
+	"workspaceFolder": "/work",
+	"dockerComposeFile": "docker-compose.yml",
+	"settings": {},
+	"extensions": [
+		"dbaeumer.vscode-eslint",
+		"eamodio.gitlens",
+		"sysoev.language-stylus"
+	],
+	"remoteUser": "node"
+}
