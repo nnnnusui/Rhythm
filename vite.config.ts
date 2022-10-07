@@ -1,6 +1,7 @@
 import { defineConfig } from "vite";
 import { VitePWA } from "vite-plugin-pwa";
 import solidPlugin from "vite-plugin-solid";
+import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
   plugins: [
@@ -9,6 +10,7 @@ export default defineConfig({
       registerType: "autoUpdate",
       devOptions: { enabled: true },
     }),
+    tsconfigPaths(),
   ],
   test: {
     globals: true,
@@ -19,5 +21,8 @@ export default defineConfig({
   },
   resolve: {
     conditions: ["development", "browser"],
+    alias: {
+      "@/": `${__dirname}/src/`,
+    },
   },
 });

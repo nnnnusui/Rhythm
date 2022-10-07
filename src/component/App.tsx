@@ -15,8 +15,10 @@ import styles from "./App.module.styl";
 import Head from "./Head";
 
 const Home = lazy(() => import("./page/Home"));
+const Play = lazy(() => import("./page/Play"));
 
 const App: Component = () => {
+
   return (
     <MetaProvider>
       <Router>
@@ -27,10 +29,14 @@ const App: Component = () => {
           <nav>
             <Link href="/">Home</Link>
           </nav>
-          <Routes>
-            <Route path="" component={Home} />
-            <Route path="*path" element={<div>{useParams().path}</div>} />
-          </Routes>
+          <div
+            class={styles.Page}
+          >
+            <Routes>
+              <Route path="" component={Home} />
+              <Route path="*path" element={<div>{useParams().path}</div>} />
+            </Routes>
+          </div>
         </div>
       </Router>
     </MetaProvider>

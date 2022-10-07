@@ -1,25 +1,37 @@
 import {
   Component,
   createSignal,
+  For,
 } from "solid-js";
 
 import styles from "./Home.module.styl";
 
 const Home: Component = () => {
-  const [text, setText] = createSignal("");
+  const currentTime = () => 0;
+
+  type Note = {
+    time: number
+  }
+  const [notes, setNotes] = createSignal<Note[]>([]);
+  const addNoteOnCurrentTime = () => {
+    const note: Note = {
+      time: currentTime(),
+    };
+    setNotes((prev) => {
+      const alreadyExists = prev.find((it) => it.time == note.time);
+      if (alreadyExists) return prev;
+      return [...prev, note];
+    });
+  };
 
   return (
     <div
       class={styles.Home}
+      onPointerDown={addNoteOnCurrentTime}
     >
-      <h1>Hello.</h1>
-      <input
-        type="text"
-        value={text()}
-        onChange={(e) => setText(e.currentTarget.value)}
-        name=""
-      />
-      <p>{text()}</p>
+      <For each={notes()}>{(note) =>
+        <div class={styles.Note}>{note.time}</div>
+      }</For>
     </div>
   );
 };
