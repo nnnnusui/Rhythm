@@ -72,6 +72,7 @@ rules:
   arrow-parens:
     - warn
     - always
+  arrow-spacing: warn
   operator-linebreak:
     - warn
     - before
