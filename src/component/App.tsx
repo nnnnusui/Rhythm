@@ -13,6 +13,7 @@ import {
 } from "solid-js";
 
 import { GameProvider } from "../context/game";
+import { suppressTouchAction } from "../function/suppressTouchAction";
 import styles from "./App.module.styl";
 import Head from "./Head";
 
@@ -33,6 +34,7 @@ const App: Component = () => {
   return (
     <Providers>
       <div
+        ref={suppressTouchAction}
         class={styles.App}
       >
         <Head />
