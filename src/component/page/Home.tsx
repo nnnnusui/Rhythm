@@ -1,25 +1,24 @@
 import {
   Component,
-  createSignal,
 } from "solid-js";
 
+import TimeInteraction from "../interaction/TimeInteraction";
 import styles from "./Home.module.styl";
 
 const Home: Component = () => {
-  const [text, setText] = createSignal("");
 
   return (
     <div
       class={styles.Home}
     >
-      <h1>Hello.</h1>
-      <input
-        type="text"
-        value={text()}
-        onChange={(e) => setText(e.currentTarget.value)}
-        name=""
+      <div
+        class={styles.Game}
       />
-      <p>{text()}</p>
+      <div
+        class={styles.Interactions}
+      >
+        <TimeInteraction />
+      </div>
     </div>
   );
 };
