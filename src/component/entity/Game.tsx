@@ -5,13 +5,11 @@ import {
 
 import { useGame } from "../../context/game";
 import styles from "./Game.module.styl";
+import Note from "./Note";
 
 const Game: Component = () => {
   const [game] = useGame();
 
-  type Note = {
-    time: number;
-  }
   const [notes, setNotes] = createSignal<Note[]>([]);
   const addNoteToCurrentTime = () => {
     const time = game.time();
@@ -32,7 +30,7 @@ const Game: Component = () => {
       onPointerDown={addNoteToCurrentTime}
     >
       <For each={notes()}>{(note) =>
-        <div>{note.time}</div>
+        <Note {...note} />
       }</For>
     </div>
   );
