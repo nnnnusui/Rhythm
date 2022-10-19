@@ -9,31 +9,42 @@ import {
 import {
   Component,
   lazy,
+  ParentComponent,
 } from "solid-js";
 
+import { GameProvider } from "../context/game";
 import styles from "./App.module.styl";
 import Head from "./Head";
+
+const Providers: ParentComponent = (props) => (
+  <MetaProvider>
+    <Router>
+      <GameProvider>
+        {props.children}
+      </GameProvider>
+    </Router>
+  </MetaProvider>
+);
 
 const Home = lazy(() => import("./page/Home"));
 
 const App: Component = () => {
+
   return (
-    <MetaProvider>
-      <Router>
-        <div
-          class={styles.App}
-        >
-          <Head />
-          <nav>
-            <Link href="/">Home</Link>
-          </nav>
-          <Routes>
-            <Route path="" component={Home} />
-            <Route path="*path" element={<div>{useParams().path}</div>} />
-          </Routes>
-        </div>
-      </Router>
-    </MetaProvider>
+    <Providers>
+      <div
+        class={styles.App}
+      >
+        <Head />
+        <nav>
+          <Link href="/">Home</Link>
+        </nav>
+        <Routes>
+          <Route path="" component={Home} />
+          <Route path="*path" element={<div>{useParams().path}</div>} />
+        </Routes>
+      </div>
+    </Providers>
   );
 };
 
