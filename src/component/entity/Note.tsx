@@ -10,14 +10,21 @@ type Note = {
 }
 const Note: Component<Note> = (props) => {
   const [game] = useGame();
+
+  const duration = () => 1;
+
   const progress = () =>
-    props.time - game.time();
+    (props.time - duration()) - game.time();
+
+  const delay = () =>
+    duration() * progress();
 
   return (
     <div
       class={styles.Note}
       style={{
-        bottom: `${progress()}cm`,
+        "animation-duration": `${duration() * 2}s`,
+        "animation-delay": `${delay()}s`,
       }}
     >
       {props.time}

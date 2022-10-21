@@ -32,6 +32,9 @@ const Game: Component = () => {
       <For each={notes()}>{(note) =>
         <Note {...note} />
       }</For>
+      <div
+        class={styles.JudgeLine}
+      />
     </div>
   );
 };
