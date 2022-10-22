@@ -9,13 +9,19 @@ import {
   useContext,
 } from "solid-js";
 
+export type Note = {
+  time: number
+}
+
 type State = {
   time: Accessor<number>;
   nowPlaying: Accessor<boolean>;
+  notes: Accessor<Note[]>;
 }
 type Action = {
   setTime: Setter<number>;
   setNowPlaying: Setter<boolean>;
+  setNotes: Setter<Note[]>;
 }
 type Game = [
   state: State,
@@ -29,10 +35,12 @@ const defaultValue: Game = [
   {
     time: noImplFunction("time()"),
     nowPlaying: noImplFunction("nowPlaying()"),
+    notes: noImplFunction("notes()"),
   },
   {
     setTime: noImplFunction("setTime()"),
     setNowPlaying: noImplFunction("setNowPlaying()"),
+    setNotes: noImplFunction("setNotes()"),
   },
 ];
 const context: Context<Game> = createContext(defaultValue);
@@ -41,6 +49,8 @@ export const useGame = () => { return useContext<Game>(context); };
 export const GameProvider: ParentComponent = (props) => {
   const [time, setTime] = createSignal(0);
   const [nowPlaying, setNowPlaying] = createSignal(false);
+
+  const [notes, setNotes] = createSignal<Note[]>([]);
 
   createEffect(() => {
     if (!nowPlaying()) return;
@@ -61,10 +71,12 @@ export const GameProvider: ParentComponent = (props) => {
   const state: State = {
     time,
     nowPlaying,
+    notes,
   };
   const action: Action = {
     setTime,
     setNowPlaying,
+    setNotes,
   };
 
   const store: Game = [

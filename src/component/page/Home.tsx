@@ -4,6 +4,7 @@ import {
 
 import Game from "../entity/Game";
 import NowPlayingInteraction from "../interaction/NowPlayingInteraction";
+import PutNoteInteraction from "../interaction/PutNoteInteraction";
 import TimeInteraction from "../interaction/TimeInteraction";
 import styles from "./Home.module.styl";
 
@@ -19,6 +20,8 @@ const Home: Component = () => {
       >
         <TimeInteraction />
         <NowPlayingInteraction />
+        <div style={{ height: "5em" }} />
+        <PutNoteInteraction />
       </div>
     </div>
   );
