@@ -54,6 +54,7 @@ rules:
   unused-imports/no-unused-imports-ts: warn
 # <<
   "@typescript-eslint/no-empty-function": off
+  "@typescript-eslint/no-namespace": off
   eol-last:
     - warn
     - always
