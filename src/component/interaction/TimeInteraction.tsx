@@ -5,6 +5,7 @@ import {
 } from "solid-js";
 
 import { useGame } from "../../context/game";
+import doubleTapInteraction from "./function/doubleTapInteraction";
 import dragInteraction from "./function/dragInteraction";
 import styles from "./TimeInteraction.module.styl";
 
@@ -35,6 +36,10 @@ const TimeInteraction: Component = () => {
       position: event,
     }),
   });
+  const doubleTap = doubleTapInteraction({
+    intervalMs: () => 250,
+    action: () => setTime(0),
+  });
 
   createEffect(() => {
     setTime(drag.current().time);
@@ -43,14 +48,17 @@ const TimeInteraction: Component = () => {
   const onPointerDown: JSX.EventHandler<HTMLElement, PointerEvent>
     = (event) => {
       drag.onPress(event);
+      doubleTap.onPress(event);
     };
   const onPointerMove: JSX.EventHandler<HTMLElement, PointerEvent>
     = (event) => {
       drag.onMove(event);
+      doubleTap.onMove(event);
     };
   const onPointerUp: JSX.EventHandler<HTMLElement, PointerEvent>
     = (event) => {
       drag.onRelease(event);
+      doubleTap.onRelease(event);
     };
 
   const byWheel: JSX.EventHandler<HTMLElement, WheelEvent>
