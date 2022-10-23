@@ -3,8 +3,13 @@
 *
   display revert
 input
-  background-color revert
-  color revert
+  width 100%
+  &:enabled
+    background-color revert
+    color revert
+  &::-webkit-outer-spin-button,
+  &::-webkit-inner-spin-button
+    appearance none
 a
   cursor pointer
 

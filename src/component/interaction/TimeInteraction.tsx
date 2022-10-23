@@ -76,7 +76,12 @@ const TimeInteraction: Component = () => {
       onWheel={byWheel}
     >
       <p class={styles.Name}>Time</p>
-      <p class={styles.Value}>{game.time().toFixed(1)}</p>
+      <input
+        class={styles.Value}
+        value={game.time().toFixed(1)}
+        type="number"
+        disabled={true}
+      />
     </div>
   );
 };
