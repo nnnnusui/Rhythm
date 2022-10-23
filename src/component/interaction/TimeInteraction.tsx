@@ -1,66 +1,56 @@
 import {
-  batch,
   Component,
   createEffect,
-  createSignal,
   JSX,
 } from "solid-js";
 
 import { useGame } from "../../context/game";
+import dragInteraction from "./function/dragInteraction";
 import styles from "./TimeInteraction.module.styl";
 
 const TimeInteraction: Component = () => {
   const [game, { setTime }] = useGame();
 
-  type State = {
+  type DragState = {
     time: number,
     position: {
       x: number,
       y: number
     }
   }
-  const defaultState = {
-    time: 0,
-    position: {
-      x: 0,
-      y: 0,
+  const drag = dragInteraction<DragState>({
+    defaultState: {
+      time: 0,
+      position: {
+        x: 0,
+        y: 0,
+      },
     },
-  };
-  const [onInteract, setOnInteract] = createSignal(false);
-  const [start, setStart] = createSignal<State>(defaultState);
-  const [current, setCurrent] = createSignal<State>(defaultState);
+    startStateFromEvent: (event) => ({
+      time: game.time(),
+      position: event,
+    }),
+    currentStateFromEvent: (start) => (event) => ({
+      time: start().time - 0.1 * (start().position.y - event.y),
+      position: event,
+    }),
+  });
 
   createEffect(() => {
-    setTime(current().time);
+    setTime(drag.current().time);
   });
 
-  const currentState = (position: State["position"]) => ({
-    time: start().time - 0.1 * (start().position.y - position.y),
-    position,
-  });
-
-  const onPress: JSX.EventHandler<HTMLElement, PointerEvent>
+  const onPointerDown: JSX.EventHandler<HTMLElement, PointerEvent>
     = (event) => {
-      event.target.setPointerCapture(event.pointerId);
-      batch(() => {
-        setOnInteract(true);
-        setStart({
-          time: game.time(),
-          position: event,
-        });
-      });
+      drag.onPress(event);
     };
-  const onMove: JSX.EventHandler<HTMLElement, PointerEvent>
+  const onPointerMove: JSX.EventHandler<HTMLElement, PointerEvent>
     = (event) => {
-      if (!onInteract()) return;
-      setCurrent(currentState(event));
+      drag.onMove(event);
     };
-  const onRelease: JSX.EventHandler<HTMLElement, PointerEvent>
+  const onPointerUp: JSX.EventHandler<HTMLElement, PointerEvent>
     = (event) => {
-      batch(() => {
-        setOnInteract(false);
-        setCurrent(currentState(event));
-      });
+      drag.onRelease(event);
     };
 
   const byWheel: JSX.EventHandler<HTMLElement, WheelEvent>
@@ -72,9 +62,9 @@ const TimeInteraction: Component = () => {
     <div
       class={styles.TimeInteraction}
       draggable={false}
-      onPointerDown={onPress}
-      onPointerMove={onMove}
-      onPointerUp={onRelease}
+      onPointerDown={onPointerDown}
+      onPointerMove={onPointerMove}
+      onPointerUp={onPointerUp}
       onWheel={byWheel}
     >
       <p class={styles.Name}>Time</p>
