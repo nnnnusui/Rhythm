@@ -11,6 +11,7 @@ type Props<T> = {
   currentStateFromEvent: (start: Accessor<T>) => (event: PointerEvent) => T
 }
 const dragInteraction = <T,>(props: Props<T>) => {
+  const [pressed, setPressed] = createSignal(false);
   const [onInteract, setOnInteract] = createSignal(false);
   const [start, setStart] = createSignal<T>(props.defaultState);
   const [current, setCurrent] = createSignal<T>(props.defaultState);
@@ -19,20 +20,26 @@ const dragInteraction = <T,>(props: Props<T>) => {
     = (event) => {
       event.currentTarget.setPointerCapture(event.pointerId);
       batch(() => {
-        setOnInteract(true);
+        setPressed(true);
         setStart(() => props.startStateFromEvent(event));
       });
     };
   const onMove: JSX.EventHandler<HTMLElement, PointerEvent>
     = (event) => {
-      if (!onInteract()) return;
-      setCurrent(() => props.currentStateFromEvent(start)(event));
+      if (!pressed()) return;
+      batch(() => {
+        setOnInteract(true);
+        setCurrent(() => props.currentStateFromEvent(start)(event));
+      });
     };
   const onRelease: JSX.EventHandler<HTMLElement, PointerEvent>
     = (event) => {
       batch(() => {
+        if (onInteract()) {
+          setCurrent(() => props.currentStateFromEvent(start)(event));
+        }
+        setPressed(false);
         setOnInteract(false);
-        setCurrent(() => props.currentStateFromEvent(start)(event));
       });
     };
 
