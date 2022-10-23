@@ -5,6 +5,8 @@ export const suppressTouchAction: (target: HTMLElement) => void
       "touchstart",
       (event) => {
         event.preventDefault();
+        (document.activeElement as HTMLElement)
+          ?.blur();
       },
       { passive: false }
     );
