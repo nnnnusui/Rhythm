@@ -20,7 +20,7 @@ type Action = {
   setTime: Setter<number>;
   setNowPlaying: Setter<boolean>;
   setNotes: Setter<Note[]>;
-  Note: Note.Function;
+  Note: () => Note.Function;
 }
 type Game = [
   state: State,
@@ -40,7 +40,7 @@ const defaultValue: Game = [
     setTime: noImplFunction("setTime()"),
     setNowPlaying: noImplFunction("setNowPlaying()"),
     setNotes: noImplFunction("setNotes()"),
-    Note: Note.default,
+    Note: noImplFunction("Note()"),
   },
 ];
 const context: Context<Game> = createContext(defaultValue);
@@ -77,7 +77,7 @@ export const GameProvider: ParentComponent = (props) => {
     setTime,
     setNowPlaying,
     setNotes,
-    Note: Note.init(state),
+    Note: () => Note.init(state),
   };
 
   const store: Game = [

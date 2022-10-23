@@ -13,7 +13,7 @@ const PutNoteInteraction: Component = () => {
     = () => {
       const time = game.time();
       if (time < 0 ) return;
-      const note = Note.create({
+      const note = Note().create({
         time,
       });
       setNotes((prev) => {

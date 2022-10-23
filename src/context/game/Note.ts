@@ -6,6 +6,7 @@ namespace Note {
     time: number
   }
   export type Action = {
+    progress: () => number
     onScreen: () => boolean
   }
   export type Member = Note.State & Note.Action
@@ -21,22 +22,26 @@ const defaultFunction: Note.Function = {
 };
 
 const init: (game: Game.State) => Note.Function
-  = (game) => ({
-    create: (state: Note.State) => {
+  = (game) => {
+    const create = (state: Note.State) => {
+      const duration = () => 1;
+      const getProgress: Note.Action["progress"]
+        = () => state.time - game.time();
       const onScreen: Note.Action["onScreen"]
         = () => {
-          const progress = game.time() - state.time;
-          const beforeScreen =  progress < -1;
-          const afterScreen = 1 < progress;
-          const offScreen = beforeScreen || afterScreen;
-          return !offScreen;
+          const progress = getProgress();
+          return Math.abs(progress) <= duration();
         };
       return {
         ...state,
+        progress: getProgress,
         onScreen,
       };
-    },
-  });
+    };
+    return {
+      create,
+    };
+  };
 
 const Note = {
   default: defaultFunction,
