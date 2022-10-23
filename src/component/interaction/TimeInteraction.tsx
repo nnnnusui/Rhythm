@@ -65,7 +65,7 @@ const TimeInteraction: Component = () => {
 
   const byWheel: JSX.EventHandler<HTMLElement, WheelEvent>
     = (event) => {
-      setTime((prev) => prev - event.deltaY * 0.01);
+      setTime((prev) => prev - event.deltaY * 0.001);
     };
 
   return (
