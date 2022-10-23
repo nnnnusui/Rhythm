@@ -3,11 +3,11 @@ import {
   JSX,
 } from "solid-js";
 
-import { Note, useGame } from "../../context/game";
+import { useGame } from "../../context/game";
 import styles from "./NowPlayingInteraction.module.styl";
 
 const PutNoteInteraction: Component = () => {
-  const [game, { setNotes }] = useGame();
+  const [game, { setNotes, Note }] = useGame();
 
   const onPointerDown: JSX.EventHandler<HTMLElement, PointerEvent>
     = () => {

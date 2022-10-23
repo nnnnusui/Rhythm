@@ -9,19 +9,9 @@ import {
   useContext,
 } from "solid-js";
 
-namespace Note {
-  export type State = {
-    time: number
-  }
-}
-export type Note = Note.State
-export const Note = {
-  create: (values: Note.State): Note => ({
-    ...values,
-  }),
-};
+import Note from "./game/Note";
 
-type State = {
+export type State = {
   time: Accessor<number>;
   nowPlaying: Accessor<boolean>;
   notes: Accessor<Note[]>;
@@ -30,6 +20,7 @@ type Action = {
   setTime: Setter<number>;
   setNowPlaying: Setter<boolean>;
   setNotes: Setter<Note[]>;
+  Note: Note.Function;
 }
 type Game = [
   state: State,
@@ -49,6 +40,7 @@ const defaultValue: Game = [
     setTime: noImplFunction("setTime()"),
     setNowPlaying: noImplFunction("setNowPlaying()"),
     setNotes: noImplFunction("setNotes()"),
+    Note: Note.default,
   },
 ];
 const context: Context<Game> = createContext(defaultValue);
@@ -85,6 +77,7 @@ export const GameProvider: ParentComponent = (props) => {
     setTime,
     setNowPlaying,
     setNotes,
+    Note: Note.init(state),
   };
 
   const store: Game = [
