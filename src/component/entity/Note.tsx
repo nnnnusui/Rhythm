@@ -6,10 +6,8 @@ import Type from "../../context/game/Note";
 import styles from "./Note.module.styl";
 
 const Note: Component<Type> = (props) => {
-  const duration = () => 1;
-
-  const progress = () =>
-    props.progress();
+  const duration = () => props.duration();
+  const progress = () => props.progress();
 
   const delay = () =>
     progress() - duration();
@@ -22,8 +20,8 @@ const Note: Component<Type> = (props) => {
         "animation-delay": `${delay()}s`,
       }}
     >
-      {props.time}
-      _ {progress()}
+      {props.time().toFixed(1)}
+      _ {progress().toFixed(1)}
     </div>
   );
 };

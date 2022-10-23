@@ -6,6 +6,7 @@ import * as Game from "../game";
 namespace Note {
   export type State = {
     time: Accessor<number>
+    duration: Accessor<number>
   }
   export type Action = {
     progress: Accessor<number>
@@ -26,13 +27,12 @@ const defaultFunction: Note.Function = {
 const init: (game: Game.State) => Note.Function
   = (game) => {
     const create = (state: Note.State) => {
-      const duration = () => 1;
       const getProgress: Note.Action["progress"]
         = () => state.time() - game.time();
       const onScreen: Note.Action["onScreen"]
         = () => {
           const progress = getProgress();
-          return Math.abs(progress) <= duration();
+          return Math.abs(progress) <= state.duration();
         };
       return {
         ...state,
