@@ -9,9 +9,17 @@ import {
   useContext,
 } from "solid-js";
 
-export type Note = {
-  time: number
+namespace Note {
+  export type State = {
+    time: number
+  }
 }
+export type Note = Note.State
+export const Note = {
+  create: (values: Note.State): Note => ({
+    ...values,
+  }),
+};
 
 type State = {
   time: Accessor<number>;
