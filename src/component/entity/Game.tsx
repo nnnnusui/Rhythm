@@ -1,21 +1,32 @@
 import {
   Component,
   For,
+  Show,
 } from "solid-js";
 
-import { useGame } from "../../context/game";
+import * as Game from "../../context/game";
 import styles from "./Game.module.styl";
 import Note from "./Note";
 
-const Game: Component = () => {
-  const [game] = useGame();
+const Element: Component = () => {
+  const [game] = Game.useGame();
+
+  const onScreen = (note: Game.Note) => {
+    const progress = game.time() - note.time;
+    const beforeScreen =  progress < -1;
+    const afterScreen = 1 < progress;
+    const offScreen = beforeScreen || afterScreen;
+    return !offScreen;
+  };
 
   return (
     <div
       class={styles.Game}
     >
       <For each={game.notes()}>{(note) =>
-        <Note {...note} />
+        <Show when={onScreen(note)}>
+          <Note {...note} />
+        </Show>
       }</For>
       <div
         class={styles.JudgeLine}
@@ -24,4 +35,4 @@ const Game: Component = () => {
   );
 };
 
-export default Game;
+export default Element;
