@@ -1,13 +1,15 @@
 
+import { Accessor } from "solid-js";
+
 import * as Game from "../game";
 
 namespace Note {
   export type State = {
-    time: number
+    time: Accessor<number>
   }
   export type Action = {
-    progress: () => number
-    onScreen: () => boolean
+    progress: Accessor<number>
+    onScreen: Accessor<boolean>
   }
   export type Member = Note.State & Note.Action
 
@@ -26,7 +28,7 @@ const init: (game: Game.State) => Note.Function
     const create = (state: Note.State) => {
       const duration = () => 1;
       const getProgress: Note.Action["progress"]
-        = () => state.time - game.time();
+        = () => state.time() - game.time();
       const onScreen: Note.Action["onScreen"]
         = () => {
           const progress = getProgress();
