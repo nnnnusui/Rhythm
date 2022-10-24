@@ -11,9 +11,25 @@ import Note from "./Note";
 const Element: Component = () => {
   const [game] = useGame();
 
+  const judge = () => {
+    if (!game.nowPlaying()) return;
+    const slowestLimit = -0.1;
+    const fastestLimit =  0.1;
+    const judgeTarget
+      = game
+        .notes()
+        .find((it) =>
+          slowestLimit < it.progress()
+          && it.progress() < fastestLimit
+        )
+        ;
+    judgeTarget?.setJudgement("judged");
+  };
+
   return (
     <div
       class={styles.Game}
+      onPointerDown={judge}
     >
       <For each={game.notes()}>{(note) =>
         <Show when={note.onScreen()}>

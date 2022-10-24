@@ -1,5 +1,6 @@
 import {
   Component,
+  Show,
 } from "solid-js";
 
 import { useGame } from "../../context/game";
@@ -15,16 +16,18 @@ const Note: Component<Type> = (props) => {
     progress() - duration();
 
   return (
-    <div
-      class={styles.Note}
-      style={{
-        "animation-duration": `${duration() * 2}s`,
-        "animation-delay": `${delay()}s`,
-      }}
-    >
-      {props.time().toFixed(1)}
+    <Show when={!props.judgement()}>
+      <div
+        class={styles.Note}
+        style={{
+          "animation-duration": `${duration() * 2}s`,
+          "animation-delay": `${delay()}s`,
+        }}
+      >
+        {props.time().toFixed(1)}
       _ {progress().toFixed(1)}
-    </div>
+      </div>
+    </Show>
   );
 };
 
