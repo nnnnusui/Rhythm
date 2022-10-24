@@ -3,6 +3,7 @@ import {
 } from "solid-js";
 
 import Game from "../entity/Game";
+import DurationInteraction from "../interaction/DurationInteraction";
 import NowPlayingInteraction from "../interaction/NowPlayingInteraction";
 import PutNoteInteraction from "../interaction/PutNoteInteraction";
 import TimeInteraction from "../interaction/TimeInteraction";
@@ -18,6 +19,7 @@ const Home: Component = () => {
       <div
         class={styles.Interactions}
       >
+        <DurationInteraction />
         <TimeInteraction />
         <NowPlayingInteraction />
         <div style={{ height: "5em" }} />
