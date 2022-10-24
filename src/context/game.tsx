@@ -13,11 +13,13 @@ import Note from "./game/Note";
 
 export type State = {
   time: Accessor<number>;
+  duration: Accessor<number>;
   nowPlaying: Accessor<boolean>;
   notes: Accessor<Note[]>;
 }
 type Action = {
   setTime: Setter<number>;
+  setDuration: Setter<number>;
   setNowPlaying: Setter<boolean>;
   setNotes: Setter<Note[]>;
   Note: () => Note.Function;
@@ -33,11 +35,13 @@ const noImplFunction = (memberName: string) =>
 const defaultValue: Game = [
   {
     time: noImplFunction("time()"),
+    duration: noImplFunction("duration()"),
     nowPlaying: noImplFunction("nowPlaying()"),
     notes: noImplFunction("notes()"),
   },
   {
     setTime: noImplFunction("setTime()"),
+    setDuration: noImplFunction("setDuration()"),
     setNowPlaying: noImplFunction("setNowPlaying()"),
     setNotes: noImplFunction("setNotes()"),
     Note: noImplFunction("Note()"),
@@ -48,6 +52,7 @@ export const useGame = () => { return useContext<Game>(context); };
 
 export const GameProvider: ParentComponent = (props) => {
   const [time, setTime] = createSignal(0);
+  const [duration, setDuration] = createSignal(1);
   const [nowPlaying, setNowPlaying] = createSignal(false);
 
   const [notes, setNotes] = createSignal<Note[]>([]);
@@ -70,11 +75,13 @@ export const GameProvider: ParentComponent = (props) => {
 
   const state: State = {
     time,
+    duration,
     nowPlaying,
     notes,
   };
   const action: Action = {
     setTime,
+    setDuration,
     setNowPlaying,
     setNotes,
     Note: () => Note.init(state),

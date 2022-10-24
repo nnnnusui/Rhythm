@@ -15,7 +15,6 @@ const PutNoteInteraction: Component = () => {
       if (time < 0 ) return;
       const note = Note().create({
         time: () => time,
-        duration: () => 1,
       });
       setNotes((prev) => {
         const alreadyExists = prev.find((it) => it.time == note.time);

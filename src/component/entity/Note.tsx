@@ -2,11 +2,13 @@ import {
   Component,
 } from "solid-js";
 
+import { useGame } from "../../context/game";
 import Type from "../../context/game/Note";
 import styles from "./Note.module.styl";
 
 const Note: Component<Type> = (props) => {
-  const duration = () => props.duration();
+  const [game] = useGame();
+  const duration = () => game.duration();
   const progress = () => props.progress();
 
   const delay = () =>
