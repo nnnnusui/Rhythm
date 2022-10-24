@@ -11,8 +11,10 @@ const TimeInteraction: Component = () => {
   return (
     <NumberInteraction
       label={() => "Time"}
+      initState={() => 0}
       state={game.time}
       setState={setTime}
+      viewState={(state) => state.toFixed(1)}
     />
   );
 };

@@ -5,6 +5,7 @@ import {
   createSignal,
   JSX,
   Setter,
+  untrack,
 } from "solid-js";
 
 import doubleTapInteraction from "../function/doubleTapInteraction";
@@ -14,12 +15,16 @@ import styles from "./NumberInteraction.module.styl";
 
 type Props = {
   label: Accessor<string>
+  initState: Accessor<number>
   state: Accessor<number>
   setState: Setter<number>
+  viewState: (state: number) => string
 }
 const NumberInteraction: Component<Props> = (props) => {
   const [disabled, setDisabled] = createSignal(true);
   let input!: HTMLInputElement;
+
+  const initState = untrack(() => props.initState());
 
   type DragState = {
     state: number,
@@ -30,7 +35,7 @@ const NumberInteraction: Component<Props> = (props) => {
   }
   const drag = dragInteraction<DragState>({
     defaultState: {
-      state: 0,
+      state: initState,
       position: {
         x: 0,
         y: 0,
@@ -47,7 +52,7 @@ const NumberInteraction: Component<Props> = (props) => {
   });
   const doubleTap = doubleTapInteraction({
     intervalMs: () => 250,
-    action: () => props.setState(0),
+    action: () => props.setState(initState),
   });
   const longTap = longTapInteraction({
     intervalMs: () => 100,
@@ -117,10 +122,10 @@ const NumberInteraction: Component<Props> = (props) => {
       onPointerUp={onPointerUp}
       onWheel={byWheel}
     >
-      <p class={styles.Name}>props.label()</p>
+      <p class={styles.Name}>{props.label()}</p>
       <input
         class={styles.Value}
-        value={props.state().toFixed(1)}
+        value={props.viewState(props.state())}
         type="number"
         disabled={disabled()}
         ref={input}
