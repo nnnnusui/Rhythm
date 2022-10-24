@@ -24,7 +24,6 @@ const NumberInteraction: Component<Props> = (props) => {
   const [disabled, setDisabled] = createSignal(true);
   let input!: HTMLInputElement;
 
-  const initState = untrack(() => props.initState());
 
   type DragState = {
     state: number,
@@ -33,6 +32,7 @@ const NumberInteraction: Component<Props> = (props) => {
       y: number
     }
   }
+  const initState = untrack(() => props.initState());
   const drag = dragInteraction<DragState>({
     defaultState: {
       state: initState,
@@ -52,7 +52,7 @@ const NumberInteraction: Component<Props> = (props) => {
   });
   const doubleTap = doubleTapInteraction({
     intervalMs: () => 250,
-    action: () => props.setState(initState),
+    action: () => props.setState(props.initState()),
   });
   const longTap = longTapInteraction({
     intervalMs: () => 100,

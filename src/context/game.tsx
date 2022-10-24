@@ -16,6 +16,7 @@ export type State = {
   duration: Accessor<number>;
   nowPlaying: Accessor<boolean>;
   notes: Accessor<Note[]>;
+  startTime: Accessor<number>;
 }
 type Action = {
   setTime: Setter<number>;
@@ -38,6 +39,7 @@ const defaultValue: Game = [
     duration: noImplFunction("duration()"),
     nowPlaying: noImplFunction("nowPlaying()"),
     notes: noImplFunction("notes()"),
+    startTime: noImplFunction("startTime()"),
   },
   {
     setTime: noImplFunction("setTime()"),
@@ -56,6 +58,13 @@ export const GameProvider: ParentComponent = (props) => {
   const [nowPlaying, setNowPlaying] = createSignal(false);
 
   const [notes, setNotes] = createSignal<Note[]>([]);
+  const [startTime, setStartTime] = createSignal(0);
+
+  createEffect(() => {
+    const firstNote = notes().find(() => true);
+    if (!firstNote) return;
+    setStartTime(firstNote.time() - 1.4);
+  });
 
   createEffect(() => {
     if (!nowPlaying()) return;
@@ -78,6 +87,7 @@ export const GameProvider: ParentComponent = (props) => {
     duration,
     nowPlaying,
     notes,
+    startTime,
   };
   const action: Action = {
     setTime,
