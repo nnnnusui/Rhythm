@@ -16,6 +16,7 @@ export type State = {
   time: Accessor<number>;
   duration: Accessor<number>;
   nowPlaying: Accessor<boolean>;
+  recentJudge: Accessor<string>;
   notes: Accessor<Note[]>;
   startTime: Accessor<number>;
 }
@@ -23,6 +24,7 @@ type Action = {
   setTime: Setter<number>;
   setDuration: Setter<number>;
   setNowPlaying: Setter<boolean>;
+  setRecentJudge: Setter<string>;
   setNotes: Setter<Note[]>;
   Note: () => Note.Function;
 }
@@ -39,6 +41,7 @@ const defaultValue: Game = [
     time: noImplFunction("time()"),
     duration: noImplFunction("duration()"),
     nowPlaying: noImplFunction("nowPlaying()"),
+    recentJudge: noImplFunction("recentJudge()"),
     notes: noImplFunction("notes()"),
     startTime: noImplFunction("startTime()"),
   },
@@ -46,6 +49,7 @@ const defaultValue: Game = [
     setTime: noImplFunction("setTime()"),
     setDuration: noImplFunction("setDuration()"),
     setNowPlaying: noImplFunction("setNowPlaying()"),
+    setRecentJudge: noImplFunction("setRecentJudge()"),
     setNotes: noImplFunction("setNotes()"),
     Note: noImplFunction("Note()"),
   },
@@ -69,6 +73,7 @@ export const GameProvider: ParentComponent = (props) => {
   const [nowPlaying, setNowPlaying] = createSignal(false);
 
   const [notes, setNotes] = createSignal<Note[]>([]);
+  const [recentJudge, setRecentJudge] = createSignal("", { equals: false });
   const [startTime, setStartTime] = createSignal(0);
 
   createEffect(() => {
@@ -97,6 +102,7 @@ export const GameProvider: ParentComponent = (props) => {
     time,
     duration,
     nowPlaying,
+    recentJudge,
     notes,
     startTime,
   };
@@ -104,6 +110,7 @@ export const GameProvider: ParentComponent = (props) => {
     setTime,
     setDuration,
     setNowPlaying,
+    setRecentJudge,
     setNotes,
     Note: () => Note.init(state),
   };

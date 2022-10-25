@@ -1,4 +1,5 @@
 import {
+  batch,
   Component,
   For,
   Show,
@@ -7,9 +8,10 @@ import {
 import { useGame } from "../../context/game";
 import styles from "./Game.module.styl";
 import Note from "./Note";
+import RecentJudge from "./RecentJudge";
 
 const Element: Component = () => {
-  const [game] = useGame();
+  const [game, { setRecentJudge }] = useGame();
 
   const judge = () => {
     if (!game.nowPlaying()) return;
@@ -23,7 +25,12 @@ const Element: Component = () => {
           && it.progress() < fastestLimit
         )
         ;
-    judgeTarget?.setJudgement("judged");
+    if (!judgeTarget) return;
+    const judge = "judged";
+    batch(() => {
+      judgeTarget.setJudgement(judge);
+      setRecentJudge(judge);
+    });
   };
 
   return (
@@ -39,6 +46,7 @@ const Element: Component = () => {
       <div
         class={styles.JudgeLine}
       />
+      <RecentJudge />
     </div>
   );
 };
