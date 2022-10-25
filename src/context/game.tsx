@@ -9,6 +9,7 @@ import {
   useContext,
 } from "solid-js";
 
+import overwriteSetter from "../function/overrideSetter";
 import Note from "./game/Note";
 
 export type State = {
@@ -53,8 +54,18 @@ const context: Context<Game> = createContext(defaultValue);
 export const useGame = () => { return useContext<Game>(context); };
 
 export const GameProvider: ParentComponent = (props) => {
+  const durationLowerBound = () => 0.1;
+
   const [time, setTime] = createSignal(0);
-  const [duration, setDuration] = createSignal(1);
+  const [duration, _setDuration] = createSignal(1);
+  const setDuration = overwriteSetter({
+    setter: _setDuration,
+    overwrite: ({ current }) => {
+      const lowerBound = durationLowerBound();
+      if (current <= lowerBound) return lowerBound;
+      return current;
+    },
+  });
   const [nowPlaying, setNowPlaying] = createSignal(false);
 
   const [notes, setNotes] = createSignal<Note[]>([]);
