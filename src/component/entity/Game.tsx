@@ -7,6 +7,7 @@ import {
 
 import { useGame } from "../../context/game";
 import styles from "./Game.module.styl";
+import JudgeLine from "./JudgeLine";
 import Note from "./Note";
 import RecentJudge from "./RecentJudge";
 
@@ -43,9 +44,7 @@ const Element: Component = () => {
           <Note {...note} />
         </Show>
       }</For>
-      <div
-        class={styles.JudgeLine}
-      />
+      <JudgeLine />
       <RecentJudge />
     </div>
   );
