@@ -1,29 +1,31 @@
 import {
-  Component, createEffect, createSignal,
+  Component, createEffect,
 } from "solid-js";
 
 import { useGame } from "../../context/game";
 import styles from "./RecentJudge.module.styl";
 
-const getElementByJudge
-  = (judge: string) => (
-    <div
-      class={styles.RecentJudge}
-    >
-      {judge}
-    </div>
-  );
-
 const RecentJudge: Component = () => {
   const [game] = useGame();
-  const [element, setElement] = createSignal(getElementByJudge(game.recentJudge()), { equals: false });
 
+  let element!: HTMLDivElement;
   createEffect(() => {
-    setElement(getElementByJudge(game.recentJudge()));
+    game.recentJudge();
+    window.requestAnimationFrame(() => {
+      element.classList.add(styles.Suppress);
+      window.requestAnimationFrame(() => {
+        element.classList.remove(styles.Suppress);
+      });
+    });
   });
 
   return (
-    <>{element()}</>
+    <div
+      ref={element}
+      class={styles.RecentJudge}
+    >
+      {game.recentJudge()}
+    </div>
   );
 };
 
