@@ -9,13 +9,24 @@ import styles from "./JudgeLine.module.styl";
 const JudgeLine: Component = () => {
   const [game] = useGame();
 
-  let element!: HTMLDivElement;
+  let judgeTriedGlowElement!: HTMLDivElement;
+  createEffect(() => {
+    game.judgeTried();
+    window.requestAnimationFrame(() => {
+      judgeTriedGlowElement.classList.add(styles.Suppress);
+      window.requestAnimationFrame(() => {
+        judgeTriedGlowElement.classList.remove(styles.Suppress);
+      });
+    });
+  });
+
+  let judgeGlowElement!: HTMLDivElement;
   createEffect(() => {
     game.recentJudge();
     window.requestAnimationFrame(() => {
-      element.classList.add(styles.Suppress);
+      judgeGlowElement.classList.add(styles.Suppress);
       window.requestAnimationFrame(() => {
-        element.classList.remove(styles.Suppress);
+        judgeGlowElement.classList.remove(styles.Suppress);
       });
     });
   });
@@ -25,7 +36,11 @@ const JudgeLine: Component = () => {
       class={styles.JudgeLine}
     >
       <div
-        ref={element}
+        ref={judgeTriedGlowElement}
+        class={styles.JudgeTriedGlow}
+      />
+      <div
+        ref={judgeGlowElement}
         class={styles.JudgeGlow}
       />
     </div>

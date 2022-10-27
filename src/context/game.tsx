@@ -16,6 +16,7 @@ export type State = {
   time: Accessor<number>;
   duration: Accessor<number>;
   nowPlaying: Accessor<boolean>;
+  judgeTried: Accessor<null>;
   recentJudge: Accessor<string>;
   notes: Accessor<Note[]>;
   startTime: Accessor<number>;
@@ -24,6 +25,7 @@ type Action = {
   setTime: Setter<number>;
   setDuration: Setter<number>;
   setNowPlaying: Setter<boolean>;
+  setJudgeTried: Setter<null>;
   setRecentJudge: Setter<string>;
   setNotes: Setter<Note[]>;
   Note: () => Note.Function;
@@ -41,6 +43,7 @@ const defaultValue: Game = [
     time: noImplFunction("time()"),
     duration: noImplFunction("duration()"),
     nowPlaying: noImplFunction("nowPlaying()"),
+    judgeTried: noImplFunction("judgeTried()"),
     recentJudge: noImplFunction("recentJudge()"),
     notes: noImplFunction("notes()"),
     startTime: noImplFunction("startTime()"),
@@ -49,6 +52,7 @@ const defaultValue: Game = [
     setTime: noImplFunction("setTime()"),
     setDuration: noImplFunction("setDuration()"),
     setNowPlaying: noImplFunction("setNowPlaying()"),
+    setJudgeTried: noImplFunction("setJudgeTried()"),
     setRecentJudge: noImplFunction("setRecentJudge()"),
     setNotes: noImplFunction("setNotes()"),
     Note: noImplFunction("Note()"),
@@ -73,6 +77,7 @@ export const GameProvider: ParentComponent = (props) => {
   const [nowPlaying, setNowPlaying] = createSignal(false);
 
   const [notes, setNotes] = createSignal<Note[]>([]);
+  const [judgeTried, setJudgeTried] = createSignal(null, { equals: false });
   const [recentJudge, setRecentJudge] = createSignal("", { equals: false });
   const [startTime, setStartTime] = createSignal(0);
 
@@ -102,6 +107,7 @@ export const GameProvider: ParentComponent = (props) => {
     time,
     duration,
     nowPlaying,
+    judgeTried,
     recentJudge,
     notes,
     startTime,
@@ -110,6 +116,7 @@ export const GameProvider: ParentComponent = (props) => {
     setTime,
     setDuration,
     setNowPlaying,
+    setJudgeTried,
     setRecentJudge,
     setNotes,
     Note: () => Note.init(state),

@@ -12,13 +12,16 @@ import Note from "./Note";
 import RecentJudge from "./RecentJudge";
 
 const Element: Component = () => {
-  const [game, { setRecentJudge }] = useGame();
+  const [game, { setRecentJudge, setJudgeTried }] = useGame();
 
   const judge = () => {
-    if (!game.nowPlaying()) return;
-    const slowestLimit = -0.1;
-    const fastestLimit =  0.1;
-    const judgeTarget
+    batch(() => {
+      setJudgeTried(null);
+      if (!game.nowPlaying()) return;
+
+      const slowestLimit = -0.1;
+      const fastestLimit =  0.1;
+      const judgeTarget
       = game
         .notes()
         .find((it) =>
@@ -26,9 +29,9 @@ const Element: Component = () => {
           && it.progress() < fastestLimit
         )
         ;
-    if (!judgeTarget) return;
-    const judge = "judged";
-    batch(() => {
+      if (!judgeTarget) return;
+      if (judgeTarget.judgement()) return;
+      const judge = "judged";
       judgeTarget.setJudgement(judge);
       setRecentJudge(judge);
     });
