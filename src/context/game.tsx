@@ -132,6 +132,7 @@ export const GameProvider: ParentComponent = (props) => {
         .find((it) =>
           slowestLimit < it.progress()
           && it.progress() < fastestLimit
+          && !it.judgement()
         )
         ;
     if (!judgeTarget) return;
