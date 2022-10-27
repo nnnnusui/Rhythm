@@ -19,12 +19,19 @@ const RecentJudge: Component = () => {
     });
   });
 
+  const offset = () => {
+    const value = game.recentJudge()?.offset();
+    if (!value) return "";
+    const rounded = Math.round(value * 100) / 100;
+    return `${rounded}`;
+  };
+
   return (
     <div
       ref={element}
       class={styles.RecentJudge}
     >
-      {game.recentJudge()}
+      {offset()}
     </div>
   );
 };

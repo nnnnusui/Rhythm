@@ -11,6 +11,7 @@ import {
 } from "solid-js";
 
 import overwriteSetter from "../function/overrideSetter";
+import Judgement from "./game/Judgement";
 import Note from "./game/Note";
 
 export type State = {
@@ -18,7 +19,7 @@ export type State = {
   duration: Accessor<number>;
   nowPlaying: Accessor<boolean>;
   judgeTried: Accessor<null>;
-  recentJudge: Accessor<string>;
+  recentJudge: Accessor<Judgement>;
   notes: Accessor<Note[]>;
   startTime: Accessor<number>;
 }
@@ -27,7 +28,7 @@ type Action = {
   setDuration: Setter<number>;
   setNowPlaying: Setter<boolean>;
   setJudgeTried: Setter<null>;
-  setRecentJudge: Setter<string>;
+  setRecentJudge: Setter<Judgement>;
   setNotes: Setter<Note[]>;
   Note: () => Note.Function;
   judge: () => void;
@@ -81,7 +82,7 @@ export const GameProvider: ParentComponent = (props) => {
 
   const [notes, setNotes] = createSignal<Note[]>([]);
   const [judgeTried, setJudgeTried] = createSignal(null, { equals: false });
-  const [recentJudge, setRecentJudge] = createSignal("", { equals: false });
+  const [recentJudge, setRecentJudge] = createSignal<Judgement>(Judgement.defaultState, { equals: false });
   const [startTime, setStartTime] = createSignal(0);
 
   createEffect(() => {
@@ -106,6 +107,20 @@ export const GameProvider: ParentComponent = (props) => {
     window.requestAnimationFrame(callback);
   });
 
+  const state: State = {
+    time,
+    duration,
+    nowPlaying,
+    judgeTried,
+    recentJudge,
+    notes,
+    startTime,
+  };
+
+  const f = {
+    Note: () => Note.init(state),
+    Judgement: () => Judgement.init(state),
+  };
   const judge = () => {
     setJudgeTried(null);
     if (!nowPlaying()) return;
@@ -121,21 +136,15 @@ export const GameProvider: ParentComponent = (props) => {
         ;
     if (!judgeTarget) return;
     if (judgeTarget.judgement()) return;
-    const judge = "judged";
+    const judge
+      = f
+        .Judgement()
+        .create({ offset: () => judgeTarget.progress() })
+        ;
     batch(() => {
       judgeTarget.setJudgement(judge);
       setRecentJudge(judge);
     });
-  };
-
-  const state: State = {
-    time,
-    duration,
-    nowPlaying,
-    judgeTried,
-    recentJudge,
-    notes,
-    startTime,
   };
   const action: Action = {
     setTime,
@@ -144,7 +153,7 @@ export const GameProvider: ParentComponent = (props) => {
     setJudgeTried,
     setRecentJudge,
     setNotes,
-    Note: () => Note.init(state),
+    ...f,
     judge,
   };
 

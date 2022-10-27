@@ -6,9 +6,9 @@ import {
 } from "solid-js";
 
 import * as Game from "../game";
+import Judgement from "./Judgement";
 
 namespace Note {
-  export type Judgement = string | null
   namespace State {
     export type Require = {
       time: Accessor<number>
@@ -38,7 +38,7 @@ const defaultFunction: Note.Function = {
 };
 
 const createArgsDefault: Note.InitState = {
-  judgement: () => null,
+  judgement: () => Judgement.defaultState,
 };
 
 const init: (game: Game.State) => Note.Function
