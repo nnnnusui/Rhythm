@@ -1,5 +1,4 @@
 import {
-  batch,
   Component,
   For,
   Show,
@@ -12,30 +11,7 @@ import Note from "./Note";
 import RecentJudge from "./RecentJudge";
 
 const Element: Component = () => {
-  const [game, { setRecentJudge, setJudgeTried }] = useGame();
-
-  const judge = () => {
-    batch(() => {
-      setJudgeTried(null);
-      if (!game.nowPlaying()) return;
-
-      const slowestLimit = -0.1;
-      const fastestLimit =  0.1;
-      const judgeTarget
-      = game
-        .notes()
-        .find((it) =>
-          slowestLimit < it.progress()
-          && it.progress() < fastestLimit
-        )
-        ;
-      if (!judgeTarget) return;
-      if (judgeTarget.judgement()) return;
-      const judge = "judged";
-      judgeTarget.setJudgement(judge);
-      setRecentJudge(judge);
-    });
-  };
+  const [game, { judge }] = useGame();
 
   return (
     <div

@@ -1,5 +1,6 @@
 import {
   Accessor,
+  batch,
   Context,
   createContext,
   createEffect,
@@ -29,6 +30,7 @@ type Action = {
   setRecentJudge: Setter<string>;
   setNotes: Setter<Note[]>;
   Note: () => Note.Function;
+  judge: () => void;
 }
 type Game = [
   state: State,
@@ -56,6 +58,7 @@ const defaultValue: Game = [
     setRecentJudge: noImplFunction("setRecentJudge()"),
     setNotes: noImplFunction("setNotes()"),
     Note: noImplFunction("Note()"),
+    judge: noImplFunction("judge()"),
   },
 ];
 const context: Context<Game> = createContext(defaultValue);
@@ -103,6 +106,28 @@ export const GameProvider: ParentComponent = (props) => {
     window.requestAnimationFrame(callback);
   });
 
+  const judge = () => {
+    setJudgeTried(null);
+    if (!nowPlaying()) return;
+
+    const slowestLimit = -0.1;
+    const fastestLimit =  0.1;
+    const judgeTarget
+      = notes()
+        .find((it) =>
+          slowestLimit < it.progress()
+          && it.progress() < fastestLimit
+        )
+        ;
+    if (!judgeTarget) return;
+    if (judgeTarget.judgement()) return;
+    const judge = "judged";
+    batch(() => {
+      judgeTarget.setJudgement(judge);
+      setRecentJudge(judge);
+    });
+  };
+
   const state: State = {
     time,
     duration,
@@ -120,6 +145,7 @@ export const GameProvider: ParentComponent = (props) => {
     setRecentJudge,
     setNotes,
     Note: () => Note.init(state),
+    judge,
   };
 
   const store: Game = [
