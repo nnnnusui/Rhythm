@@ -1,5 +1,5 @@
 import {
-  Component, createEffect,
+  Component, createEffect, createSignal,
 } from "solid-js";
 
 import { useGame } from "../../context/game";
@@ -7,10 +7,17 @@ import styles from "./RecentJudge.module.styl";
 
 const RecentJudge: Component = () => {
   const [game] = useGame();
+  const [text, setText] = createSignal("", { equals: false });
 
   let element!: HTMLDivElement;
   createEffect(() => {
-    game.recentJudge();
+    const judge = game.recentJudge();
+    if (judge === undefined) return;
+    const offset = judge.offset();
+    setText(offset.toFixed(3));
+  });
+  createEffect(() => {
+    text();
     window.requestAnimationFrame(() => {
       element.classList.add(styles.Suppress);
       window.requestAnimationFrame(() => {
@@ -19,19 +26,12 @@ const RecentJudge: Component = () => {
     });
   });
 
-  const offset = () => {
-    const value = game.recentJudge()?.offset();
-    if (!value) return "";
-    const rounded = Math.round(value * 100) / 100;
-    return `${rounded}`;
-  };
-
   return (
     <div
       ref={element}
       class={styles.RecentJudge}
     >
-      {offset()}
+      {text()}
     </div>
   );
 };
