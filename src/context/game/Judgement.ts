@@ -22,12 +22,12 @@ namespace Judgement {
     create: (state: CreateArgs) => Judgement.Member
   }
 }
-type Judgement = Judgement.Member | null
+type Judgement = Judgement.Member | undefined
 
 const defaultFunction: Judgement.Function = {
   create: () => { throw new Error("You must impl Note.create()."); },
 };
-const defaultState: Judgement = null;
+const defaultState: Judgement = undefined;
 
 const defaultCreateArgs: Judgement.InitState = {};
 
