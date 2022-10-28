@@ -17,7 +17,7 @@ const PutNoteInteraction: Component = () => {
         time: () => time,
       });
       setNotes((prev) => {
-        const alreadyExists = prev.find((it) => it.time == note.time);
+        const alreadyExists = prev.find((it) => it.time() == note.time());
         if (alreadyExists) return prev;
         return [...prev, note].sort((it) => it.time());
       });
