@@ -11,7 +11,7 @@ const JudgeLine: Component = () => {
 
   let judgeTriedGlowElement!: HTMLDivElement;
   createEffect(() => {
-    game.judgeTried();
+    game.recentJudge();
     window.requestAnimationFrame(() => {
       judgeTriedGlowElement.classList.add(styles.Suppress);
       window.requestAnimationFrame(() => {
@@ -22,7 +22,7 @@ const JudgeLine: Component = () => {
 
   let judgeGlowElement!: HTMLDivElement;
   createEffect(() => {
-    game.recentJudge();
+    if (!game.recentJudge()) return;
     window.requestAnimationFrame(() => {
       judgeGlowElement.classList.add(styles.Suppress);
       window.requestAnimationFrame(() => {

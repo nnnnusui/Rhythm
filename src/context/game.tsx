@@ -1,6 +1,5 @@
 import {
   Accessor,
-  batch,
   Context,
   createContext,
   createEffect,
@@ -14,12 +13,12 @@ import overwriteSetter from "../function/overrideSetter";
 import Judgement from "./game/Judgement";
 import Note from "./game/Note";
 
+type RecentJudge = Judgement | undefined
 export type State = {
   time: Accessor<number>;
   duration: Accessor<number>;
   nowPlaying: Accessor<boolean>;
-  judgeTried: Accessor<null>;
-  recentJudge: Accessor<Judgement>;
+  recentJudge: Accessor<RecentJudge>;
   notes: Accessor<Note[]>;
   startTime: Accessor<number>;
   fps: Accessor<number>;
@@ -28,8 +27,6 @@ type Action = {
   setTime: Setter<number>;
   setDuration: Setter<number>;
   setNowPlaying: Setter<boolean>;
-  setJudgeTried: Setter<null>;
-  setRecentJudge: Setter<Judgement>;
   setNotes: Setter<Note[]>;
   Note: () => Note.Function;
   judge: () => void;
@@ -47,7 +44,6 @@ const defaultValue: Game = [
     time: noImplFunction("time()"),
     duration: noImplFunction("duration()"),
     nowPlaying: noImplFunction("nowPlaying()"),
-    judgeTried: noImplFunction("judgeTried()"),
     recentJudge: noImplFunction("recentJudge()"),
     notes: noImplFunction("notes()"),
     startTime: noImplFunction("startTime()"),
@@ -57,8 +53,6 @@ const defaultValue: Game = [
     setTime: noImplFunction("setTime()"),
     setDuration: noImplFunction("setDuration()"),
     setNowPlaying: noImplFunction("setNowPlaying()"),
-    setJudgeTried: noImplFunction("setJudgeTried()"),
-    setRecentJudge: noImplFunction("setRecentJudge()"),
     setNotes: noImplFunction("setNotes()"),
     Note: noImplFunction("Note()"),
     judge: noImplFunction("judge()"),
@@ -83,8 +77,7 @@ export const GameProvider: ParentComponent = (props) => {
   const [nowPlaying, setNowPlaying] = createSignal(false);
 
   const [notes, setNotes] = createSignal<Note[]>([]);
-  const [judgeTried, setJudgeTried] = createSignal(null, { equals: false });
-  const [recentJudge, setRecentJudge] = createSignal<Judgement>(Judgement.defaultState, { equals: false });
+  const [recentJudge, setRecentJudge] = createSignal<RecentJudge>(undefined, { equals: false });
   const [startTime, setStartTime] = createSignal(0);
 
   const [fps, setFps] = createSignal(0);
@@ -116,7 +109,6 @@ export const GameProvider: ParentComponent = (props) => {
     time,
     duration,
     nowPlaying,
-    judgeTried,
     recentJudge,
     notes,
     startTime,
@@ -128,37 +120,34 @@ export const GameProvider: ParentComponent = (props) => {
     Judgement: () => Judgement.init(state),
   };
   const judge = () => {
-    setJudgeTried(null);
     if (!nowPlaying()) return;
-
-    const slowestLimit = -0.1;
-    const fastestLimit =  0.1;
-    const judgeTarget
-      = notes()
-        .find((it) =>
-          slowestLimit < it.progress()
-          && it.progress() < fastestLimit
-          && !it.judgement()
-        )
-        ;
-    if (!judgeTarget) return;
-    if (judgeTarget.judgement()) return;
-    const judge
-      = f
-        .Judgement()
-        .create({ offset: () => judgeTarget.progress() })
-        ;
-    batch(() => {
+    setRecentJudge(() => {
+      const slowestLimit = -0.1;
+      const fastestLimit =  0.1;
+      const judgeTarget
+        = notes()
+          .find((it) =>
+            slowestLimit < it.progress()
+            && it.progress() < fastestLimit
+            && !it.judgement()
+          )
+          ;
+      if (!judgeTarget) return;
+      if (judgeTarget.judgement()) return;
+      const judge
+        = f
+          .Judgement()
+          .create({ offset: () => judgeTarget.progress() })
+          ;
       judgeTarget.setJudgement(judge);
-      setRecentJudge(judge);
+      return judge;
     });
   };
+
   const action: Action = {
     setTime,
     setDuration,
     setNowPlaying,
-    setJudgeTried,
-    setRecentJudge,
     setNotes,
     ...f,
     judge,
