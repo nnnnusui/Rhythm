@@ -22,6 +22,7 @@ export type State = {
   recentJudge: Accessor<Judgement>;
   notes: Accessor<Note[]>;
   startTime: Accessor<number>;
+  fps: Accessor<number>;
 }
 type Action = {
   setTime: Setter<number>;
@@ -50,6 +51,7 @@ const defaultValue: Game = [
     recentJudge: noImplFunction("recentJudge()"),
     notes: noImplFunction("notes()"),
     startTime: noImplFunction("startTime()"),
+    fps: noImplFunction("fps()"),
   },
   {
     setTime: noImplFunction("setTime()"),
@@ -85,6 +87,8 @@ export const GameProvider: ParentComponent = (props) => {
   const [recentJudge, setRecentJudge] = createSignal<Judgement>(Judgement.defaultState, { equals: false });
   const [startTime, setStartTime] = createSignal(0);
 
+  const [fps, setFps] = createSignal(0);
+
   createEffect(() => {
     const firstNote = notes().find(() => true);
     if (!firstNote) return;
@@ -100,6 +104,7 @@ export const GameProvider: ParentComponent = (props) => {
         if (before) {
           const elapsed = current - before;
           setTime((prev) => prev + elapsed / 1000);
+          setFps(1000 / elapsed);
         }
         before = current;
         window.requestAnimationFrame(callback);
@@ -115,6 +120,7 @@ export const GameProvider: ParentComponent = (props) => {
     recentJudge,
     notes,
     startTime,
+    fps,
   };
 
   const f = {

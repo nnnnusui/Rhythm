@@ -2,6 +2,7 @@ import {
   Component,
 } from "solid-js";
 
+import { useGame } from "../../context/game";
 import Game from "../entity/Game";
 import DurationInteraction from "../interaction/DurationInteraction";
 import NowPlayingInteraction from "../interaction/NowPlayingInteraction";
@@ -10,6 +11,7 @@ import TimeInteraction from "../interaction/TimeInteraction";
 import styles from "./Home.module.styl";
 
 const Home: Component = () => {
+  const [game] = useGame();
 
   return (
     <div
@@ -19,6 +21,7 @@ const Home: Component = () => {
       <div
         class={styles.Interactions}
       >
+        {Math.round(game.fps())}
         <DurationInteraction />
         <TimeInteraction />
         <NowPlayingInteraction />
