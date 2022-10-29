@@ -26,7 +26,6 @@ const Note: Component<Type> = (props) => {
         props.keyframes(),
         {
           duration: fullDurationMs,
-          delay: props.time(),
           fill: "both",
         }
       );
