@@ -122,19 +122,9 @@ export const GameProvider: ParentComponent = (props) => {
   const judge = () => {
     if (!nowPlaying()) return;
     setRecentJudge(() => {
-      const fastestLimit = -0.1;
-      const slowestLimit =  0.1;
-      const isJudgeTarget
-        = (note: Note) => {
-          const isNotJudgeTarget
-            = slowestLimit < note.untilJudge()
-            || note.untilJudge() < fastestLimit
-            || note.judgement();
-          return !isNotJudgeTarget;
-        };
       const judgeTarget
         = notes()
-          .find(isJudgeTarget)
+          .find((it) => it.isJudgeTarget())
           ;
       if (!judgeTarget) return;
       if (judgeTarget.judgement()) return;
