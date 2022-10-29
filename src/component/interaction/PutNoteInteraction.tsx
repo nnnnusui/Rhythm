@@ -15,6 +15,24 @@ const PutNoteInteraction: Component = () => {
       if (time < 0 ) return;
       const note = Note().create({
         time: () => time,
+        styles: {
+          onStart: {
+            top: "0%",
+          },
+          onJudge: {
+            top: "80%",
+          },
+          onEnd: {
+            top: "160%",
+          },
+          note: {
+            width: "100%",
+            height: "1em",
+          },
+          judgePoint: {
+            height: ".4em",
+          },
+        },
       });
       setNotes((prev) => {
         const alreadyExists = prev.find((it) => it.time() == note.time());

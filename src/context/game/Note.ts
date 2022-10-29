@@ -2,6 +2,7 @@
 import {
   Accessor,
   createSignal,
+  JSX,
   Setter,
 } from "solid-js";
 
@@ -14,12 +15,14 @@ namespace Note {
       time: Accessor<number>
     }
     export type Optional = {
-      keyframes: Accessor<Keyframe[]>
       judgement: Accessor<Judgement>
     }
   }
   export type State = State.Require & State.Optional
   export type Action = {
+    keyframes: Accessor<Keyframe[]>
+    noteStyle: Accessor<JSX.CSSProperties>
+    judgePointStyle: Accessor<JSX.CSSProperties>
     setJudgement: Setter<Judgement>
     untilJudge: Accessor<number>
     onScreen: Accessor<boolean>
@@ -28,7 +31,17 @@ namespace Note {
   export type Member = Note.State & Note.Action
 
   export type InitState = State.Optional
-  export type CreateArgs = State.Require & Partial<InitState>
+  type CreateArgsBase = {
+    styles: {
+      onStart: JSX.CSSProperties
+      onJudge: JSX.CSSProperties
+      onEnd: JSX.CSSProperties
+      note: JSX.CSSProperties
+      judgePoint: JSX.CSSProperties
+    }
+  }
+  export type CreateArgs = State.Require & Partial<InitState> & CreateArgsBase
+  export type FullCreateArgs = State & CreateArgsBase
   export type Function = {
     create: (state: CreateArgs) => Note.Member
   }
@@ -40,23 +53,17 @@ const defaultFunction: Note.Function = {
 };
 
 const createArgsDefault: Note.InitState = {
-  keyframes: () => [
-    { top: 0 },
-    { top: "80%" },
-    { top: "160%" },
-  ],
   judgement: () => Judgement.defaultState,
 };
 
 const init: (game: Game.State) => Note.Function
   = (game) => {
     const create = (init: Note.CreateArgs) => {
-      const initState: Note.State = {
+      const initState: Note.FullCreateArgs = {
         ...createArgsDefault,
         ...init,
       };
       const [time] = createSignal(initState.time());
-      const keyframes = initState.keyframes;
       const [judgement, setJudgement] = createSignal(initState.judgement());
 
       const untilJudge: Note.Action["untilJudge"]
@@ -78,14 +85,32 @@ const init: (game: Game.State) => Note.Function
           return !isNotJudgeTarget;
         };
 
+      const styles = initState.styles;
+      const keyframes: Note.Action["keyframes"]
+        = () => ([
+          styles.onStart,
+          styles.onJudge,
+          styles.onEnd,
+        ] as Keyframe[]);
+      const noteStyle: Note.Action["noteStyle"]
+          = () => styles.note;
+      const judgePointStyle: Note.Action["judgePointStyle"]
+        = () => ({
+          ...noteStyle(),
+          ...styles.onJudge,
+          ...styles.judgePoint,
+        });
+
       const state: Note.State
         = {
           time,
-          keyframes,
           judgement,
         };
       const action: Note.Action
         = {
+          keyframes,
+          noteStyle,
+          judgePointStyle,
           setJudgement,
           untilJudge,
           onScreen,

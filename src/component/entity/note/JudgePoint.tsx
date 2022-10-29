@@ -1,18 +1,23 @@
 import {
+  Accessor,
   Component,
   createEffect,
   createSignal,
+  JSX,
   on,
   Show,
   untrack,
 } from "solid-js";
 
-import Note from "../../../context/game/Note";
+import Judgement from "../../../context/game/Judgement";
 import JudgeEffect from "./JudgeEffect";
 import styles from "./JudgePoint.module.styl";
 import TryJudgeEffect from "./TryJudgeEffect";
 
-type Props = Note
+type Props = {
+  judgement: Accessor<Judgement>
+  judgePointStyle: Accessor<JSX.CSSProperties>
+}
 const JudgePoint: Component<Props> = (props) => {
   const [ref, setRef] = createSignal<HTMLDivElement>();
   const beforeJudge
@@ -31,6 +36,7 @@ const JudgePoint: Component<Props> = (props) => {
     <Show when={beforeJudge}>
       <div
         class={styles.JudgePoint}
+        style={props.judgePointStyle()}
       >
         <div
           ref={setRef}

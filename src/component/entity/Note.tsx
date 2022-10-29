@@ -27,7 +27,7 @@ const Note: Component<Type> = (props) => {
         {
           duration: fullDurationMs,
           delay: props.time(),
-          fill: "forwards",
+          fill: "both",
         }
       );
     animation.pause();
@@ -46,6 +46,7 @@ const Note: Component<Type> = (props) => {
         <div
           ref={setRef}
           class={styles.Note}
+          style={props.noteStyle()}
         >
           {props.time().toFixed(1)}
           _ {props.untilJudge().toFixed(1)}
