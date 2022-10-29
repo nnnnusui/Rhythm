@@ -22,15 +22,14 @@ const Note: Component<Type> = (props) => {
     if (!element) return;
     const fullDurationMs = durationMs() * 2;
     const animation
-      = element.animate([
-        { top: 0 },
-        { top: "80%" },
-        { top: "160%" },
-      ], {
-        duration: fullDurationMs,
-        delay: props.time(),
-        fill: "forwards",
-      });
+      = element.animate(
+        props.keyframes(),
+        {
+          duration: fullDurationMs,
+          delay: props.time(),
+          fill: "forwards",
+        }
+      );
     animation.pause();
     setAnimation(animation);
   });

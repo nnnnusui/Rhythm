@@ -14,6 +14,7 @@ namespace Note {
       time: Accessor<number>
     }
     export type Optional = {
+      keyframes: Accessor<Keyframe[]>
       judgement: Accessor<Judgement>
     }
   }
@@ -39,6 +40,11 @@ const defaultFunction: Note.Function = {
 };
 
 const createArgsDefault: Note.InitState = {
+  keyframes: () => [
+    { top: 0 },
+    { top: "80%" },
+    { top: "160%" },
+  ],
   judgement: () => Judgement.defaultState,
 };
 
@@ -50,6 +56,7 @@ const init: (game: Game.State) => Note.Function
         ...init,
       };
       const [time] = createSignal(initState.time());
+      const keyframes = initState.keyframes;
       const [judgement, setJudgement] = createSignal(initState.judgement());
 
       const untilJudge: Note.Action["untilJudge"]
@@ -74,6 +81,7 @@ const init: (game: Game.State) => Note.Function
       const state: Note.State
         = {
           time,
+          keyframes,
           judgement,
         };
       const action: Note.Action
