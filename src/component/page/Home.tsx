@@ -21,7 +21,7 @@ const Home: Component = () => {
       <div
         class={styles.Interactions}
       >
-        {Math.round(game.fps())}
+        fps:{Math.round(game.fps())}
         <DurationInteraction />
         <TimeInteraction />
         <NowPlayingInteraction />
