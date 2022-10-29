@@ -19,7 +19,7 @@ namespace Note {
   }
   export type State = State.Require & State.Optional
   export type Action = {
-    progress: Accessor<number>
+    untilJudge: Accessor<number>
     onScreen: Accessor<boolean>
     setJudgement: Setter<Judgement>
   }
@@ -51,11 +51,11 @@ const init: (game: Game.State) => Note.Function
       const [time] = createSignal(initState.time());
       const [judgement, setJudgement] = createSignal(initState.judgement());
 
-      const getProgress: Note.Action["progress"]
-        = () => time() - game.time();
+      const untilJudge: Note.Action["untilJudge"]
+        = () => -1 * (time() - game.time());
       const onScreen: Note.Action["onScreen"]
         = () => {
-          const progress = getProgress();
+          const progress = untilJudge();
           const duration = game.duration();
           return Math.abs(progress) <= duration;
         };
@@ -67,7 +67,7 @@ const init: (game: Game.State) => Note.Function
         };
       const action: Note.Action
         = {
-          progress: getProgress,
+          untilJudge,
           onScreen,
           setJudgement,
         };

@@ -15,7 +15,6 @@ const Note: Component<Type> = (props) => {
   const [animation, setAnimation] = createSignal<Animation>();
 
   const durationMs = () => game.duration() * 1000;
-  const progressMs = () => props.progress() * 1000;
 
   createEffect(() => {
     const element = ref();
@@ -37,7 +36,8 @@ const Note: Component<Type> = (props) => {
   createEffect(() => {
     const state = animation();
     if (state === undefined) return;
-    state.currentTime = durationMs() - progressMs();
+    const untilJudgeMs = props.untilJudge() * 1000;
+    state.currentTime = untilJudgeMs + durationMs();
     console.log(state.currentTime);
   });
 
@@ -48,7 +48,7 @@ const Note: Component<Type> = (props) => {
         class={styles.Note}
       >
         {props.time().toFixed(1)}
-      _ {props.progress().toFixed(1)}
+      _ {props.untilJudge().toFixed(1)}
       </div>
     </Show>
   );
