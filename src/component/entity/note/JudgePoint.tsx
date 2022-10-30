@@ -1,32 +1,29 @@
 import {
   Accessor,
-  Component,
   createEffect,
   createSignal,
   JSX,
   on,
+  ParentComponent,
   Show,
   untrack,
 } from "solid-js";
 
-import Judgement from "../../../context/game/Judgement";
-import JudgeEffect from "./JudgeEffect";
 import styles from "./JudgePoint.module.styl";
-import TryJudgeEffect from "./TryJudgeEffect";
 
 type Props = {
-  judgement: Accessor<Judgement>
+  isJudged: Accessor<boolean>
   judgePointStyle: Accessor<JSX.CSSProperties>
 }
-const JudgePoint: Component<Props> = (props) => {
+const JudgePoint: ParentComponent<Props> = (props) => {
   const [ref, setRef] = createSignal<HTMLDivElement>();
   const beforeJudge
-    = !untrack(() => props.judgement());
+    = !untrack(() => props.isJudged());
 
   createEffect(on(
-    () => props.judgement(),
-    (judgement) => {
-      if (!judgement) return;
+    () => props.isJudged(),
+    (judged) => {
+      if (!judged) return;
       ref()?.classList.add(styles.Disappear);
     },
     { defer: true }
@@ -42,8 +39,7 @@ const JudgePoint: Component<Props> = (props) => {
           ref={setRef}
           class={styles.View}
         />
-        <TryJudgeEffect isJudged={() => !!props.judgement()} />
-        <JudgeEffect {...props} />
+        {props.children}
       </div>
     </Show>
   );

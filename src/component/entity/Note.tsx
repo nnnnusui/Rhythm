@@ -8,7 +8,9 @@ import {
 import { useGame } from "../../context/game";
 import Type from "../../context/game/Note";
 import styles from "./Note.module.styl";
+import JudgeEffect from "./note/JudgeEffect";
 import JudgePoint from "./note/JudgePoint";
+import TryJudgeEffect from "./note/TryJudgeEffect";
 
 const Note: Component<Type> = (props) => {
   const [game] = useGame();
@@ -16,6 +18,7 @@ const Note: Component<Type> = (props) => {
   const [animation, setAnimation] = createSignal<Animation>();
 
   const durationMs = () => game.duration() * 1000;
+  const isJudged = () => !!props.judgement();
 
   createEffect(() => {
     const element = ref();
@@ -52,7 +55,13 @@ const Note: Component<Type> = (props) => {
         </div>
       </Show>
       <Show when={props.onScreen()}>
-        <JudgePoint {...props} />
+        <JudgePoint
+          isJudged={isJudged}
+          judgePointStyle={props.judgePointStyle}
+        >
+          <TryJudgeEffect isJudged={isJudged} />
+          <JudgeEffect judgement={props.judgement} />
+        </JudgePoint>
       </Show>
     </>
   );
