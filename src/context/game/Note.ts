@@ -58,13 +58,13 @@ const createArgsDefault: Note.InitState = {
 
 const init: (game: Game.State) => Note.Function
   = (game) => {
-    const create = (init: Note.CreateArgs) => {
-      const initState: Note.FullCreateArgs = {
+    const create = (_props: Note.CreateArgs) => {
+      const props: Note.FullCreateArgs = {
         ...createArgsDefault,
-        ...init,
+        ..._props,
       };
-      const [time] = createSignal(initState.time());
-      const [judgement, setJudgement] = createSignal(initState.judgement());
+      const [time] = createSignal(props.time());
+      const [judgement, setJudgement] = createSignal(props.judgement());
 
       const untilJudge: Note.Action["untilJudge"]
         = () => -1 * (time() - game.time());
@@ -85,7 +85,7 @@ const init: (game: Game.State) => Note.Function
           return !isNotJudgeTarget;
         };
 
-      const styles = initState.styles;
+      const styles = props.styles;
       const keyframes: Note.Action["keyframes"]
         = () => ([
           styles.onStart,
