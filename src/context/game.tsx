@@ -13,7 +13,7 @@ import overwriteSetter from "../function/overrideSetter";
 import Judgement from "./game/Judgement";
 import Note from "./game/Note";
 
-type RecentJudge = Judgement | undefined
+type RecentJudge = Judgement
 export type State = {
   time: Accessor<number>;
   duration: Accessor<number>;
@@ -123,19 +123,31 @@ export const GameProvider: ParentComponent = (props) => {
     = (point) => {
       if (!nowPlaying()) return;
       setRecentJudge(() => {
-        const judgeTarget
-          = notes()
-            .find((it) => it.isJudgeTarget(point))
-            ;
-        if (!judgeTarget) return;
-        if (judgeTarget.judgement()) return;
-        const judge
-          = f
-            .Judgement()
-            .create({ offset: () => judgeTarget.untilJudge() })
-            ;
-        judgeTarget.setJudgement(judge);
-        return judge;
+        const judgement = (() => {
+          const judgeTarget
+            = notes()
+              .find((it) => it.isJudgeTarget(point))
+              ;
+          if (!judgeTarget) return;
+          if (judgeTarget.judgement()) return;
+          const judge
+            = f
+              .Judgement()
+              .create({
+                offset: () => judgeTarget.untilJudge(),
+                point: () => point,
+              })
+              ;
+          judgeTarget.setJudgement(judge);
+          return judge;
+        })();
+        if (judgement !== undefined) {
+          return judgement;
+        }
+        return f.Judgement().create({
+          offset: () => undefined,
+          point: () => point,
+        });
       });
     };
 

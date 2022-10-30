@@ -14,6 +14,7 @@ const RecentJudge: Component = () => {
     const judge = game.recentJudge();
     if (judge === undefined) return;
     const offset = judge.offset();
+    if (offset === undefined) return;
     setText(offset.toFixed(3));
   });
   createEffect(() => {

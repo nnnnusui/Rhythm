@@ -1,6 +1,6 @@
 import {
   Accessor,
-  createSignal,
+  untrack,
 } from "solid-js";
 
 import * as Game from "../game";
@@ -12,7 +12,8 @@ namespace Judgement {
   }
   namespace State {
     export type Require = {
-      offset: Accessor<number>
+      offset: Accessor<number | undefined>
+      point: Accessor<Point>
     }
     export type Optional = object
   }
@@ -37,16 +38,16 @@ const defaultCreateArgs: Judgement.InitState = {};
 
 const init: (game: Game.State) => Judgement.Function
   = () => ({
-    create: (init: Judgement.CreateArgs) => {
-      const initState: Judgement.State = {
+    create: (_props: Judgement.CreateArgs) => {
+      const props: Judgement.State = {
         ...defaultCreateArgs,
-        ...init,
+        ..._props,
       };
-      const [offset] = createSignal(initState.offset());
 
       const state: Judgement.State
         = {
-          offset,
+          offset: () => untrack(props.offset),
+          point: props.point,
         };
       const action: Judgement.Action
         = {};
