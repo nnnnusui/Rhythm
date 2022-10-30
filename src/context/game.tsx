@@ -29,7 +29,7 @@ type Action = {
   setNowPlaying: Setter<boolean>;
   setNotes: Setter<Note[]>;
   Note: () => Note.Function;
-  judge: () => void;
+  judge: (point: Judgement.Point) => void;
 }
 type Game = [
   state: State,
@@ -119,24 +119,25 @@ export const GameProvider: ParentComponent = (props) => {
     Note: () => Note.init(state),
     Judgement: () => Judgement.init(state),
   };
-  const judge = () => {
-    if (!nowPlaying()) return;
-    setRecentJudge(() => {
-      const judgeTarget
-        = notes()
-          .find((it) => it.isJudgeTarget())
-          ;
-      if (!judgeTarget) return;
-      if (judgeTarget.judgement()) return;
-      const judge
-        = f
-          .Judgement()
-          .create({ offset: () => judgeTarget.untilJudge() })
-          ;
-      judgeTarget.setJudgement(judge);
-      return judge;
-    });
-  };
+  const judge: Action["judge"]
+    = (point) => {
+      if (!nowPlaying()) return;
+      setRecentJudge(() => {
+        const judgeTarget
+          = notes()
+            .find((it) => it.isJudgeTarget(point))
+            ;
+        if (!judgeTarget) return;
+        if (judgeTarget.judgement()) return;
+        const judge
+          = f
+            .Judgement()
+            .create({ offset: () => judgeTarget.untilJudge() })
+            ;
+        judgeTarget.setJudgement(judge);
+        return judge;
+      });
+    };
 
   const action: Action = {
     setTime,

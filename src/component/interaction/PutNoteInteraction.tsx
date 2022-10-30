@@ -10,11 +10,18 @@ const PutNoteInteraction: Component = () => {
   const [game, { setNotes, Note }] = useGame();
 
   const onPointerDown: JSX.EventHandler<HTMLElement, PointerEvent>
-    = () => {
+    = (event) => {
+      event.currentTarget.getBoundingClientRect().left;
       const time = game.time();
       if (time < 0 ) return;
       const note = Note().create({
         time: () => time,
+        judgeRect: {
+          left: 0,
+          top: 0,
+          width: 1,
+          height: 1,
+        },
         styles: {
           onStart: {
             top: "0%",

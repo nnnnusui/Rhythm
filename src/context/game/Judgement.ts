@@ -6,6 +6,10 @@ import {
 import * as Game from "../game";
 
 namespace Judgement {
+  export type Point = {
+    x: number
+    y: number
+  }
   namespace State {
     export type Require = {
       offset: Accessor<number>

@@ -26,7 +26,7 @@ namespace Note {
     setJudgement: Setter<Judgement>
     untilJudge: Accessor<number>
     onScreen: Accessor<boolean>
-    isJudgeTarget: Accessor<boolean>
+    isJudgeTarget: (point: Judgement.Point) => boolean
   }
   export type Member = Note.State & Note.Action
 
@@ -38,6 +38,12 @@ namespace Note {
       onEnd: JSX.CSSProperties
       note: JSX.CSSProperties
       judgePoint: JSX.CSSProperties
+    }
+    judgeRect: {
+      left: number
+      top: number
+      width: number
+      height: number
     }
   }
   export type CreateArgs = State.Require & Partial<InitState> & CreateArgsBase
@@ -74,14 +80,26 @@ const init: (game: Game.State) => Note.Function
           const duration = game.duration();
           return Math.abs(progress) <= duration;
         };
-      const isJudgeTarget
-        = () => {
+      const isJudgeTarget: Note.Action["isJudgeTarget"]
+        = (point) => {
           const fastestLimit = () => -0.1;
           const slowestLimit = () =>  0.1;
+          const isNotOnTiming
+            = () => slowestLimit() < untilJudge()
+              || untilJudge() < fastestLimit()
+              || judgement()
+              ;
+          const rect = props.judgeRect;
+          const isNotOnRect
+            = () => point.x < rect.left
+              || point.x > rect.left + rect.width
+              || point.y < rect.top
+              || point.y > rect.top + rect.height
+              ;
           const isNotJudgeTarget
-            = slowestLimit() < untilJudge()
-            || untilJudge() < fastestLimit()
-            || judgement();
+            = isNotOnTiming()
+            || isNotOnRect()
+            ;
           return !isNotJudgeTarget;
         };
 
