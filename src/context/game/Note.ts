@@ -91,6 +91,7 @@ const init: (game: Game.State) => Note.Function
           styles.onStart,
           styles.onJudge,
           styles.onEnd,
+          // Field `offset` in `Keyframe` and `JSX.CSSProperties` are in conflict.
         ] as Keyframe[]);
       const noteStyle: Note.Action["noteStyle"]
           = () => styles.note;
