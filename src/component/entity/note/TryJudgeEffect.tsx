@@ -1,5 +1,4 @@
 import {
-  Accessor,
   Component,
   createEffect,
   createSignal,
@@ -9,16 +8,20 @@ import {
 } from "solid-js";
 
 import { useGame } from "../../../context/game";
+import Note from "../../../context/game/Note";
 import styles from "./TryJudgeEffect.module.styl";
 
 type Props = {
-  isJudged: Accessor<boolean>
+  judgement: Note.State["judgement"]
+  isInsideJudgeRect: Note.Action["isInsideJudgeRect"]
 }
 const TryJudgeEffect: Component<Props> = (props) => {
+  const isJudged = () => !!props.judgement();
+
   const [game] = useGame();
   const [ref, setRef] = createSignal<HTMLDivElement>();
   const [_animation, setAnimation] = createSignal<Animation>();
-  const [judged, setJudged] = createSignal(untrack(() => props.isJudged()));
+  const [judged, setJudged] = createSignal(untrack(isJudged));
 
   onMount(() => {
     const element = ref();
@@ -39,10 +42,12 @@ const TryJudgeEffect: Component<Props> = (props) => {
   });
   createEffect(on(
     game.recentJudge,
-    () => {
+    (recentJudge) => {
       if (untrack(judged)) return;
       const animation = untrack(_animation);
       if (!animation) return;
+      if (!recentJudge) return;
+      if (!props.isInsideJudgeRect(recentJudge.point())) return;
 
       animation.finish();
       window.requestAnimationFrame(() => {
@@ -50,7 +55,7 @@ const TryJudgeEffect: Component<Props> = (props) => {
           animation.play();
         });
       });
-      setJudged(untrack(props.isJudged));
+      setJudged(untrack(isJudged));
     },
     { defer: true }
   ));

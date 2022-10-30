@@ -59,7 +59,10 @@ const Note: Component<Type> = (props) => {
           isJudged={isJudged}
           judgePointStyle={props.judgePointStyle}
         >
-          <TryJudgeEffect isJudged={isJudged} />
+          <TryJudgeEffect
+            judgement={props.judgement}
+            isInsideJudgeRect={props.isInsideJudgeRect}
+          />
           <JudgeEffect judgement={props.judgement} />
         </JudgePoint>
       </Show>

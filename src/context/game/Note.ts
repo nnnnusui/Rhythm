@@ -26,6 +26,7 @@ namespace Note {
     setJudgement: Setter<Judgement>
     untilJudge: Accessor<number>
     onScreen: Accessor<boolean>
+    isInsideJudgeRect: (point: Judgement.Point) => boolean
     isJudgeTarget: (point: Judgement.Point) => boolean
   }
   export type Member = Note.State & Note.Action
@@ -80,26 +81,27 @@ const init: (game: Game.State) => Note.Function
           const duration = game.duration();
           return Math.abs(progress) <= duration;
         };
-      const isJudgeTarget: Note.Action["isJudgeTarget"]
+      const isInsideJudgeRect: Note.Action["isInsideJudgeRect"]
         = (point) => {
-          const fastestLimit = () => -0.1;
-          const slowestLimit = () =>  0.1;
-          const isNotOnTiming
-            = () => slowestLimit() < untilJudge()
-              || untilJudge() < fastestLimit()
-              || judgement()
-              ;
           const rect = props.judgeRect;
           const isNotOnRect
-            = () => point.x < rect.left
+            = point.x < rect.left
               || point.x > rect.left + rect.width
               || point.y < rect.top
               || point.y > rect.top + rect.height
               ;
+          return !isNotOnRect;
+        };
+      const isJudgeTarget: Note.Action["isJudgeTarget"]
+        = (point) => {
+          const fastestLimit = () => -0.1;
+          const slowestLimit = () =>  0.1;
           const isNotJudgeTarget
-            = isNotOnTiming()
-            || isNotOnRect()
-            ;
+            = judgement()
+              || untilJudge() < fastestLimit()
+              || untilJudge() > slowestLimit()
+              || !isInsideJudgeRect(point)
+              ;
           return !isNotJudgeTarget;
         };
 
@@ -133,6 +135,7 @@ const init: (game: Game.State) => Note.Function
           setJudgement,
           untilJudge,
           onScreen,
+          isInsideJudgeRect,
           isJudgeTarget,
         };
       return {
