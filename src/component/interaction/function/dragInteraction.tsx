@@ -5,23 +5,28 @@ import {
   Accessor,
 } from "solid-js";
 
+type State<T> = {
+  event: PointerEvent
+  value: T
+}
 type Props<T> = {
-  defaultState: T
-  startStateFromEvent: (event: PointerEvent) => T
-  currentStateFromEvent: (start: Accessor<T>) => (event: PointerEvent) => T
+  onStart: (event: PointerEvent) => T
+  onUpdate: (start: Accessor<State<T>>) => (event: PointerEvent) => T
 }
 const dragInteraction = <T,>(props: Props<T>) => {
   const [pressed, setPressed] = createSignal(false);
   const [onInteract, setOnInteract] = createSignal(false);
-  const [start, setStart] = createSignal<T>(props.defaultState);
-  const [current, setCurrent] = createSignal<T>(props.defaultState);
+  const [start, setStart] = createSignal<State<T>>({} as State<T>);
 
   const onPress: JSX.EventHandler<HTMLElement, PointerEvent>
     = (event) => {
       event.currentTarget.setPointerCapture(event.pointerId);
       batch(() => {
         setPressed(true);
-        setStart(() => props.startStateFromEvent(event));
+        setStart(() => ({
+          event,
+          value: props.onStart(event),
+        }));
       });
     };
   const onMove: JSX.EventHandler<HTMLElement, PointerEvent>
@@ -29,14 +34,14 @@ const dragInteraction = <T,>(props: Props<T>) => {
       if (!pressed()) return;
       batch(() => {
         setOnInteract(true);
-        setCurrent(() => props.currentStateFromEvent(start)(event));
+        props.onUpdate(start)(event);
       });
     };
   const onRelease: JSX.EventHandler<HTMLElement, PointerEvent>
     = (event) => {
       batch(() => {
         if (onInteract()) {
-          setCurrent(() => props.currentStateFromEvent(start)(event));
+          props.onUpdate(start)(event);
         }
         setPressed(false);
         setOnInteract(false);
@@ -47,7 +52,6 @@ const dragInteraction = <T,>(props: Props<T>) => {
     onPress,
     onMove,
     onRelease,
-    current,
   };
 };
 

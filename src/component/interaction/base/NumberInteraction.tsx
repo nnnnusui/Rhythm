@@ -1,11 +1,9 @@
 import {
   Accessor,
   Component,
-  createEffect,
   createSignal,
   JSX,
   Setter,
-  untrack,
 } from "solid-js";
 
 import doubleTapInteraction from "../function/doubleTapInteraction";
@@ -24,31 +22,10 @@ const NumberInteraction: Component<Props> = (props) => {
   const [disabled, setDisabled] = createSignal(true);
   let input!: HTMLInputElement;
 
-
-  type DragState = {
-    state: number,
-    position: {
-      x: number,
-      y: number
-    }
-  }
-  const initState = untrack(() => props.initState());
-  const drag = dragInteraction<DragState>({
-    defaultState: {
-      state: initState,
-      position: {
-        x: 0,
-        y: 0,
-      },
-    },
-    startStateFromEvent: (event) => ({
-      state: props.state(),
-      position: event,
-    }),
-    currentStateFromEvent: (start) => (event) => ({
-      state: start().state - 0.1 * (start().position.y - event.y),
-      position: event,
-    }),
+  const drag = dragInteraction({
+    onStart: () => (props.setState(props.state())),
+    onUpdate: (start) => (event) =>
+      props.setState(start().value - 0.1 * (start().event.y - event.y)),
   });
   const doubleTap = doubleTapInteraction({
     intervalMs: () => 250,
@@ -66,10 +43,6 @@ const NumberInteraction: Component<Props> = (props) => {
       //    `focus()` can only be executed in TouchEvent-related event handlers.
       //    Since `onRelease()` runs in the "pointerdown" event, it meets this restriction.
     },
-  });
-
-  createEffect(() => {
-    props.setState(drag.current().state);
   });
 
   const onPointerDown: JSX.EventHandler<HTMLElement, PointerEvent>
