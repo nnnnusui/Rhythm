@@ -1,5 +1,8 @@
 import {
-  Component, createEffect, createSignal,
+  Component,
+  createEffect,
+  createSignal,
+  on,
 } from "solid-js";
 
 import { useGame } from "../../context/game";
@@ -10,22 +13,22 @@ const RecentJudge: Component = () => {
   const [text, setText] = createSignal("", { equals: false });
 
   let element!: HTMLDivElement;
-  createEffect(() => {
-    const judge = game.recentJudge();
-    if (judge === undefined) return;
-    const offset = judge.offset();
-    if (offset === undefined) return;
-    setText(offset.toFixed(3));
-  });
-  createEffect(() => {
-    text();
-    window.requestAnimationFrame(() => {
+  createEffect(on(
+    game.recentJudge,
+    (judge) => {
+      if (judge === undefined) return;
+      const offset = judge.offset();
+      if (offset === undefined) return;
+      setText(offset.toFixed(3));
       element.classList.add(styles.Suppress);
       window.requestAnimationFrame(() => {
-        element.classList.remove(styles.Suppress);
+        window.requestAnimationFrame(() => {
+          element.classList.remove(styles.Suppress);
+        });
       });
-    });
-  });
+    },
+    { defer: true }
+  ));
 
   return (
     <div
