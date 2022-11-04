@@ -53,10 +53,7 @@ const Note: Component<Type> = (props) => {
           ref={setRef}
           class={styles.Note}
           style={props.noteStyle()}
-        >
-          {props.time().toFixed(1)}
-          _ {props.untilJudge().toFixed(1)}
-        </div>
+        />
       </Show>
       <Show when={props.onScreen()}>
         <JudgePoint
