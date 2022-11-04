@@ -1,0 +1,19 @@
+.ObjectView
+  .ObjectView
+    padding-left 1em
+
+.Value
+  text-indent .4em
+  white-space nowrap
+  overflow hidden
+  text-overflow ellipsis
+
+  &[data-value]:hover::after
+    content attr(data-value)
+    position absolute
+    transform translate(-100%, 100%)
+
+    overflow hidden
+    background black
+    text-indent 0
+    padding .04em .65em
