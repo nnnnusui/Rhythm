@@ -41,6 +41,10 @@ const Note: Component<Type> = (props) => {
     const untilJudgeMs = props.untilJudge() * 1000;
     state.currentTime = untilJudgeMs + durationMs();
   });
+  createEffect(() => {
+    if (!isJudged()) return;
+    ref()?.classList.add(styles.Disappear);
+  });
 
   return (
     <>
