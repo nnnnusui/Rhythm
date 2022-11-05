@@ -7,7 +7,7 @@ import {
 
 import { useGame } from "../../context/game";
 import Judgement from "../../context/game/Judgement";
-import styles from "./Game.module.styl";
+import styles from "./index.module.styl";
 import Note from "./Note";
 import RecentJudge from "./RecentJudge";
 

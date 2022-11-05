@@ -1,7 +1,7 @@
 import { Component, Show } from "solid-js";
 
 import { useGame } from "../../context/game";
-import Game from "../entity/Game";
+import Game from "../Game";
 import Pause from "../menu/Pause";
 import styles from "./Game.module.styl";
 

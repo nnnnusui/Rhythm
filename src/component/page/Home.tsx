@@ -3,7 +3,7 @@ import {
 } from "solid-js";
 
 import { useGame } from "../../context/game";
-import Game from "../entity/Game";
+import Game from "../Game";
 import DurationInteraction from "../interaction/DurationInteraction";
 import NowPlayingInteraction from "../interaction/NowPlayingInteraction";
 import PutNoteInteraction from "../interaction/PutNoteInteraction";
