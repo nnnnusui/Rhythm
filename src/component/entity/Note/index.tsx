@@ -5,12 +5,12 @@ import {
   Show,
 } from "solid-js";
 
-import { useGame } from "../../context/game";
-import Type from "../../context/game/Note";
-import styles from "./Note.module.styl";
-import JudgeEffect from "./note/JudgeEffect";
-import JudgePoint from "./note/JudgePoint";
-import TryJudgeEffect from "./note/TryJudgeEffect";
+import { useGame } from "../../../context/game";
+import Type from "../../../context/game/Note";
+import styles from "./index.module.styl";
+import JudgeEffect from "./JudgeEffect";
+import JudgePoint from "./JudgePoint";
+import TryJudgeEffect from "./TryJudgeEffect";
 
 const Note: Component<Type> = (props) => {
   const [game] = useGame();
