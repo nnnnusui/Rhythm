@@ -8,14 +8,14 @@ import DurationInteraction from "../interaction/DurationInteraction";
 import NowPlayingInteraction from "../interaction/NowPlayingInteraction";
 import PutNoteInteraction from "../interaction/PutNoteInteraction";
 import TimeInteraction from "../interaction/TimeInteraction";
-import styles from "./Home.module.styl";
+import styles from "./Edit.module.styl";
 
-const Home: Component = () => {
+const Page: Component = () => {
   const [game] = useGame();
 
   return (
     <div
-      class={styles.Home}
+      class={styles.Edit}
     >
       <Game />
       <div
@@ -32,4 +32,4 @@ const Home: Component = () => {
   );
 };
 
-export default Home;
+export default Page;

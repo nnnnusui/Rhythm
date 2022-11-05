@@ -27,7 +27,7 @@ const Providers: ParentComponent = (props) => (
   </MetaProvider>
 );
 
-const Home = lazy(() => import("./page/Home"));
+const Edit = lazy(() => import("./page/Edit"));
 const Game = lazy(() => import("./page/Game"));
 
 const App: Component = () => {
@@ -40,11 +40,11 @@ const App: Component = () => {
       >
         <Head />
         <nav>
-          <Link href="/">Home</Link>
+          <Link href="/">Edit</Link>
           <Link href="/game">Game</Link>
         </nav>
         <Routes>
-          <Route path="" component={Home} />
+          <Route path="" component={Edit} />
           <Route path="/game" component={Game} />
           <Route path="*path" element={<div>{useParams().path}</div>} />
         </Routes>
