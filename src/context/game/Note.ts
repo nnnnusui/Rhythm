@@ -16,6 +16,7 @@ namespace Note {
     }
     export type Optional = {
       judgement: Accessor<Judgement>
+      selected: Accessor<boolean>
     }
   }
   export type State = State.Require & State.Optional
@@ -24,6 +25,7 @@ namespace Note {
     noteStyle: Accessor<JSX.CSSProperties>
     judgePointStyle: Accessor<JSX.CSSProperties>
     setJudgement: Setter<Judgement>
+    setSelected: Setter<boolean>
     untilJudge: Accessor<number>
     onScreen: Accessor<boolean>
     isInsideJudgeRect: (point: Judgement.Point) => boolean
@@ -61,6 +63,7 @@ const defaultFunction: Note.Function = {
 
 const createArgsDefault: Note.InitState = {
   judgement: () => Judgement.defaultState,
+  selected: () => false,
 };
 
 const init: (game: Game.State) => Note.Function
@@ -72,6 +75,7 @@ const init: (game: Game.State) => Note.Function
       };
       const [time] = createSignal(props.time());
       const [judgement, setJudgement] = createSignal(props.judgement());
+      const [selected, setSelected] = createSignal(props.selected());
 
       const untilJudge: Note.Action["untilJudge"]
         = () => -1 * (time() - game.time());
@@ -126,6 +130,7 @@ const init: (game: Game.State) => Note.Function
         = {
           time,
           judgement,
+          selected,
         };
       const action: Note.Action
         = {
@@ -133,6 +138,7 @@ const init: (game: Game.State) => Note.Function
           noteStyle,
           judgePointStyle,
           setJudgement,
+          setSelected,
           untilJudge,
           onScreen,
           isInsideJudgeRect,

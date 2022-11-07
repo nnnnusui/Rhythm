@@ -46,12 +46,18 @@ const Note: Component<Type> = (props) => {
     ref()?.classList.add(styles.Disappear);
   });
 
+  const classes = () =>
+    [
+      styles.Note,
+      props.selected() ? styles.Selected : "",
+    ].join(" ");
+
   return (
     <>
       <Show when={!props.judgement()}>
         <div
           ref={setRef}
-          class={styles.Note}
+          class={classes()}
           style={props.noteStyle()}
         />
       </Show>
