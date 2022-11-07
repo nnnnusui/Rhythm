@@ -2,7 +2,6 @@
 import {
   Accessor,
   JSX,
-  mergeProps,
 } from "solid-js";
 import { createStore, SetStoreFunction } from "solid-js/store";
 
@@ -30,7 +29,9 @@ namespace Note {
     isInsideJudgeRect: (point: Judgement.Point) => boolean
     isJudgeTarget: (point: Judgement.Point) => boolean
   }
-  export type Member = Note.State & Note.Action
+  export type Member = {
+    state: Note.State
+  } & Note.Action
 
   export type InitState = State.Optional
   type CreateArgsBase = {
@@ -134,8 +135,11 @@ const init: (game: Game.State) => Note.Function
           isInsideJudgeRect,
           isJudgeTarget,
         };
-      // eslint-disable-next-line solid/reactivity
-      return mergeProps(action, state);
+
+      return {
+        state,
+        ...action,
+      };
     };
     return {
       create,
