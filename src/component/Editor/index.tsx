@@ -41,7 +41,14 @@ const Editor: Component = () => {
         <div style={{ height: "5em" }} />
         <PutNoteInteraction />
       </div>
-      <ObjectView object={nearestNote()?.time} />
+      <section
+        class={styles.NoteState}
+      >
+        <h1>NoteState</h1>
+        <ObjectView
+          object={nearestNote()?.state}
+        />
+      </section>
     </section>
   );
 };
