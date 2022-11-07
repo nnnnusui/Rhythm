@@ -18,7 +18,7 @@ const Note: Component<Type> = (props) => {
   const [animation, setAnimation] = createSignal<Animation>();
 
   const durationMs = () => game.duration() * 1000;
-  const isJudged = () => !!props.judgement();
+  const isJudged = () => !!props.judgement;
 
   createEffect(() => {
     const element = ref();
@@ -49,12 +49,12 @@ const Note: Component<Type> = (props) => {
   const classes = () =>
     [
       styles.Note,
-      props.selected() ? styles.Selected : "",
+      props.selected ? styles.Selected : "",
     ].join(" ");
 
   return (
     <>
-      <Show when={!props.judgement()}>
+      <Show when={!props.judgement}>
         <div
           ref={setRef}
           class={classes()}
@@ -70,7 +70,7 @@ const Note: Component<Type> = (props) => {
             judgement={props.judgement}
             isInsideJudgeRect={props.isInsideJudgeRect}
           />
-          <JudgeEffect judgement={props.judgement} />
+          <JudgeEffect judgement={() => props.judgement} />
         </JudgePoint>
       </Show>
     </>

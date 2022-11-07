@@ -16,7 +16,7 @@ type Props = {
   isInsideJudgeRect: Note.Action["isInsideJudgeRect"]
 }
 const TryJudgeEffect: Component<Props> = (props) => {
-  const isJudged = () => !!props.judgement();
+  const isJudged = () => !!props.judgement;
 
   const [game] = useGame();
   const [ref, setRef] = createSignal<HTMLDivElement>();

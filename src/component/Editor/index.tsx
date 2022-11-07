@@ -15,13 +15,13 @@ const Editor: Component = () => {
 
   createEffect(() => {
     setNearestNote((prev) => {
-      prev?.setSelected(false);
+      prev?.setState("selected", false);
       const current
         = game
           .notes()
           .sort((prev, it) => Math.abs(prev.untilJudge()) - Math.abs(it.untilJudge()))
           .find(() => true);
-      current?.setSelected(true);
+      current?.setState("selected", true);
       return current;
     });
   });
@@ -41,7 +41,7 @@ const Editor: Component = () => {
         <div style={{ height: "5em" }} />
         <PutNoteInteraction />
       </div>
-      <ObjectView object={nearestNote()?.time()} />
+      <ObjectView object={nearestNote()?.time} />
     </section>
   );
 };

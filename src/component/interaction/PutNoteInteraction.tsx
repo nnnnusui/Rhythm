@@ -15,7 +15,7 @@ const PutNoteInteraction: Component = () => {
       const time = game.time();
       if (time < 0 ) return;
       const note = Note().create({
-        time: () => time,
+        time,
         judgeRect: {
           left: 0,
           top: 0,
@@ -42,9 +42,9 @@ const PutNoteInteraction: Component = () => {
         },
       });
       setNotes((prev) => {
-        const alreadyExists = prev.find((it) => it.time() == note.time());
+        const alreadyExists = prev.find((it) => it.time == note.time);
         if (alreadyExists) return prev;
-        return [...prev, note].sort((it) => it.time());
+        return [...prev, note].sort((it) => it.time);
       });
     };
 

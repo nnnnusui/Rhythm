@@ -1,10 +1,10 @@
 
 import {
   Accessor,
-  createSignal,
   JSX,
-  Setter,
+  mergeProps,
 } from "solid-js";
+import { createStore, SetStoreFunction } from "solid-js/store";
 
 import * as Game from "../game";
 import Judgement from "./Judgement";
@@ -12,20 +12,19 @@ import Judgement from "./Judgement";
 namespace Note {
   namespace State {
     export type Require = {
-      time: Accessor<number>
+      time: number
     }
     export type Optional = {
-      judgement: Accessor<Judgement>
-      selected: Accessor<boolean>
+      judgement: Judgement
+      selected: boolean
     }
   }
   export type State = State.Require & State.Optional
   export type Action = {
+    setState: SetStoreFunction<State>
     keyframes: Accessor<Keyframe[]>
     noteStyle: Accessor<JSX.CSSProperties>
     judgePointStyle: Accessor<JSX.CSSProperties>
-    setJudgement: Setter<Judgement>
-    setSelected: Setter<boolean>
     untilJudge: Accessor<number>
     onScreen: Accessor<boolean>
     isInsideJudgeRect: (point: Judgement.Point) => boolean
@@ -62,8 +61,8 @@ const defaultFunction: Note.Function = {
 };
 
 const createArgsDefault: Note.InitState = {
-  judgement: () => Judgement.defaultState,
-  selected: () => false,
+  judgement: Judgement.defaultState,
+  selected: false,
 };
 
 const init: (game: Game.State) => Note.Function
@@ -73,12 +72,10 @@ const init: (game: Game.State) => Note.Function
         ...createArgsDefault,
         ..._props,
       };
-      const [time] = createSignal(props.time());
-      const [judgement, setJudgement] = createSignal(props.judgement());
-      const [selected, setSelected] = createSignal(props.selected());
+      const [state, setState] = createStore(props);
 
       const untilJudge: Note.Action["untilJudge"]
-        = () => -1 * (time() - game.time());
+        = () => -1 * (state.time - game.time());
       const onScreen: Note.Action["onScreen"]
         = () => {
           const progress = untilJudge();
@@ -101,7 +98,7 @@ const init: (game: Game.State) => Note.Function
           const fastestLimit = () => -0.1;
           const slowestLimit = () =>  0.1;
           const isNotJudgeTarget
-            = judgement()
+            = state.judgement
               || untilJudge() < fastestLimit()
               || untilJudge() > slowestLimit()
               || !isInsideJudgeRect(point)
@@ -126,28 +123,19 @@ const init: (game: Game.State) => Note.Function
           ...styles.judgePoint,
         });
 
-      const state: Note.State
-        = {
-          time,
-          judgement,
-          selected,
-        };
       const action: Note.Action
         = {
+          setState,
           keyframes,
           noteStyle,
           judgePointStyle,
-          setJudgement,
-          setSelected,
           untilJudge,
           onScreen,
           isInsideJudgeRect,
           isJudgeTarget,
         };
-      return {
-        ...state,
-        ...action,
-      };
+      // eslint-disable-next-line solid/reactivity
+      return mergeProps(action, state);
     };
     return {
       create,

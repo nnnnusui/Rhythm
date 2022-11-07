@@ -85,7 +85,7 @@ export const GameProvider: ParentComponent = (props) => {
   createEffect(() => {
     const firstNote = notes().find(() => true);
     if (!firstNote) return;
-    setStartTime(firstNote.time() - 1.4);
+    setStartTime(firstNote.time - 1.4);
   });
 
   createEffect(() => {
@@ -129,7 +129,7 @@ export const GameProvider: ParentComponent = (props) => {
               .find((it) => it.isJudgeTarget(point))
               ;
           if (!judgeTarget) return;
-          if (judgeTarget.judgement()) return;
+          if (judgeTarget.judgement) return;
           const judge
             = f
               .Judgement()
@@ -138,7 +138,7 @@ export const GameProvider: ParentComponent = (props) => {
                 point: () => point,
               })
               ;
-          judgeTarget.setJudgement(judge);
+          judgeTarget.setState("judgement", judge);
           return judge;
         })();
         if (judgement !== undefined) {
