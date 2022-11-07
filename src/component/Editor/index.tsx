@@ -1,6 +1,7 @@
-import { Component } from "solid-js";
+import { Component, createEffect, createSignal } from "solid-js";
 
 import { useGame } from "../../context/game";
+import Note from "../../context/game/Note";
 import DurationInteraction from "../interaction/DurationInteraction";
 import NowPlayingInteraction from "../interaction/NowPlayingInteraction";
 import PutNoteInteraction from "../interaction/PutNoteInteraction";
@@ -10,11 +11,20 @@ import styles from "./index.module.styl";
 
 const Editor: Component = () => {
   const [game] = useGame();
+  const [nearestNote, setNearestNote] = createSignal<Note>();
 
-  const selectedNote = () =>
-    game.notes()
-      .find((it) => it.selected())
-      ?.time();
+  createEffect(() => {
+    setNearestNote((prev) => {
+      prev?.setSelected(false);
+      const current
+        = game
+          .notes()
+          .sort((prev, it) => Math.abs(prev.untilJudge()) - Math.abs(it.untilJudge()))
+          .find(() => true);
+      current?.setSelected(true);
+      return current;
+    });
+  });
 
   return (
     <section
@@ -31,7 +41,7 @@ const Editor: Component = () => {
         <div style={{ height: "5em" }} />
         <PutNoteInteraction />
       </div>
-      <ObjectView object={selectedNote()} />
+      <ObjectView object={nearestNote()?.time()} />
     </section>
   );
 };
