@@ -4,10 +4,10 @@ import { useGame } from "../../context/game";
 import Note from "../../context/game/Note";
 import DurationInteraction from "../interaction/DurationInteraction";
 import NowPlayingInteraction from "../interaction/NowPlayingInteraction";
-import PutNoteInteraction from "../interaction/PutNoteInteraction";
 import TimeInteraction from "../interaction/TimeInteraction";
 import ObjectView from "../view/ObjectView";
 import styles from "./index.module.styl";
+import PutNoteOnLane from "./PutNoteOnLane";
 
 const Editor: Component = () => {
   const [game] = useGame();
@@ -39,7 +39,7 @@ const Editor: Component = () => {
         <TimeInteraction />
         <NowPlayingInteraction />
         <div style={{ height: "5em" }} />
-        <PutNoteInteraction />
+        <PutNoteOnLane />
       </div>
       <section
         class={styles.NoteState}
