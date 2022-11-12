@@ -5,7 +5,6 @@ import Note from "../../context/game/Note";
 import DurationInteraction from "../interaction/DurationInteraction";
 import NowPlayingInteraction from "../interaction/NowPlayingInteraction";
 import TimeInteraction from "../interaction/TimeInteraction";
-import ObjectView from "../view/ObjectView";
 import styles from "./index.module.styl";
 import PutNoteOnLane from "./PutNoteOnLane";
 
@@ -41,14 +40,6 @@ const Editor: Component = () => {
         <div style={{ height: "5em" }} />
         <PutNoteOnLane />
       </div>
-      <section
-        class={styles.NoteState}
-      >
-        <h1>NoteState</h1>
-        <ObjectView
-          object={nearestNote()?.state}
-        />
-      </section>
     </section>
   );
 };
