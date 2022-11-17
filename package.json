@@ -26,6 +26,7 @@
     "eslint-plugin-solid": "^0.7.4",
     "eslint-plugin-unused-imports": "^2.0.0",
     "jsdom": "^20.0.2",
+    "plop": "^3.1.1",
     "solid-testing-library": "^0.3.0",
     "stylelint": "^14.14.1",
     "stylelint-plugin-stylus": "^0.17.0",
