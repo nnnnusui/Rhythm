@@ -12,6 +12,7 @@ specifiers:
   eslint-plugin-react: ^7.31.10
   eslint-plugin-solid: ^0.7.4
   eslint-plugin-unused-imports: ^2.0.0
+  glob: ^8.0.3
   jsdom: ^20.0.2
   plop: ^3.1.1
   solid-js: ^1.6.2
@@ -41,6 +42,7 @@ devDependencies:
   eslint-plugin-react: 7.31.10_eslint@8.27.0
   eslint-plugin-solid: 0.7.4_rmayb2veg2btbq6mbmnyivgasy
   eslint-plugin-unused-imports: 2.0.0_nlzgfrebny3tjssyl6pxqc4kfq
+  glob: 8.0.3
   jsdom: 20.0.2
   plop: 3.1.1
   solid-testing-library: 0.3.0_solid-js@1.6.2
@@ -3557,6 +3559,17 @@ packages:
       minimatch: 3.1.2
       once: 1.4.0
       path-is-absolute: 1.0.1
+    dev: true
+
+  /glob/8.0.3:
+    resolution: {integrity: sha512-ull455NHSHI/Y1FqGaaYFaLGkNMMJbavMrEGFXG/PGrg6y7sutWHUHrz6gy6WEBH6akM1M414dWKCNs+IhKdiQ==}
+    engines: {node: '>=12'}
+    dependencies:
+      fs.realpath: 1.0.0
+      inflight: 1.0.6
+      inherits: 2.0.4
+      minimatch: 5.1.0
+      once: 1.4.0
     dev: true
 
   /global-modules/1.0.0:
