@@ -4,7 +4,7 @@ import {
 
 import styles from "./index.module.styl";
 
-type Props = {}
+type Props = unknown
 const This: Component<Props> = (props) => {
 
   return (

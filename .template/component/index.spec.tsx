@@ -2,8 +2,9 @@ import "@testing-library/jest-dom";
 import { render } from "solid-testing-library";
 import { describe, it, expect } from "vitest";
 
-import This from "./index.tsx";
 import styles from "./index.module.styl";
+
+import This from "./index";
 
 describe("<{{properCase name}} /> test", () => {
   const { container } = render(() => <This /> );
