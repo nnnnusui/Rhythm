@@ -5,6 +5,7 @@ FROM node:${VARIANT}
   RUN apk update
   RUN apk add git
   RUN npm install -g pnpm
+  RUN npm install -g plop
 
 # Build workspace
   ARG workspace
