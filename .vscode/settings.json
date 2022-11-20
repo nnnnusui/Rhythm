@@ -4,4 +4,5 @@
       "source.fixAll.eslint": true
   },
   "plopTemplates.destinationPath": " --destinationpath",
+  "task.allowAutomaticTasks": "on",
 }
