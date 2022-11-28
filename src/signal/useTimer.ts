@@ -2,9 +2,10 @@ import {
   createSignal,
   createEffect,
 } from "solid-js";
-import { createStore } from "solid-js/store";
 
-import time from "./animationFrame";
+import animationFrame from "./animationFrame";
+
+const time = () => animationFrame() / 1000;
 
 type Timer = {
   state: number,
@@ -14,9 +15,17 @@ type Timer = {
 const useTimer = (): Timer => {
   const [start, setStart] = createSignal(time());
   const [measuring, setMeasuring] = createSignal(false);
+  const [state, setState] = createSignal(0);
 
-  const [state, setState] = createStore<Timer>({
-    state: 0,
+  createEffect(() => {
+    if (!measuring()) return;
+    setState(time() - start());
+  });
+
+  return {
+    get state() {
+      return state();
+    },
     start: () => {
       setStart(time());
       setMeasuring(true);
@@ -24,14 +33,7 @@ const useTimer = (): Timer => {
     stop: () => {
       setMeasuring(false);
     },
-  });
-
-  createEffect(() => {
-    if (!measuring()) return;
-    setState("state", time() - start());
-  });
-
-  return state;
+  };
 };
 
 export { useTimer };
