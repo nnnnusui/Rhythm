@@ -1,5 +1,5 @@
 import "@testing-library/jest-dom";
-import { render } from "solid-testing-library";
+import { render } from "@solidjs/testing-library";
 import { describe, it, expect } from "vitest";
 
 import styles from "./index.module.styl";

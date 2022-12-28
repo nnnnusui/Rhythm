@@ -13,11 +13,12 @@ export default defineConfig({
     }),
   ],
   test: {
-    globals: true,
-    environment: "jsdom",
-    transformMode: {
-      web: [/\.spec\.tsx?$/],
+    deps: {
+      registerNodeLoader: true,
     },
+    environment: "jsdom",
+    globals: true,
+    transformMode: { web: [/\.[jt]sx?$/] },
   },
   resolve: {
     conditions: ["development", "browser"],
