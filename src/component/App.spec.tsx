@@ -1,5 +1,4 @@
-import "@testing-library/jest-dom";
-import { render } from "solid-testing-library";
+import { render } from "@solidjs/testing-library";
 
 import App from "./App";
 
