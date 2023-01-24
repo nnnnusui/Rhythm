@@ -2,24 +2,19 @@ import {
   Component,
   createEffect,
   createSignal,
-  JSX,
   Show,
 } from "solid-js";
 
 import styles from "./index.module.styl";
+
+import { NoteState } from "@/state/createNoteStore";
 
 type Props = {
   game: {
     duration: number
     time: number
   }
-  time: number
-  keyframes: Keyframe[]
-  style: JSX.CSSProperties
-  judge: {
-    style: JSX.CSSProperties
-  }
-}
+} & NoteState
 const This: Component<Props> = (props) => {
   const [ref, setRef] = createSignal<HTMLDivElement>();
   const [animation, setAnimation] = createSignal<Animation>();
