@@ -7,6 +7,8 @@ import styles from "./index.module.styl";
 
 import This from "./index";
 
+import AnimationInfo from "@/state/AnimationInfo";
+
 mockAnimationsApi();
 
 describe("Note", async () => {
@@ -22,7 +24,7 @@ describe("Note", async () => {
           time: props.time,
         },
         time: 5,
-        keyframes: [
+        animation: AnimationInfo([
           {
             offset: -0.5,
             top: "40%",
@@ -36,7 +38,7 @@ describe("Note", async () => {
             offset: 1.5,
             top: "120%",
           },
-        ],
+        ]),
         style: {
           width: "100%",
           height: "1em",
@@ -47,6 +49,7 @@ describe("Note", async () => {
             height: ".4em",
           },
         },
+        judged: false,
       }}
     />;
 

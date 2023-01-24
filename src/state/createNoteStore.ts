@@ -3,13 +3,15 @@ import {
 } from "solid-js";
 import { createStore } from "solid-js/store";
 
+import AnimationInfo from "./AnimationInfo";
+
 import Score from "@/type/Score";
 
 type Args = Score["notes"][0]
 type State = {
   time: number
   style: JSX.CSSProperties
-  keyframes: Keyframe[]
+  animation: AnimationInfo
   judge: {
     style: JSX.CSSProperties
   }
@@ -25,6 +27,7 @@ type Store = {
 const createNoteStore = (args: Args): Store => {
   const [state, setState] = createStore<State>({
     ...args,
+    animation: AnimationInfo(args.keyframes),
     judged: false,
   });
 
