@@ -6,7 +6,8 @@ type AnimationInfo = {
   beforeJudge: (baseDuration: number) => number
   afterJudge: (baseDuration: number) => number
 }
-/* AnimationInfo
+/**
+ * AnimationInfo
  * Convert Score's animation information for the Web Animations API.
  *
  * The Web Animations API `Keyframe.offset` can have values between 0 and 1.
