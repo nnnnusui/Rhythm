@@ -32,11 +32,18 @@ const SoundCloudWidget: Component<Props> = (props) => {
       url: props.url,
       visual: "true",
       show_artwork: "true",
+      show_teaser: "false",
+      auto_play: "false",
+      single_active: "false",
     });
   const src = () => `https://w.soundcloud.com/player/?${params().toString()}`;
 
   return (
-    <iframe ref={setRef} src={src()} />
+    <iframe
+      ref={setRef}
+      src={src()}
+      allow="autoplay"
+    />
   );
 };
 
