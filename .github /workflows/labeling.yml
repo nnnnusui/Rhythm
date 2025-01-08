@@ -1,0 +1,105 @@
+name: labeling-pull-request
+
+on:
+  pull_request
+
+jobs:
+  labeling-pull-request:
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Check out pull-request codes
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+      - name: labeling by contained emojis
+        uses: actions/github-script@v6
+        with:
+          script: |
+            const definedLabels =
+              await github.rest.issues.listLabelsForRepo({
+                owner: context.repo.owner,
+                repo: context.repo.repo
+              });
+            const labelAndPrefixes =
+              definedLabels.data
+              .map((label) => label.name)
+              .filter((name) => name.includes(':'))
+              .map((name) => ([name.match(/((:[^:\s]+:)+):/)?.[1], name]))
+              .sort(([prev], [next]) => next.split(":").length - prev.split(":").length);
+
+            const commits =
+              await github.rest.pulls.listCommits({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                pull_number: context.payload.pull_request.number
+              });
+            const commitEmojis =
+              Array.from(new Set(
+                commits.data
+                .map(data => data.commit.message)
+                .filter(message => message.includes(':'))
+                .flatMap(message => message.match(/((:[^:\s]+:))/g))
+              ));
+            const labelsFromCommitEmojis =
+              commitEmojis
+                .map(emoji =>
+                  labelAndPrefixes
+                    .find(([labelPrefix]) => 
+                      emoji.includes(labelPrefix)
+                    )?.[1]
+                );
+
+            const labelsFromLinkedIssues = (
+              await github.graphql(
+                `
+                  query getLinkedIssues($owner: String!, $repo: String!, $pull_number: Int!) {
+                    repository(owner: $owner, name: $repo) {
+                      pullRequest(number: $pull_number) {
+                        closingIssuesReferences(first: 100) {
+                          nodes {
+                            labels(first: 100) {
+                              nodes {
+                                name
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                `, {
+                  owner: context.repo.owner,
+                  repo: context.repo.repo,
+                  pull_number: context.payload.pull_request.number,
+                }
+              )
+            )
+              .repository
+              .pullRequest
+              .closingIssuesReferences
+              .nodes
+              .flatMap((issue) => 
+                issue
+                  .labels
+                  .nodes
+                  .flatMap((label) =>
+                    label
+                      .name
+                  )
+              );
+
+            const labels = [
+              ...labelsFromCommitEmojis,
+              ...labelsFromLinkedIssues,
+            ]
+              .filter(labelName => labelName);
+
+            if (labels.length === 0) return;
+            github.rest.issues.addLabels({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.payload.pull_request.number,
+              labels
+            });
