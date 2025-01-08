@@ -10,7 +10,7 @@ function deleteFilesInDirectory(startPath: string, removeTargetRegex: RegExp) {
 
   const files = fs.readdirSync(startPath);
   files.forEach((fileName) => {
-    const filePath = path.join(startPath, fileName ?? "");
+    const filePath = path.join(startPath, fileName);
     const stat = fs.lstatSync(filePath);
     if (stat.isDirectory()) {
       // Recursion
