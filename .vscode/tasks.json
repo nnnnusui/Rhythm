@@ -1,0 +1,18 @@
+{
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "dev tasks",
+			"command": "pnpm dev",
+			"detail": "Start development tasks.",
+			"type": "shell",
+			"isBackground": true,
+			"presentation": {
+				"group": "dev_tasks",
+			},
+			"runOptions": {
+				"runOn": "folderOpen",
+			},
+		},
+	]
+}

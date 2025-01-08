@@ -1,0 +1,69 @@
+{
+  "dev.containers.executeInWSL": true,
+  "task.allowAutomaticTasks": "on",
+  // format ->
+  "editor.formatOnSave": true,
+  "editor.indentSize": 2,
+  "editor.tabSize": 2,
+  "files.insertFinalNewline": true,
+  "eslint.format.enable": true,
+  "eslint.options": {
+    "flags": [
+      "unstable_ts_config"
+    ]
+  },
+  "eslint.trace.server": "verbose",
+  "eslint.useFlatConfig": true,
+  "stylelint.validate": [
+    "css",
+    "scss"
+  ],
+  "css.validate": false,
+  "scss.validate": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": "never",
+    "source.fixAll.stylelint": "explicit",
+    "source.addMissingImports": "explicit",
+  },
+  "editor.defaultFormatter": "dbaeumer.vscode-eslint",
+  "json.format.keepLines": true,
+  // <- format
+  "plopTemplates.configFileName": "script/plopfile.ts",
+  "plopTemplates.plopCommand": "plopTemplates",
+  "storybook-opener.storybookOption.port": 6006,
+  "storybook-opener.startCommand": "pnpm storybook",
+  // editor view ->
+  "workbench.editorAssociations": {
+    "*.md": "vscode.markdown.preview.editor",
+  },
+  "markdown.extension.list.indentationSize": "inherit",
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "files.exclude": {
+    ".git": true,
+    ".pnpm-store": true,
+    "node_modules": true,
+    "**/.DS_Store": true,
+  },
+  "files.readonlyInclude": {
+    "node_modules/**/*": true,
+    "**/*.module.scss.d.ts": true,
+    "**/*.module.scss.d.ts.map": true,
+  },
+  "explorer.fileNesting.enabled": true,
+  "explorer.fileNesting.expand": false,
+  "explorer.fileNesting.patterns": {
+    "*": "$(capture).d.ts, $(capture).d.ts.map",
+    "package.json": "pnpm-lock.yaml",
+    "tsconfig.json": "tsconfig.*.json",
+    "app.config.ts": "vitest.*.ts",
+  },
+  "workbench.editor.labelFormat": "default",
+  "workbench.editor.customLabels.patterns": {
+    "**/index.tsx": "${dirname}/.tsx",
+  },
+  "markdown.extension.completion.enabled": true,
+  "markdown.extension.orderedList.autoRenumber": false,
+  "vitest.nodeExecutable": "/usr/local/bin/node",
+  "vitest.configSearchPatternExclude": "{**/node_modules/**,**/.*/**,**/*.d.ts,vite.config.*.timestamp-*}",
+  // <- editor view
+}

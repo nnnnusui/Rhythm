@@ -1,0 +1,29 @@
+{
+  // "include": [ "src", ".storybook", "**/.scope.ts" ],
+  "compilerOptions": {
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "bundler",
+    "allowSyntheticDefaultImports": true,
+    "esModuleInterop": true,
+    "jsx": "preserve",
+    "jsxImportSource": "solid-js",
+    "allowJs": true,
+    "strict": true,
+    "noEmit": true,
+    "noUncheckedIndexedAccess": true,
+    "types": [ "vinxi/types/client", "vitest/globals", "@testing-library/jest-dom" ],
+    "isolatedModules": true,
+    "paths": {
+      "~/*": [ "./src/*" ]
+    },
+    "plugins": [
+      {
+        "name": "eslint-plugin-import-access",
+        "jsdoc": {
+          "defaultImportability": "package"
+        }
+      }
+    ],
+  }
+}
