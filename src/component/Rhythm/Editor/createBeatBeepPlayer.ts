@@ -1,4 +1,5 @@
-import { createEffect, onMount, untrack } from "solid-js";
+import { createEffect, onCleanup, onMount, untrack } from "solid-js";
+import { isServer } from "solid-js/web";
 
 import { useSoundEffect } from "~/fn/context/SoundEffectContext";
 import { Timer } from "~/fn/signal/createTimer";
@@ -24,6 +25,15 @@ export const createBeatBeepPlayer = (p: {
   });
 
   const beats = () => p.beats;
+
+  let hided = true;
+  const onVisibilityChange = () => {
+    if (document.visibilityState === "visible") return;
+    hided = true;
+  };
+  onMount(() => !isServer && document.addEventListener("visibilitychange", onVisibilityChange));
+  onCleanup(() => !isServer && document.removeEventListener("visibilitychange", onVisibilityChange));
+
   const cache = Wve.create<{
     measured: boolean;
     length: number;
@@ -47,12 +57,14 @@ export const createBeatBeepPlayer = (p: {
       nextKind: nextBeat?.kind,
     });
   };
+
   createEffect(() => {
     if (!p.play) return;
     const timer = p.timer;
     if (!timer.measuring) return cache.set("measured", false);
     const prev = untrack(cache);
-    if (!prev.measured || prev.length !== beats().length) {
+    if (hided || !prev.measured || prev.length !== beats().length) {
+      hided = false;
       const index = beats().findIndex((it) => timer.current < Math.floor(it.time * 1000));
       cacheNext(index - 1);
       return;
