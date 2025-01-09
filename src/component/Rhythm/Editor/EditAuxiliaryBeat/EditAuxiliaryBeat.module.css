@@ -1,0 +1,14 @@
+.EditAuxiliaryBeat {
+  display: grid;
+  grid-template:
+    "current beep" auto
+    "templates templates" auto
+    / 1fr auto;
+}
+
+.Templates {
+  grid-area: templates;
+
+  display: flex;
+  justify-content: flex-end;
+}

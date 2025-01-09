@@ -1,0 +1,17 @@
+.Game {
+  position: absolute;
+  inset: 0;
+
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+  overflow: hidden;
+
+  white-space: nowrap;
+
+  &.Ghost {
+    pointer-events: none;
+
+    opacity: .6;
+  }
+}

@@ -1,0 +1,12 @@
+.Rhythm {
+  width: 100%;
+  height: 100%;
+
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+.Controls {
+  display: grid;
+  grid-auto-flow: column;
+}

@@ -1,0 +1,20 @@
+.YouTubeOption {
+  display: flex;
+  align-items: center;
+  gap: .8em;
+}
+
+.Title {
+}
+
+.SubTexts {
+  display: flex;
+  align-items: center;
+  gap: .8em;
+
+  font-size: 12px;
+  color: color-mix(in srgb, currentColor 50%, transparent);
+}
+
+.VideoId {
+}

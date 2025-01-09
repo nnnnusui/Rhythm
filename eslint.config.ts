@@ -30,7 +30,7 @@ export default [
       },
       globals: {
         ...globals.browser,
-        ...vitest.environments?.env.globals,
+        ...vitest.environments.env.globals,
       },
     },
   },
@@ -185,7 +185,7 @@ export default [
       vitest,
     },
     rules: {
-      ...vitest.configs?.all.rules,
+      ...vitest.configs.all.rules,
       "vitest/consistent-test-filename": "off",
       "vitest/expect-expect": ["warn", {
         assertFunctionNames: ["expect", "expectTypeOf"],

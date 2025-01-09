@@ -1,0 +1,4 @@
+.EditKeyframeDetail {
+  display: flex;
+  flex-direction: column;
+}

@@ -1,0 +1,47 @@
+.ScrollBar {
+  position: relative;
+
+  &.Vertical {
+    min-width: 2em;
+  }
+
+  &.Horizontal {
+    min-height: 2em;
+  }
+}
+
+.Thumb {
+  position: absolute;
+
+  background-color: aqua;
+
+  .Vertical & {
+    width: 100%;
+    min-height: 42px;
+    height: var(--viewRatio);
+    max-height: 50%;
+  }
+
+  .Vertical:not(.Reverse) & {
+    top: var(--progress);
+  }
+
+  .Vertical.Reverse & {
+    bottom: var(--progress);
+  }
+
+  .Horizontal & {
+    min-width: 42px;
+    width: var(--viewRatio);
+    max-width: 50%;
+    height: 100%;
+  }
+
+  .Horizontal:not(.Reverse) & {
+    left: var(--progress);
+  }
+
+  .Horizontal.Reverse & {
+    right: var(--progress);
+  }
+}

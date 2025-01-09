@@ -1,0 +1,14 @@
+.EditSource {
+  display: grid;
+  grid-auto-flow: row;
+  gap: 2px;
+}
+
+.ModeSelect {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.SelectedId {
+  font-size: .8em;
+}

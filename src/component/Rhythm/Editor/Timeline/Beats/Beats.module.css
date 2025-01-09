@@ -1,0 +1,68 @@
+.Beats {
+  width: 2.55em;
+
+  border-right: 1px solid color-mix(in srgb, currentColor 30%, transparent);
+}
+
+.Lines {
+}
+
+.BeatLine {
+  pointer-events: none;
+  position: absolute;
+  bottom: var(--progress);
+  width: 100%;
+
+  border-bottom: 1px dotted white;
+}
+
+.BeatIndicateLane {
+  position: relative;
+  width: 100%;
+  height: 100%;
+}
+
+.LineInfo {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: var(--progress);
+  height: var(--length);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+
+  font-size: .96em;
+  color: color-mix(in srgb, currentColor 90%, transparent);
+
+  &.Current {
+    color: aqua;
+  }
+}
+
+.VerticalInfo {
+  transform-origin: top left;
+  transform: translateY(100%) rotate(-90deg);
+
+  padding-left: .4em;
+}
+
+.TopInfo {
+  padding: .2em;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+
+  text-align: right;
+  font-size: .96em;
+}
+
+.Kind {
+  margin-left: .4em;
+  opacity: .85;
+
+  white-space: nowrap;
+  font-size: .96em;
+}

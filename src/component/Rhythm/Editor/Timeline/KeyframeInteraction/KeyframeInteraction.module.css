@@ -1,0 +1,13 @@
+.KeyframeInteraction {
+  position: absolute;
+  bottom: var(--progress);
+  width: 100%;
+}
+
+.InAction {
+  opacity: .2;
+}
+
+.Selected {
+  outline: 1px solid currentColor;
+}

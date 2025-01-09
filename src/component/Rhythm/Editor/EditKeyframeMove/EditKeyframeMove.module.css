@@ -1,0 +1,9 @@
+.EditKeyframeMove {
+  display: flex;
+  flex-direction: column;
+}
+
+.Id {
+  font-size: 12px;
+  color: color-mix(in srgb, currentColor 50%, transparent);
+}

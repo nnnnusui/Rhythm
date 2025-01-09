@@ -1,0 +1,35 @@
+.Editor {
+  display: grid;
+  grid-template:
+    "view control" 1fr
+    "detail detail" auto
+    / 1fr auto;
+}
+
+.View {
+  grid-area: view;
+  position: relative;
+
+  .ViewBackground {
+    position: absolute;
+    inset: 0;
+
+    background-color: rgba(0, 0, 0, 0.6);
+
+    &.Hidden {
+      display: none;
+    }
+  }
+}
+
+.Interactions {
+  grid-area: control;
+  width: 25vw;
+
+  display: flex;
+  flex-direction: column;
+}
+
+.Detail {
+  grid-area: detail;
+}

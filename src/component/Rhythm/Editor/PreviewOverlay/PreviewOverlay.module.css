@@ -1,0 +1,17 @@
+.PreviewOverlay {
+  position: absolute;
+  inset: 0;
+
+  display: grid;
+  grid-template-columns: 1fr auto;
+
+  &.Ghost {
+    pointer-events: none;
+
+    opacity: .4;
+  }
+}
+
+.Inner {
+  height: var(--length);
+}
