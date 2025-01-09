@@ -1,7 +1,8 @@
 .KeyframeInteraction {
   position: absolute;
+  left: 0;
+  right: 0;
   bottom: var(--progress);
-  width: 100%;
 }
 
 .InAction {

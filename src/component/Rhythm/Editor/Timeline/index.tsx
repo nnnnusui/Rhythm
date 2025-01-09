@@ -87,7 +87,8 @@ export const Timeline = (p: {
         currentBeat={currentBeat()}
         getProgressPxFromTime={getProgressPxFromTime}
       />
-      <div class={styles.KeyframeLanes}>
+      <div class={styles.Lanes} />
+      <div class={styles.Keyframes}>
         <For each={Object.keys(keyframeMap())}>{(keyframeId) => (
           <KeyframeInteraction
             keyframe={keyframeMap.partial(keyframeId)}

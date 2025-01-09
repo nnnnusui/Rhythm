@@ -4,10 +4,29 @@
 
   display: grid;
   align-items: stretch;
-  grid-template-rows: 100%;
-  grid-auto-flow: column;
-  grid-auto-columns: auto 1fr;
+  grid-template:
+    "header content" 100%
+    / auto 1fr;
 }
 
-.KeyframeLanes {
+.Lanes {
+  grid-area: content;
+
+  display: grid;
+  align-items: stretch;
+  grid-template-rows: 100%;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+}
+
+.Keyframes {
+  grid-area: content;
+  position: relative;
+}
+
+.JudgeAreaLane {
+
+  &:not(:first-child) {
+    border-left: 1px solid color-mix(in srgb, currentColor 30%, transparent);
+  }
 }
