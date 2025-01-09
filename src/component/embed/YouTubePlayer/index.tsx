@@ -41,7 +41,7 @@ export const YouTubePlayer = (p: {
   const play = () => {
     if (!player) return;
     log("play.");
-    player.setVolume(20);
+    player.setVolume(30);
     player.playVideo();
   };
   const pause = () => {

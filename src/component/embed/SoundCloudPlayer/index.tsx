@@ -33,14 +33,19 @@ export const SoundCloudPlayer = (p: {
     const newWidget = api.Widget(id);
     newWidget.bind(
       api.Widget.Events.READY,
-      () => widget = newWidget,
+      () => {
+        widget = newWidget;
+        widget.setVolume(0);
+        if (!p.preload) return;
+        widget.play();
+      },
     );
   };
 
   const play = () => {
     if (!widget) return;
     log("play.");
-    widget.setVolume(20);
+    widget.setVolume(12);
     widget.play();
   };
   const pause = () => {
