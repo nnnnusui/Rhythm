@@ -72,5 +72,5 @@ type TempoKeyframe
 export type NoteKeyframe
   = KeyframeBase<"note">
   & {
-    judgeAreaId?: string;
+    judgeAreaId: string;
   };

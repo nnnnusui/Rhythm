@@ -26,7 +26,6 @@ export const KeyframeInteraction = (p: {
   const getGridOrderFromKeyframe = (keyframe?: Keyframe) => {
     if (!keyframe) return;
     if (keyframe.kind !== "note") return;
-    if (keyframe.judgeAreaId == null) return;
     const laneOrder = p.getLaneOrder(keyframe.judgeAreaId);
     if (laneOrder == null) return;
     return laneOrder + 1;
