@@ -1,5 +1,4 @@
-import { createElementSize } from "@solid-primitives/resize-observer";
-import { children, createMemo, createSignal, JSX } from "solid-js";
+import { children, createMemo, JSX } from "solid-js";
 
 import { TimerInteraction } from "~/component/interaction/TimerInteraction";
 import { Objects } from "~/fn/objects";
@@ -9,7 +8,6 @@ import { Wve } from "~/type/struct/Wve";
 import { createBeatBeepPlayer } from "./createBeatBeepPlayer";
 import { EditAuxiliaryBeat } from "./EditAuxiliaryBeat";
 import { EditScoreInfo } from "./EditScoreInfo";
-import { PreviewOverlay } from "./PreviewOverlay";
 import { Game } from "../Game";
 import { Beat } from "./Beat";
 import { EditJudgeAreaMap } from "./EditJudgeAreaMap";
@@ -26,15 +24,9 @@ export const Editor = (p: {
   maxTime: number;
   score: Wve<Score>;
 }) => {
+  const maxTime = () => p.maxTime;
   const child = children(() => p.children);
   const timer = Timer.from(() => p.timer);
-
-  const maxTime = () => p.maxTime;
-  const [view, setView] = createSignal<HTMLElement>();
-  const viewSize = createElementSize(view);
-  const viewLength = () => (viewSize.height ?? 0);
-  const [timelineOffsetRatio] = createSignal(0.5);
-
   const score = Wve.from(() => p.score);
   const sourceMap = score.partial("sourceMap");
   const timeline = score.partial("timeline");
@@ -68,9 +60,7 @@ export const Editor = (p: {
 
   return (
     <div class={styles.Editor}>
-      <div class={styles.View}
-        ref={setView}
-      >
+      <div class={styles.View}>
         {child()}
         <div class={styles.ViewBackground}
           classList={{ [styles.Hidden]: viewMode() !== "play" }}
@@ -84,25 +74,17 @@ export const Editor = (p: {
         <div class={styles.ViewBackground}
           classList={{ [styles.Hidden]: viewMode() !== "edit" }}
         />
-        <PreviewOverlay
+        <Timeline
+          keyframeMap={keyframeMap}
+          judgeAreaMap={judgeAreaMap}
+          action={timelineAction}
           timer={timer}
-          scoreLength={maxTime()}
-          gameDuration={duration()}
           ghost={viewMode() !== "edit"}
-        >
-          <Timeline
-            keyframeMap={keyframeMap}
-            judgeAreaMap={judgeAreaMap}
-            action={timelineAction}
-            time={timer.current}
-            maxTime={maxTime()}
-            duration={duration()}
-            viewLengthPx={viewLength()}
-            timelineOffsetRatio={timelineOffsetRatio()}
-            beats={beats()}
-            currentBeat={currentBeat()}
-          />
-        </PreviewOverlay>
+          maxTime={maxTime()}
+          duration={duration()}
+          beats={beats()}
+          currentBeat={currentBeat()}
+        />
         {/* <InteractOverlay /> */}
       </div>
       <div class={styles.Detail}>

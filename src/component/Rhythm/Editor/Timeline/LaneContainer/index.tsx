@@ -33,6 +33,9 @@ export const LaneContainer = (p: {
     const progress = pxFromStart / p.maxScrollPx;
     return progress * p.maxTime;
   };
+  const getTimeDeltaFromPx = (pxDeltaPos: Pos) =>
+    (pxDeltaPos.y * -1 / p.maxScrollPx) * p.maxTime;
+
   const getAdjustedTime = (raw: number) => {
     const getByBeat = (rawNextTime: number) => {
       const nextBeatIndex = beats().findIndex((it) => rawNextTime < it.time);
@@ -114,7 +117,7 @@ export const LaneContainer = (p: {
             action={editAction}
             dragContainer={container()}
             getProgressPxFromTime={p.getProgressPxFromTime}
-            getTimeFromPx={getTimeFromPx}
+            getTimeDeltaFromPx={getTimeDeltaFromPx}
             getAdjustedTime={getAdjustedTime}
             getJudgeAreaFromPx={getJudgeAreaFromPx}
             selected={isSelected(keyframeId)}

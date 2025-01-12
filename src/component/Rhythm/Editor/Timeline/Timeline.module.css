@@ -1,9 +1,23 @@
 .Timeline {
   position: absolute;
-  top: var(--offset);
-  left: 0;
-  right: 0;
-  height: var(--height);
+  inset: 0;
+
+  display: grid;
+  grid-template-columns: 1fr auto;
+
+  &.Ghost {
+    pointer-events: none;
+
+    opacity: .4;
+  }
+}
+
+.Inner {
+  position: relative;
+  height: var(--length);
+
+  margin-top: var(--remain);
+  margin-bottom: var(--offset);
 
   display: grid;
   align-items: stretch;

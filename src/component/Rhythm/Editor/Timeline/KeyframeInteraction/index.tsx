@@ -16,7 +16,7 @@ export const KeyframeInteraction = (p: {
   getLaneOrder: (judgeAreaId: Id) => undefined | number;
   dragContainer: HTMLElement | undefined;
   getProgressPxFromTime: (time: number) => number;
-  getTimeFromPx: (pxPos: Pos) => number;
+  getTimeDeltaFromPx: (pxDeltaPos: Pos) => number;
   getAdjustedTime: (raw: number) => number;
   getJudgeAreaFromPx: (pxPos: Pos) => JudgeArea | undefined;
   selected: boolean;
@@ -38,8 +38,7 @@ export const KeyframeInteraction = (p: {
     if (action().kind !== "move") return;
     const start = event.start;
     const id = start.id;
-    const pos = Pos.fromEvent(event.raw, { relativeTo: p.dragContainer });
-    const rawTime = p.getTimeFromPx(pos);
+    const rawTime = start.time + p.getTimeDeltaFromPx(event.delta);
     const nextTime = event.raw.ctrlKey
       ? rawTime
       : p.getAdjustedTime(rawTime);
@@ -49,6 +48,7 @@ export const KeyframeInteraction = (p: {
     }));
     const draggedNote = draggedKeyframe.when((it) => it?.kind === "note");
     if (draggedNote) {
+      const pos = Pos.fromEvent(event.raw, { relativeTo: p.dragContainer });
       const judgeArea = p.getJudgeAreaFromPx(pos);
       if (judgeArea) draggedNote.set("judgeAreaId", judgeArea.id);
     }
