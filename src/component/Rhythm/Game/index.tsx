@@ -17,9 +17,11 @@ export const Game = (p: {
   duration: number;
 }) => {
   const keyframes = () => Object.values(p.score.timeline.keyframeMap);
-  const notes = () => keyframes().filter((it) => it.kind === "note");
   const judgeAreas = () => Object.values(p.score.judgeAreaMap);
   const lanes = () => judgeAreas(); //.filter((it) => it.kind === "lane");
+
+  const notes = () => keyframes().filter((it) => it.kind === "note");
+  const notesMap = () => Object.groupBy(notes(), (it) => it.judgeAreaId);
 
   const state = Wve.create({
     judgeLineMarginBottomPx: 80,
@@ -75,42 +77,37 @@ export const Game = (p: {
             <Lane
               judgeLineMarginBottomPx={judgeLineMarginBottomPx()}
               active={judgeAreaActiveMap()[lane.id]}
-            />
+            >
+              <For each={notesMap()[lane.id]}>{(note) => (
+                <Note
+                  gameTime={p.time}
+                  gameDuration={p.duration}
+                  time={note.time}
+                  keyframes={[
+                    {
+                      offset: 0,
+                      bottom: `${playAreaHeight() + judgeLineMarginBottomPx()}px`,
+                    },{
+                      offset: 1,
+                      bottom: `${judgeLineMarginBottomPx()}px`,
+                    },{
+                      offset: 2,
+                      bottom: `${-1 * playAreaHeight() + judgeLineMarginBottomPx()}px`,
+                    },
+                  ]}
+                  style={{
+                    width: "100%",
+                    height: "1em",
+                    "background-color": "orange",
+                  }}
+                />
+              )}</For>
+            </Lane>
           )}</For>
         </div>
         <div class={styles.JudgeLine}
           style={{ "--marginBottom": `${judgeLineMarginBottomPx()}px` }}
         />
-        {/* <style>{`
-          @keyframes toBottom {
-          }
-        `}</style> */}
-        <div class={styles.Notes}>
-          <For each={notes()}>{(note) => (
-            <Note
-              gameTime={p.time}
-              gameDuration={p.duration}
-              time={note.time}
-              keyframes={[
-                {
-                  offset: 0,
-                  bottom: `${playAreaHeight() + judgeLineMarginBottomPx()}px`,
-                },{
-                  offset: 1,
-                  bottom: `${judgeLineMarginBottomPx()}px`,
-                },{
-                  offset: 2,
-                  bottom: `${-1 * playAreaHeight() + judgeLineMarginBottomPx()}px`,
-                },
-              ]}
-              style={{
-                width: "100%",
-                height: "1em",
-                "background-color": "orange",
-              }}
-            />
-          )}</For>
-        </div>
       </div>
     </div>
   );

@@ -1,4 +1,6 @@
 .Lane {
+  position: relative;
+
   display: grid;
 }
 

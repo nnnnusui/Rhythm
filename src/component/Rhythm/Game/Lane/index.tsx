@@ -1,6 +1,9 @@
+import { JSX } from "solid-js";
+
 import styles from "./Lane.module.css";
 
 export const Lane = (p: {
+  children?: JSX.Element;
   judgeLineMarginBottomPx: number;
   active: undefined | boolean;
 }) => {
@@ -11,6 +14,7 @@ export const Lane = (p: {
         [styles.Active]: p.active,
       }}
     >
+      {p.children}
       <div
         class={styles.ActiveIndicator}
         classList={{
