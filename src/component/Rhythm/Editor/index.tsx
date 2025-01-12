@@ -1,5 +1,6 @@
 import { children, createMemo, JSX } from "solid-js";
 
+import { Fps } from "~/component/indicate/Fps";
 import { TimerInteraction } from "~/component/interaction/TimerInteraction";
 import { Objects } from "~/fn/objects";
 import { Timer } from "~/fn/signal/createTimer";
@@ -91,6 +92,7 @@ export const Editor = (p: {
         details.
       </div>
       <div class={styles.Interactions}>
+        <Fps />
         <EditScoreInfo score={score} />
         <TimerInteraction timer={timer} />
         <EditViewState

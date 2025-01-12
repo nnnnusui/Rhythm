@@ -1,0 +1,52 @@
+.Fps {
+  width: 100%;
+  height: calc(1em + 1.75em);
+
+  padding: 2px 4px;
+  border: 2px solid currentcolor;
+
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+.Header {
+  content: '';
+  line-height: 1;
+
+  display: grid;
+  grid-template-columns: 1fr auto;
+}
+
+.Text {
+  content: '';
+
+  font-weight: bold;
+}
+
+.Reset {
+  cursor: pointer;
+  content: '';
+
+  font-weight: bold;
+
+  &:hover,
+  &:focus-within {
+    outline: 2px solid currentcolor;
+  }
+}
+
+.Histories {
+  content: '';
+  width: 100%;
+  height: 100%;
+
+  display: flex;
+  align-items: flex-end;
+}
+
+.History {
+  content: '';
+  flex-grow: 1;
+
+  background-color: currentcolor;
+}
