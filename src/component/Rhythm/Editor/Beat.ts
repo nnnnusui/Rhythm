@@ -33,11 +33,12 @@ export const Beat = (() => {
     const barSecond = Tempo.toBarSecond(tempo);
     const tempoSecond = Tempo.toBeatSecond(tempo);
     const auxiliarySecond = Tempo.getSecondFromNote(tempo, auxiliaryBeat);
+    const getOffsetFn = (base: number) => (index: number) => index * base;
     const secondsWithKind: SecondWithKind[] = [
-      { kind: "head", second: maxSecond, noteValue: undefined },
-      { kind: "bar", second: barSecond, noteValue: undefined },
-      { kind: "tempo", second: tempoSecond, noteValue: tempo.beat },
-      { kind: "auxiliary", second: auxiliarySecond, noteValue: auxiliaryBeat },
+      { kind: "head", second: maxSecond, noteValue: undefined, getOffset: getOffsetFn(maxSecond) },
+      { kind: "bar", second: barSecond, noteValue: undefined, getOffset: (barOffset) => Tempo.toBarOffsetSecond(tempo, barOffset) },
+      { kind: "tempo", second: tempoSecond, noteValue: tempo.beat, getOffset: getOffsetFn(tempoSecond) },
+      { kind: "auxiliary", second: auxiliarySecond, noteValue: auxiliaryBeat, getOffset: getOffsetFn(auxiliarySecond) },
     ];
 
     const baseSeconds = secondsWithKind
@@ -66,7 +67,7 @@ export const Beat = (() => {
       return baseBeats.flatMap((beat) => {
         const offset = beat.time;
         return [...Array(resolution.count)].flatMap((_, index) => {
-          const time = offset + (index * resolution.second);
+          const time = offset + resolution.getOffset(index);
           if (maxSecond <= time) return [];
           const barIndex = resolution.kind === "bar" ? index : beat.barIndex;
           const offsetInBar = resolution.noteValue
@@ -97,4 +98,5 @@ type SecondWithKind = {
   kind: Beat["kind"];
   second: number;
   noteValue: NoteValue | undefined;
+  getOffset: (index: number) => number;
 };

@@ -50,6 +50,16 @@ export const Tempo = (() => {
     return barPerBeat * 60 / beatParMinuts;
   };
 
+  const toBarOffsetSecond = (tempo: Tempo, barOffset: number) => {
+    if (!tempo.bpm) return 0;
+    // const beatParMinuts = tempo.bpm;
+    // const barPerBeat = NoteValue.toDecimal(tempo.timeSignature) / NoteValue.toDecimal(tempo.beat);
+    // return barPerBeat * 60 / beatParMinuts;
+    const diviend = 60 * barOffset * NoteValue.toDecimal(tempo.timeSignature);
+    const divisor = tempo.bpm * NoteValue.toDecimal(tempo.beat);
+    return diviend / divisor;
+  };
+
   const toBeatSecond = (tempo: Tempo) => {
     const beatPerBar = NoteValue.toDecimal(tempo.beat) / NoteValue.toDecimal(tempo.timeSignature);
     const barSecond = toBarSecond(tempo);
@@ -57,9 +67,10 @@ export const Tempo = (() => {
   };
 
   const getSecondFromNote = (tempo: Tempo, note: NoteValue) => {
-    const notePerBar = NoteValue.toDecimal(note) / NoteValue.toDecimal(tempo.timeSignature);
-    const barSecond = toBarSecond(tempo);
-    return barSecond * notePerBar;
+    // const notePerBar = NoteValue.toDecimal(note) / NoteValue.toDecimal(tempo.timeSignature);
+    // const barSecond = toBarSecond(tempo);
+    // return barSecond * notePerBar;
+    return NoteValue.toDecimal(note) * toBarSecond(tempo) / NoteValue.toDecimal(tempo.timeSignature);
   };
 
   return {
@@ -69,6 +80,7 @@ export const Tempo = (() => {
     isRequired,
     whenRequired,
     toBarSecond,
+    toBarOffsetSecond,
     toBeatSecond,
     getSecondFromNote,
   };

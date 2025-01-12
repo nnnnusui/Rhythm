@@ -49,6 +49,29 @@ describe("type Tempo", async () => {
     });
   });
 
+  describe("toBarOffsetSecond()", async () => {
+    it("𝅘𝅥=60 4/4 * 1 _ 4s", async () => {
+      const tempo = Tempo.from({ bpm: 60 });
+      const barSec = Tempo.toBarOffsetSecond(tempo, 1);
+
+      expect(barSec).toBe(4);
+    });
+
+    it("𝅘𝅥=60 4/4 * 2 _ 8s", async () => {
+      const tempo = Tempo.from({ bpm: 60 });
+      const barSec = Tempo.toBarOffsetSecond(tempo, 2);
+
+      expect(barSec).toBe(8);
+    });
+
+    it("𝅘𝅥=60 6/8 * 2 _ 6s", async () => {
+      const tempo = Tempo.from({ bpm: 60, timeSignature: NoteValue.from("6/8") });
+      const barSec = Tempo.toBarOffsetSecond(tempo, 2);
+
+      expect(barSec).toBe(6);
+    });
+  });
+
   describe("toBeatSecond()", async () => {
     it("𝅘𝅥=60 4/4 _ 1", async () => {
       const tempo = Tempo.from(60);
