@@ -1,3 +1,6 @@
+import { merge } from "ts-deepmerge";
+
+import { Objects } from "~/fn/objects";
 import { Score } from "./type/Score";
 
 export type PerUserStatus = {
@@ -6,9 +9,13 @@ export type PerUserStatus = {
 };
 
 export const PerUserStatus = (() => {
-  const init = (): PerUserStatus => ({
-    editingScoreMap: {},
-  });
+  const init = (base?: PerUserStatus): PerUserStatus => {
+    if (!base) return { editingScoreMap: {} };
+    return {
+      ...base,
+      editingScoreMap: Objects.map(base.editingScoreMap,(it) => merge(Score.init(), it)),
+    };
+  };
 
   return {
     init,

@@ -4,7 +4,6 @@ import { children, createMemo, createSignal, JSX } from "solid-js";
 import { TimerInteraction } from "~/component/interaction/TimerInteraction";
 import { Objects } from "~/fn/objects";
 import { Timer } from "~/fn/signal/createTimer";
-import { Id } from "~/type/struct/Id";
 import { NoteValue } from "~/type/struct/music/NoteValue";
 import { Wve } from "~/type/struct/Wve";
 import { createBeatBeepPlayer } from "./createBeatBeepPlayer";
@@ -16,7 +15,6 @@ import { Beat } from "./Beat";
 import { EditJudgeAreaMap } from "./EditJudgeAreaMap";
 import { EditKeyframe } from "./EditKeyframe";
 import { EditViewState } from "./EditViewState";
-import { JudgeArea } from "./JudgeArea";
 import { Timeline, TimelineAction, TimelineKeyframe } from "./Timeline";
 import { Score } from "../type/Score";
 
@@ -41,7 +39,7 @@ export const Editor = (p: {
   const sourceMap = score.partial("sourceMap");
   const timeline = score.partial("timeline");
   const keyframeMap = timeline.partial("keyframeMap");
-  const judgeAreaMap = Wve.create<Record<Id, JudgeArea>>({});
+  const judgeAreaMap = score.partial("judgeAreaMap");
 
   const viewModes = ["edit", "play", "sourceControl"] as const;
   type ViewMode = typeof viewModes[number];
@@ -94,6 +92,7 @@ export const Editor = (p: {
         >
           <Timeline
             keyframeMap={keyframeMap}
+            judgeAreaMap={judgeAreaMap}
             action={timelineAction}
             time={timer.current}
             maxTime={maxTime()}

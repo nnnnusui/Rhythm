@@ -34,7 +34,7 @@ export const Rhythm = () => {
 
 const WithContext = () => {
   const status = Wve.create(PerUserStatus.init())
-    .with(makePersisted({ name: "perUserStatus" }));
+    .with(makePersisted({ name: "perUserStatus", init: PerUserStatus.init }));
 
   const scoreMap = status.partial("editingScoreMap");
   const selectedScoreId = status.partial("editingScoreId");

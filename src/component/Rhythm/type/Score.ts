@@ -1,3 +1,5 @@
+import { Id } from "~/type/struct/Id";
+import { JudgeArea } from "./JudgeArea";
 import { SourceMap } from "../../embed/ResourcePlayer";
 import { TimelineKeyframe } from "../Editor/Timeline";
 
@@ -6,7 +8,7 @@ export type Score = {
   title: string;
   length: number;
   sourceMap: SourceMap;
-  interactionMap: Record<string, {}>;
+  judgeAreaMap: Record<Id, JudgeArea>;
   timeline: {
     keyframeMap: Record<TimelineKeyframe["id"], TimelineKeyframe>;
   };
@@ -18,7 +20,7 @@ export const Score = (() => {
     title: "",
     length: 100,
     sourceMap: {},
-    interactionMap: {},
+    judgeAreaMap: {},
     timeline: {
       keyframeMap: {},
     },

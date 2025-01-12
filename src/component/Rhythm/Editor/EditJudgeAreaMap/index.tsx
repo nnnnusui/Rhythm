@@ -3,7 +3,7 @@ import { For } from "solid-js";
 import { Objects } from "~/fn/objects";
 import { Id } from "~/type/struct/Id";
 import { Wve } from "~/type/struct/Wve";
-import { JudgeArea } from "../JudgeArea";
+import { JudgeArea } from "../../type/JudgeArea";
 
 import styles from "./EditJudgeAreaMap.module.css";
 

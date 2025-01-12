@@ -6,11 +6,13 @@ import { isServer } from "solid-js/web";
 import { Wve } from "~/type/struct/Wve";
 
 /** @public */
-export const makePersisted = (options: {
+export const makePersisted = <T>(options: {
   name: string;
-}) => <T>(wve: Wve<T>): Wve<T> => {
+  init?: (it: T) => T;
+}) => (wve: Wve<T>): Wve<T> => {
   if (isServer) return wve;
   const key = options.name;
+  const init = options.init ?? ((it) => it);
 
   const [loaded, setLoaded] = createSignal(false);
   createEffect(() => {
@@ -24,7 +26,7 @@ export const makePersisted = (options: {
   };
   onMount(() => {
     const saved = localStorage.getItem(key);
-    if (saved) wve.set(JSON.parse(saved));
+    if (saved) wve.set(init(JSON.parse(saved)));
     window.addEventListener("storage", storageHandler);
     setLoaded(true);
   });
