@@ -1,0 +1,33 @@
+.LaneContainer {
+  display: grid;
+  align-items: stretch;
+  grid-template-rows: 100%;
+  grid-template-columns: repeat(var(--laneCount), 1fr);
+  grid-auto-flow: column;
+}
+
+.Lanes {
+  grid-column: 1 / -1;
+
+  display: grid;
+  align-items: stretch;
+  grid-template-rows: subgrid;
+  grid-template-columns: subgrid;
+  grid-auto-flow: column;
+
+  & :not(:first-child) {
+    border-left: 1px solid color-mix(in srgb, currentColor 30%, transparent);
+  }
+}
+
+.Keyframes {
+  pointer-events: none;
+  grid-column: 1 / -1;
+  position: relative;
+
+  display: grid;
+  align-items: stretch;
+  grid-template-rows: subgrid;
+  grid-template-columns: subgrid;
+  grid-auto-flow: column;
+}

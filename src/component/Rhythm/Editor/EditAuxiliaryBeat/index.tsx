@@ -1,3 +1,4 @@
+import { NoteValueInteraction } from "~/component/interaction/NoteValueInteraction";
 import { NoteValue } from "~/type/struct/music/NoteValue";
 import { Wve } from "~/type/struct/Wve";
 
@@ -36,6 +37,10 @@ export const EditAuxiliaryBeat = (p: {
           onClick={() => beat.set(NoteValue.from(8))}
         >1/8</button>
       </div>
+      <NoteValueInteraction
+        value={beat}
+        required
+      />
     </fieldset>
   );
 };
