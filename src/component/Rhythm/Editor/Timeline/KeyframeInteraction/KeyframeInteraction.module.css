@@ -1,4 +1,6 @@
 .KeyframeInteraction {
+  pointer-events: auto;
+  grid-column: var(--gridOrder);
   position: absolute;
   left: 0;
   right: 0;

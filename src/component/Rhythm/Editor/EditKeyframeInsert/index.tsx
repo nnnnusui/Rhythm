@@ -26,6 +26,11 @@ export const EditKeyframeInsert = (p: {
         onClick={() => keyframe.set({ kind: "tempo" })}
         disabled={keyframe().kind === "tempo"}
       >tempo</button>
+      <button
+        type="button"
+        onClick={() => keyframe.set({ kind: "note" })}
+        disabled={keyframe().kind === "note"}
+      >note</button>
       <EditKeyframeDetail
         keyframe={keyframe}
         sourceMap={p.sourceMap}

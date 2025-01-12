@@ -51,7 +51,7 @@ export const DragDetector = <
       phase: "start",
       delta: Pos.init(),
       start: start.state,
-      event,
+      raw: event,
     });
   };
   const onPointerMove: JSX.EventHandler<HTMLElement, PointerEvent> = (event) => {
@@ -69,7 +69,7 @@ export const DragDetector = <
         y: movedPos.y - start.pos.y,
       },
       start: start.state,
-      event,
+      raw: event,
     });
   };
   const onPointerUp: JSX.EventHandler<HTMLElement, PointerEvent> = (event) => {
@@ -88,7 +88,7 @@ export const DragDetector = <
         y: movedPos.y - start.pos.y,
       },
       start: start.state,
-      event,
+      raw: event,
     });
   };
 
@@ -116,7 +116,7 @@ type DragEvent<StartState> = {
   phase: DragEventPhase;
   delta: Pos;
   start: StartState;
-  event: PointerEvent;
+  raw: PointerEvent & { currentTarget: Element };
 };
 
 /** @public */

@@ -3,7 +3,9 @@ import { Tempo } from "~/type/struct/music/Tempo";
 
 export type Keyframe
   = SourceKeyframe
-  | TempoKeyframe;
+  | TempoKeyframe
+  | NoteKeyframe
+  ;
 
 export const Keyframe = (() => {
   const toNodes = <T extends Keyframe>(
@@ -56,13 +58,19 @@ type KeyframeBase<Kind> = {
   kind: Kind;
 };
 
-export type SourceKeyframe
+type SourceKeyframe
   = KeyframeBase<"source">
   & {
     sourceId?: string;
     action?: "play" | "pause";
   };
 
-export type TempoKeyframe
+type TempoKeyframe
   = KeyframeBase<"tempo">
   & Partial<Tempo>;
+
+export type NoteKeyframe
+  = KeyframeBase<"note">
+  & {
+    judgeAreaId?: string;
+  };

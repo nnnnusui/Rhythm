@@ -1,7 +1,9 @@
-import { createSignal, Show } from "solid-js";
+import { Show } from "solid-js";
 
 import { DragDetector, OnDrag } from "~/component/detect/DragDetector";
+import { JudgeArea } from "~/component/Rhythm/type/JudgeArea";
 import { Pos } from "~/type/struct/2d/Pos";
+import { Id } from "~/type/struct/Id";
 import { Wve } from "~/type/struct/Wve";
 import { Action } from "../Action";
 import { Keyframe } from "../Keyframe";
@@ -11,48 +13,65 @@ import styles from "./KeyframeInteraction.module.css";
 export const KeyframeInteraction = (p: {
   keyframe: Wve<Keyframe>;
   action: Wve<Action>;
+  getLaneOrder: (judgeAreaId: Id) => undefined | number;
   dragContainer: HTMLElement | undefined;
   getProgressPxFromTime: (time: number) => number;
-  getTimeFromPxDelta: (pxDeltaPos: Pos) => number;
+  getTimeFromPx: (pxPos: Pos) => number;
   getAdjustedTime: (raw: number) => number;
+  getJudgeAreaFromPx: (pxPos: Pos) => JudgeArea | undefined;
   selected: boolean;
 }) => {
   const keyframe = Wve.from(() => p.keyframe);
   const action = Wve.from(() => p.action);
+  const getGridOrderFromKeyframe = (keyframe?: Keyframe) => {
+    if (!keyframe) return;
+    if (keyframe.kind !== "note") return;
+    if (keyframe.judgeAreaId == null) return;
+    const laneOrder = p.getLaneOrder(keyframe.judgeAreaId);
+    if (laneOrder == null) return;
+    return laneOrder + 1;
+  };
 
-  const [dragged, setDragged] = createSignal<Keyframe | undefined>(undefined);
+  const dragged = Wve.create<{ keyframe?: Keyframe }>({});
+  const draggedKeyframe = dragged.partial("keyframe");
   const onDrag: OnDrag<Keyframe> = (event) => {
     if (action().kind !== "move") return;
-    const dragged = event.start;
-    const id = dragged.id;
-    const timeDelta = p.getTimeFromPxDelta(event.delta);
-    const rawTime = dragged.time + timeDelta;
-    const nextTime = event.event.ctrlKey
+    const start = event.start;
+    const id = start.id;
+    const pos = Pos.fromEvent(event.raw, { relativeTo: p.dragContainer });
+    const rawTime = p.getTimeFromPx(pos);
+    const nextTime = event.raw.ctrlKey
       ? rawTime
       : p.getAdjustedTime(rawTime);
-    if (event.phase !== "confirmed") {
-      setDragged(({
-        ...dragged,
-        time: nextTime,
-      }));
-      return;
+    draggedKeyframe.set(({
+      ...start,
+      time: nextTime,
+    }));
+    const draggedNote = draggedKeyframe.when((it) => it?.kind === "note");
+    if (draggedNote) {
+      const judgeArea = p.getJudgeAreaFromPx(pos);
+      if (judgeArea) draggedNote.set("judgeAreaId", judgeArea.id);
     }
+
+    if (event.phase !== "confirmed") return;
+    const resultKeyframe = draggedKeyframe();
+    if (resultKeyframe) keyframe.set(resultKeyframe);
     action.when((it) => it.kind === "move")
       ?.partial("keyframeId")
       .set(id);
-    keyframe.set("time", nextTime);
-    setDragged(undefined);
+    dragged.set("keyframe", undefined);
   };
 
   return (
     <>
       <DragDetector class={styles.KeyframeInteraction}
         classList={{
-          [styles.InAction]: dragged()?.id === keyframe().id,
+          [styles.InAction]: draggedKeyframe()?.id === keyframe().id,
           [styles.Selected]: p.selected,
         }}
         style={{
           "--progress": `${p.getProgressPxFromTime(keyframe().time)}px`,
+          "--gridOrder": getGridOrderFromKeyframe(keyframe()),
         }}
         dragContainer={p.dragContainer}
         onDrag={onDrag}
@@ -61,10 +80,11 @@ export const KeyframeInteraction = (p: {
       >
         <span>{JSON.stringify(keyframe().kind)}</span>
       </DragDetector>
-      <Show when={dragged()}>{(dragged) => (
+      <Show when={draggedKeyframe()}>{(keyframe) => (
         <div class={styles.KeyframeInteraction}
           style={{
-            "--progress": `${p.getProgressPxFromTime(dragged().time)}px`,
+            "--progress": `${p.getProgressPxFromTime(keyframe().time)}px`,
+            "--gridOrder": getGridOrderFromKeyframe(keyframe()),
           }}
         >
           <span>{JSON.stringify(keyframe().kind)}</span>
