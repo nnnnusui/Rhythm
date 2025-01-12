@@ -15,7 +15,7 @@ export const EditJudgeAreaMap = (p: {
   const judgeAreas = () => Objects.values(judgeAreaMap());
 
   const minOrder = () => 0;
-  const maxOrder = () => Math.max(...judgeAreas().map((it) => it.order));
+  const maxOrder = () => Math.max(-1, ...judgeAreas().map((it) => it.order));
 
   const add = () => {
     const id = Id.new();
