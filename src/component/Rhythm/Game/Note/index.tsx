@@ -1,5 +1,6 @@
 import { createEffect, createSignal, JSX, Show } from "solid-js";
 
+import { Wve } from "~/type/struct/Wve";
 import { AnimationKeyframes } from "../AnimationKeyframes";
 
 import styles from "./Note.module.css";
@@ -10,7 +11,10 @@ export const Note = (p: {
   style: JSX.CSSProperties;
   gameTime: number;
   gameDuration: number;
+  judged: Wve<string>;
 }) => {
+  const judged = Wve.from(() => p.judged);
+
   const [ref, setRef] = createSignal<HTMLDivElement>();
   const [animation, setAnimation] = createSignal<Animation>();
   const keyframes = () => AnimationKeyframes.from(p.keyframes);
@@ -48,7 +52,7 @@ export const Note = (p: {
       <div class={styles.Note}
         ref={setRef}
         style={p.style}
-      />
+      >{judged()}</div>
     </Show>
   );
 };

@@ -1,0 +1,17 @@
+.LatestJudge {
+  --color1: azure;
+  --color2: aqua;
+  --color3: dodgerblue;
+  --color4: blue;
+  position: absolute;
+  bottom: 200px;
+  width: 100%;
+
+  text-align: center;
+  font-size: 42px;
+  text-shadow:
+    0 0 10px var(--color1),
+    0 0 20px var(--color2),
+    0 0 40px var(--color3),
+    0 0 80px var(--color4);
+}
