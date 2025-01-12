@@ -1,4 +1,4 @@
-import { children, createMemo, JSX } from "solid-js";
+import { children, createMemo, createSignal, For, JSX } from "solid-js";
 
 import { Fps } from "~/component/indicate/Fps";
 import { TimerInteraction } from "~/component/interaction/TimerInteraction";
@@ -59,6 +59,9 @@ export const Editor = (p: {
     get play() { return playBeatBeep(); },
   });
 
+  const [gameKey, setGameKey] = createSignal([{}]);
+  const resetGame = () => setGameKey([{}]);
+
   return (
     <div class={styles.Editor}>
       <div class={styles.View}>
@@ -66,12 +69,14 @@ export const Editor = (p: {
         <div class={styles.ViewBackground}
           classList={{ [styles.Hidden]: viewMode() !== "play" }}
         />
-        <Game
-          score={score()}
-          time={timer.current / 1000}
-          duration={duration()}
-          ghost={viewMode() === "sourceControl"}
-        />
+        <For each={gameKey()}>{() => (
+          <Game
+            score={score()}
+            time={timer.current / 1000}
+            duration={duration()}
+            ghost={viewMode() === "sourceControl"}
+          />
+        )}</For>
         <div class={styles.ViewBackground}
           classList={{ [styles.Hidden]: viewMode() !== "edit" }}
         />
@@ -98,6 +103,7 @@ export const Editor = (p: {
         <EditViewState
           mode={viewMode}
           duration={duration}
+          resetGame={resetGame}
         />
         <EditAuxiliaryBeat
           auxiliaryBeat={auxiliaryBeat}

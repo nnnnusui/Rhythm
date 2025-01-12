@@ -9,6 +9,8 @@
     pointer-events: none;
 
     opacity: .4;
+
+    display: none;
   }
 }
 

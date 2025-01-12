@@ -5,6 +5,7 @@ import styles from "./EditViewState.module.css";
 export const EditViewState = (p: {
   mode: Wve<"edit" | "play" | "sourceControl">;
   duration: Wve<number>;
+  resetGame: () => void;
 }) => {
   const mode = Wve.from(() => p.mode);
   const duration = Wve.from(() => p.duration);
@@ -38,6 +39,10 @@ export const EditViewState = (p: {
           disabled={mode() === "edit"}
         >edit</button>
       </div>
+      <button
+        type="button"
+        onClick={() => p.resetGame()}
+      >reset game</button>
     </fieldset>
   );
 };
