@@ -15,3 +15,31 @@
     opacity: .6;
   }
 }
+
+.PlayArea {
+  position: absolute;
+  inset: 0;
+  max-width: 650px;
+
+  margin: auto;
+  background-color: color-mix(in srgb, black, transparent 20%);
+
+  display: grid;
+}
+
+.LaneContainer {
+  display: grid;
+  grid-template-rows: 100%;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+}
+
+.JudgeLine {
+  position: absolute;
+  inset: 0;
+  height: 1px;
+
+  margin: auto;
+  margin-bottom: var(--marginBottom);
+  background-color: white;
+}

@@ -66,7 +66,7 @@ export const Editor = (p: {
           classList={{ [styles.Hidden]: viewMode() !== "play" }}
         />
         <Game
-          timeline={timeline()}
+          score={score()}
           time={timer.current / 1000}
           duration={duration()}
           ghost={viewMode() === "sourceControl"}

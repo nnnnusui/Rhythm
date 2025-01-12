@@ -1,0 +1,11 @@
+.Lane {
+  display: grid;
+}
+
+.ActiveIndicator {
+  margin-bottom: var(--marginBottom);
+
+  &.Active {
+    background: linear-gradient(180deg, transparent 0%, transparent 50%, #5555b39e 100%);
+  }
+}
