@@ -43,3 +43,8 @@
   margin-bottom: var(--marginBottom);
   background-color: white;
 }
+
+.Notes {
+  position: absolute;
+  inset: 0;
+}
