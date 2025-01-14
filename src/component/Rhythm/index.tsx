@@ -1,4 +1,4 @@
-import { For, Show, untrack } from "solid-js";
+import { createSignal, For, Show, untrack } from "solid-js";
 
 import { AudioContextProvider } from "~/fn/context/AudioContext";
 import { OperatedProvider } from "~/fn/context/OperatedContext";
@@ -9,8 +9,9 @@ import { createTimer } from "~/fn/signal/createTimer";
 import { makePersisted } from "~/fn/signal/makePersisted";
 import { Id } from "~/type/struct/Id";
 import { Wve } from "~/type/struct/Wve";
-import { Editor } from "./Editor";
+import { Editor, ViewMode } from "./Editor";
 import { TimelineKeyframe } from "./Editor/Timeline";
+import { Game } from "./Game";
 import { PerUserStatus } from "./PerUserStatus";
 import { ResourcePlayer } from "../embed/ResourcePlayer";
 import { Score } from "./type/Score";
@@ -45,6 +46,8 @@ const WithContext = () => {
     return untrack(() => scoreMap).partial(id);
   });
 
+  const gameConfig = status.partial("gameConfig");
+
   return (
     <div class={styles.Rhythm}>
       <div class={styles.Controls}>
@@ -71,6 +74,7 @@ const WithContext = () => {
       <Show when={score.when((it) => !!it)}>{(score) => (
         <WithScore
           score={score()}
+          gameConfig={gameConfig}
         />
       )}</Show>
     </div>
@@ -79,20 +83,28 @@ const WithContext = () => {
 
 const WithScore = (p: {
   score: Wve<Score>;
+  gameConfig: Wve<PerUserStatus["gameConfig"]>;
 }) => {
   const timer = createTimer();
   const score = Wve.from(() => p.score);
-  const maxTime = () => score().length;
   const keyframeMap = score.partial("timeline", "keyframeMap");
   const sourceKeyframeMap = keyframeMap.filter((it) => it.kind === "source");
   const playerTimeline = () => TimelineKeyframe
     .getSourceNodes(Objects.values(sourceKeyframeMap()));
 
+  const gameConfig = Wve.from(() => p.gameConfig);
+  const [gameKey, setGameKey] = createSignal([{}]);
+  const resetGame = () => setGameKey([{}]);
+  const state = Wve.create({ viewMode: ViewMode.init() });
+  const viewMode = state.partial("viewMode");
+
   return (
     <Editor
       timer={timer}
       score={score}
-      maxTime={maxTime()}
+      viewMode={viewMode}
+      gameConfig={gameConfig}
+      resetGame={resetGame}
     >
       <ResourcePlayer
         playing={timer.measuring}
@@ -101,6 +113,21 @@ const WithScore = (p: {
         sourceMap={score().sourceMap}
         timeline={playerTimeline()}
         preload
+      />
+      <div class={styles.ViewBackground}
+        classList={{ [styles.Hidden]: viewMode() !== "play" }}
+      />
+      <For each={gameKey()}>{() => (
+        <Game
+          score={score()}
+          time={timer.current / 1000}
+          duration={gameConfig().duration}
+          offset={gameConfig().offset}
+          ghost={viewMode() === "sourceControl"}
+        />
+      )}</For>
+      <div class={styles.ViewBackground}
+        classList={{ [styles.Hidden]: viewMode() !== "edit" }}
       />
     </Editor>
   );
