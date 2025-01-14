@@ -1,5 +1,8 @@
+import { Ifs } from "./Ifs";
+
 /**
  * Get value by keys from nested objects.
+ * @public
  */
 export type NestedValueOf<T, Keys, Unions extends unknown[] = []> =
   T extends NonNullable<T>
@@ -10,11 +13,35 @@ type NestedValueOfInner<T, Keys, Unions extends unknown[] = []> =
   Keys extends [infer Head, ...infer Tails]
     ? Head extends keyof NonNullable<T>
       ? Tails extends []
-        ? NonNullable<T>[Head] | Unions[number]
+        ? GetValue<NonNullable<T>, Head> | Unions[number]
         : NestedValueOf<
           Required<NonNullable<T>>[Head],
           Tails,
-          [...Unions, Exclude<NonNullable<T>[Head], object>]
+          [...Unions, Exclude<GetValue<NonNullable<T>, Head>, object>]
         >
       : T
     : T;
+
+type GetValue<T, Key extends keyof T> = Ifs<[
+  IfRecord<T, T[Key] | undefined>,
+  IfNotTupleArray<T, T[Key] | undefined>,
+  T[Key],
+]>;
+
+type IfRecord<T, Then, Else = never>
+  = T extends Record<infer Key, unknown>
+    ? string extends Key
+      ? Then
+      : Else
+    : Else;
+
+type IfNotTupleArray<T, Then, Else = never>
+  = T extends unknown[]
+    ? T extends readonly unknown[]
+      ? Then
+      : Else
+    : Else;
+
+export type {
+  GetValue as NestedValueOf_GetValue,
+};
