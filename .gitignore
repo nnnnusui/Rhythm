@@ -9,6 +9,7 @@ dist
 .netlify
 .vinxi
 app.config.timestamp_*.js
+*.tsbuildinfo
 
 # Environment
 .env*.local
