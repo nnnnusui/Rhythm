@@ -2,6 +2,7 @@ import { createEffect, createSignal, JSX, Show } from "solid-js";
 
 import { Wve } from "~/type/struct/Wve";
 import { AnimationKeyframes } from "../AnimationKeyframes";
+import { Judge } from "../Judge";
 
 import styles from "./Note.module.css";
 
@@ -11,7 +12,7 @@ export const Note = (p: {
   style: JSX.CSSProperties;
   gameTime: number;
   gameDuration: number;
-  judged: Wve<string>;
+  judged: Wve<undefined | Judge>;
 }) => {
   const judged = Wve.from(() => p.judged);
 
@@ -52,7 +53,13 @@ export const Note = (p: {
       <div class={styles.Note}
         ref={setRef}
         style={p.style}
-      >{judged()}</div>
+      >
+        <Show when={judged()}>{(judged) => (
+          <span>
+            {judged().kind}: {Math.floor(judged().untilSecond * 10000) / 10000}
+          </span>
+        )}</Show>
+      </div>
     </Show>
   );
 };

@@ -6,6 +6,7 @@ import { Objects } from "~/fn/objects";
 import { Pos } from "~/type/struct/2d/Pos";
 import { Id } from "~/type/struct/Id";
 import { Wve } from "~/type/struct/Wve";
+import { Judge } from "./Judge";
 import { Lane } from "./Lane";
 import { LatestJudge } from "./LatestJudge";
 import { Note } from "./Note";
@@ -30,15 +31,36 @@ export const Game = (p: {
     .sort((prev, next) => prev.time - next.time);
   const notesMap = () => Object.groupBy(notes(), (it) => it.judgeAreaId);
 
+  const judgeMsMap = {
+    perfect: 20,
+    great: 60,
+    good: 100,
+    bad: 125,
+    miss: 200,
+  };
+  const judgedMap = Wve.create<Record<Id, Judge>>({});
+  const state = Wve.create({
+    judgeLineMarginBottomPx: 80,
+    latestJudge: undefined as Judge | undefined,
+  });
+  const judgeLineMarginBottomPx = state.partial("judgeLineMarginBottomPx");
+  const latestJudge = state.partial("latestJudge");
+  const judgeAreaActiveMap = Wve.create<Record<JudgeArea["id"], boolean>>({});
+
   const onJudge = (judgeAreaId: string) => {
     const [judgeTarget] = notesMap()[judgeAreaId]
       ?.flatMap((note) => {
         if (judgedMap()[note.id]) return [];
-        const diffMs = Math.abs(note.time - p.time) * 1000;
-        const judge = Objects.entries(judgeMsMap)
+        const untilSecond = note.time - p.time;
+        const diffMs = Math.abs(untilSecond) * 1000;
+        const judgeKind = Objects.entries(judgeMsMap)
           .find(([, ms]) => diffMs <= ms)
           ?.[0];
-        if (judge == null) return [];
+        if (judgeKind == null) return [];
+        const judge: Judge = {
+          kind: judgeKind,
+          untilSecond,
+        };
         return [{ note, judge }];
       })
       ?? [];
@@ -47,21 +69,7 @@ export const Game = (p: {
     judgedMap.set(note.id, judge);
     latestJudge.set(judge);
   };
-  const judgeMsMap = {
-    perfect: 20,
-    great: 60,
-    good: 100,
-    bad: 125,
-    miss: 200,
-  };
-  const judgedMap = Wve.create<Record<Id, string>>({});
-  const state = Wve.create({
-    judgeLineMarginBottomPx: 80,
-    latestJudge: undefined as string | undefined,
-  });
-  const judgeLineMarginBottomPx = state.partial("judgeLineMarginBottomPx");
-  const latestJudge = state.partial("latestJudge");
-  const judgeAreaActiveMap = Wve.create<Record<JudgeArea["id"], boolean>>({});
+
   const getJudgeAreaFromKey = (key: string) => {
     const keys = "asdjkl".split("");
     const index = keys.indexOf(key);
