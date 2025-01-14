@@ -57,7 +57,7 @@ export default function (
       };
       const overrided
         = fs.existsSync(overrideJsPath)
-          ? templateOverrideFnMap[templateDirName](overrideArgs)
+          ? templateOverrideFnMap[templateDirName]?.(overrideArgs) ?? overrideArgs
           : overrideArgs;
 
       return [
@@ -93,13 +93,13 @@ const templateOverrideFnMap
         return [namespace, overrideFn] as const;
       }),
   ))
-    .filter((it): it is readonly [string, unknown] => !!it)
+    .filter((it): it is readonly [string, Function] => !!it)
     .reduce((sum, [namespace, overrideFn]) => {
       Object.assign(sum, {
         [namespace]: overrideFn,
       });
       return sum;
-    }, {});
+    }, {} as Record<string, Function>);
 
 const getNamespaceFromDestPath = (destinationPath: string) => {
   const relativeDestPath = path.relative(pwd, destinationPath);
