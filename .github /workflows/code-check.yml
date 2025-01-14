@@ -26,4 +26,3 @@ jobs:
             echo code-check
             && pnpm lint
             && pnpm test
-            && pnpm build

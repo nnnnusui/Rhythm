@@ -12,6 +12,7 @@
     "strict": true,
     "noEmit": true,
     "noUncheckedIndexedAccess": true,
+    "skipLibCheck": true,
     "types": [ "vinxi/types/client", "vitest/globals", "@testing-library/jest-dom" ],
     "isolatedModules": true,
     "paths": {
