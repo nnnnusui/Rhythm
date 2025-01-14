@@ -122,7 +122,7 @@ const WithScore = (p: {
           score={score()}
           time={timer.current / 1000}
           duration={gameConfig().duration}
-          offset={gameConfig().offset}
+          judgeDelay={gameConfig().judgeDelay}
           ghost={viewMode() === "sourceControl"}
         />
       )}</For>

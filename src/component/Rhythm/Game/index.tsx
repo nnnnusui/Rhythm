@@ -18,7 +18,7 @@ import styles from "./Game.module.css";
 export const Game = (p: {
   score: Score;
   time: number;
-  offset: number;
+  judgeDelay: number;
   duration: number;
   ghost: boolean;
 }) => {
@@ -32,11 +32,11 @@ export const Game = (p: {
   const notesMap = () => Object.groupBy(notes(), (it) => it.judgeAreaId);
 
   const judgeMsMap = {
-    perfect: 20,
-    great: 60,
-    good: 100,
-    bad: 125,
-    miss: 200,
+    perfect: 40,
+    great: 100,
+    good: 160,
+    bad: 210,
+    miss: 240,
   };
   const judgedMap = Wve.create<Record<Id, Judge>>({});
   const state = Wve.create({
@@ -51,7 +51,7 @@ export const Game = (p: {
     const [judgeTarget] = notesMap()[judgeAreaId]
       ?.flatMap((note) => {
         if (judgedMap()[note.id]) return [];
-        const untilSecond = note.time - p.time;
+        const untilSecond = p.judgeDelay + note.time - p.time;
         const diffMs = Math.abs(untilSecond) * 1000;
         const judgeKind = Objects.entries(judgeMsMap)
           .find(([, ms]) => diffMs <= ms)
@@ -129,7 +129,7 @@ export const Game = (p: {
     >
       <span>time: {p.time}</span>
       <span>duration: {p.duration}</span>
-      <span>offset: {p.offset}</span>
+      <span>judgeDelay: {p.judgeDelay}</span>
       <div class={styles.PlayArea}
         ref={setPlayArea}
         onPointerDown={onPointerDown}
@@ -150,7 +150,7 @@ export const Game = (p: {
                 <Note
                   gameTime={p.time}
                   gameDuration={p.duration}
-                  time={note.time + p.offset}
+                  time={note.time}
                   keyframes={[
                     {
                       offset: 0,
