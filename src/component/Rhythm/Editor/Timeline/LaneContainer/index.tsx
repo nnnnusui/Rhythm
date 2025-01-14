@@ -1,5 +1,5 @@
 import { createElementSize } from "@solid-primitives/resize-observer";
-import { createSignal, For, JSX } from "solid-js";
+import { createSignal, For, JSX, Show } from "solid-js";
 
 import { JudgeArea } from "~/component/Rhythm/type/JudgeArea";
 import { Arrays } from "~/fn/arrays";
@@ -112,17 +112,19 @@ export const LaneContainer = (p: {
       </div>
       <div class={styles.Keyframes}>
         <For each={Objects.entries(keyframeMap())}>{([keyframeId]) => (
-          <KeyframeInteraction
-            keyframe={keyframeMap.partial(keyframeId)}
-            action={editAction}
-            dragContainer={container()}
-            getProgressPxFromTime={p.getProgressPxFromTime}
-            getTimeDeltaFromPx={getTimeDeltaFromPx}
-            getAdjustedTime={getAdjustedTime}
-            getJudgeAreaFromPx={getJudgeAreaFromPx}
-            selected={isSelected(keyframeId)}
-            getLaneOrder={(judgeAreaId?: Id) => judgeAreaOrderMap()[judgeAreaId ?? -1]}
-          />
+          <Show when={keyframeMap.partial(keyframeId).whenPresent()}>{(keyframe) => (
+            <KeyframeInteraction
+              keyframe={keyframe()}
+              action={editAction}
+              dragContainer={container()}
+              getProgressPxFromTime={p.getProgressPxFromTime}
+              getTimeDeltaFromPx={getTimeDeltaFromPx}
+              getAdjustedTime={getAdjustedTime}
+              getJudgeAreaFromPx={getJudgeAreaFromPx}
+              selected={isSelected(keyframeId)}
+              getLaneOrder={(judgeAreaId?: Id) => judgeAreaOrderMap()[judgeAreaId ?? -1]}
+            />
+          )}</Show>
         )}</For>
       </div>
     </div>

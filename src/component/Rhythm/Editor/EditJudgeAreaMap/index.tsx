@@ -1,4 +1,4 @@
-import { For } from "solid-js";
+import { For, Show } from "solid-js";
 
 import { Objects } from "~/fn/objects";
 import { Id } from "~/type/struct/Id";
@@ -34,11 +34,13 @@ export const EditJudgeAreaMap = (p: {
         onClick={add}
       >add</button>
       <For each={judgeAreas()}>{(judgeArea) => (
-        <LaneOption
-          judgeArea={judgeAreaMap.partial(judgeArea.id)}
-          minOrder={minOrder()}
-          maxOrder={maxOrder()}
-        />
+        <Show when={judgeAreaMap.partial(judgeArea.id).whenPresent()}>{(judgeArea) => (
+          <LaneOption
+            judgeArea={judgeArea()}
+            minOrder={minOrder()}
+            maxOrder={maxOrder()}
+          />
+        )}</Show>
       )}</For>
     </fieldset>
   );
