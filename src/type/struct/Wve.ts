@@ -17,6 +17,7 @@ export type Wve<T> = Atomic<T> & {
   filter: FilterFn<T>;
   with: WithFn<T>;
   when: WhenFn<T>;
+  whenPresent: WhenPresentFn<T>;
 };
 
 /** @public */
@@ -31,6 +32,7 @@ export const Wve = (() => {
       filter: filter(wve),
       with: withFn(wve),
       when: when(wve),
+      whenPresent: whenPresent(wve),
     });
   };
 
@@ -126,6 +128,8 @@ export const Wve = (() => {
     // @ts-ignore: wve as Wve<S>
     matcher(wve()) ? wve : undefined;
 
+  const whenPresent = <T>(wve: Wve<T>): WhenPresentFn<T> => () => when(wve)((it) => it != null);
+
   const as = <To>(accessor: () => Wve<any>): Wve<To> =>
     accessor() as Wve<To>;
 
@@ -142,7 +146,7 @@ type Atomic<T> = (() => T) & {
   set: SetStoreFunction<T>;
 };
 type WhenFn<T> = <S extends T>(matcher: (it: T) => it is S) => Wve<S> | undefined;
-
+type WhenPresentFn<T> = () => Wve<NonNullable<T>> | undefined;
 interface FromFn {
   <T>(accessor: () => Wve<T>): Wve<T>;
   <W extends Wve<any> | undefined>(accessor: () => W): W extends Wve<infer T> ? Wve<T | undefined> : never;
