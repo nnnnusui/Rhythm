@@ -6,6 +6,7 @@ import { Objects } from "~/fn/objects";
 import { Pos } from "~/type/struct/2d/Pos";
 import { Id } from "~/type/struct/Id";
 import { Wve } from "~/type/struct/Wve";
+import { createSoundEffectPlayer } from "./createSoundEffectPlayer";
 import { Judge } from "./Judge";
 import { Lane } from "./Lane";
 import { LatestJudge } from "./LatestJudge";
@@ -31,6 +32,7 @@ export const Game = (p: {
     .sort((prev, next) => prev.time - next.time);
   const notesMap = () => Object.groupBy(notes(), (it) => it.judgeAreaId);
 
+  const se = createSoundEffectPlayer();
   const judgeMsMap = {
     perfect: 40,
     great: 100,
@@ -64,8 +66,9 @@ export const Game = (p: {
         return [{ note, judge }];
       })
       ?? [];
-    if (!judgeTarget) return;
+    if (!judgeTarget) return se.playTap();
     const { note, judge } = judgeTarget;
+    se.playJudge(judge.kind);
     judgedMap.set(note.id, judge);
     latestJudge.set(judge);
   };
