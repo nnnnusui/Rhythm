@@ -15,7 +15,10 @@ export const LaneOption = (p: {
 
   return (
     <div class={styles.LaneOption}>
-      {JSON.stringify(judgeArea())}
+      <div class={styles.Label}>
+        <span>{judgeArea().kind}</span>
+        <span>{judgeArea().order}</span>
+      </div>
       <div>
         <button
           type="button"
