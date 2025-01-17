@@ -16,7 +16,7 @@ export const PerUserStatus = (() => {
       editingScoreMap: {},
       gameConfig: {
         duration: 1.2,
-        judgeDelay: 0.1,
+        judgeDelay: 0,
       },
     };
     return {
