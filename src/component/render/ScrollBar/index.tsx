@@ -2,6 +2,7 @@ import { createElementSize } from "@solid-primitives/resize-observer";
 import { children, createSignal, JSX } from "solid-js";
 
 import { DragDetector, DragEventPhase, OnDrag } from "~/component/detect/DragDetector";
+import { Resizable } from "../Resizable";
 
 import styles from "./ScrollBar.module.css";
 
@@ -14,6 +15,7 @@ export const ScrollBar = (p: {
     phase: DragEventPhase;
     progress: number;
   }) => void;
+  onScale: (viewRatio: number) => void;
   direction?: "vertical" | "horizontal";
   reverse?: boolean;
 }) => {
@@ -52,7 +54,9 @@ export const ScrollBar = (p: {
       }}
       ref={setContainer}
     >
-      <DragDetector class={styles.Thumb}
+      <Resizable
+        as={DragDetector}
+        class={styles.Thumb}
         ref={setThumb}
         style={{
           "--progress": `${progressPx()}px`,
@@ -61,6 +65,8 @@ export const ScrollBar = (p: {
         dragContainer={container()}
         startState={progressPx}
         onDrag={onDrag}
+        resizable={direction() === "vertical" ? ["top", "bottom"] : ["left", "right"]}
+        onResize={(event) => p.onScale(direction() === "vertical" ? event.result.height / (containerSize.height ?? 1) : event.result.width / (containerSize.width ?? 1))}
       />
       {child()}
     </div>

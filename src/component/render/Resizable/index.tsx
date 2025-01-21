@@ -4,8 +4,7 @@ import clsx from "clsx";
 import { ValidComponent, ComponentProps, JSX, children, splitProps, createSignal, Show } from "solid-js";
 import { Dynamic } from "solid-js/web";
 
-import { DragDetector, OnDrag } from "~/component/detect/DragDetector";
-import { Objects } from "~/fn/objects";
+import { DragDetector, DragEvent } from "~/component/detect/DragDetector";
 import { Override } from "~/type/Override";
 import { Wve } from "~/type/struct/Wve";
 
@@ -21,50 +20,39 @@ export const Resizable = <
     as?: ComponentProps<typeof Dynamic<Parent>>["component"];
     resizable?: ("top" | "left" | "right" | "bottom")[];
     disabled?: boolean;
+    onResize?: OnResize;
   }
 >) => {
-  const [p, wrappedParentProps] = splitProps(_p, ["children", "as", "resizable", "disabled"]);
+  const [p, wrappedParentProps] = splitProps(_p, ["children", "as", "resizable", "disabled", "onResize"]);
   const child = children(() => p.children);
+  const onResize: OnResize = (e) => p.onResize?.(e);
 
   const [ref, setRef] = createSignal<HTMLElement>();
   const windowSize = createWindowSize();
   const bound = createElementBounds(ref);
-  type MayBeSize = {
-    width?: number;
-    height?: number;
-  };
-  const size = Wve.create<MayBeSize>({});
-  const inActionDelta = Wve.create<{
-    top?: number;
-    left?: number;
-    right?: number;
-    bottom?: number;
-  }>({});
-  const inAction = () => Objects.keys(inActionDelta()).length !== 0;
+  const size = Wve.create<Partial<Size>>({});
+
+  const state = Wve.create({
+    inAction: false,
+  });
+  const inAction = state.partial("inAction");
 
   const previewBounds = () => ({
-    top: (bound.top ?? 0) + (inActionDelta().top ?? 0),
-    left: (bound.left ?? 0) + (inActionDelta().left ?? 0),
-    right: windowSize.width - (bound.right ?? 0) + (inActionDelta().right ?? 0),
-    bottom: windowSize.height - (bound.bottom ?? 0) + (inActionDelta().bottom ?? 0),
+    top: (bound.top ?? 0),
+    left: (bound.left ?? 0),
+    right: windowSize.width - (bound.right ?? 0),
+    bottom: windowSize.height - (bound.bottom ?? 0),
   });
 
-  const getOnDrag = (
+  const getStartSize = () => ({
+    width: size().width ?? bound.width ?? 0,
+    height: size().height ?? bound.height ?? 0,
+  });
+  const onDrag = (
     direction: "top" | "left" | "right" | "bottom",
-  ): OnDrag<MayBeSize> => (event) => {
-    const delta = () => {
-      switch (direction) {
-        case "top": return event.delta.y;
-        case "bottom": return -event.delta.y;
-        case "left": return event.delta.x;
-        case "right": return -event.delta.x;
-      }
-    };
-    const getNextSize = (prev: MayBeSize) => {
-      const size = {
-        width: prev.width ?? bound.width ?? 0,
-        height: prev.height ?? bound.height ?? 0,
-      };
+    event: DragEvent<Size>,
+  ) => {
+    const getNextSize = (size: Size) => {
       switch (direction) {
         case "top": return { ...size, height: size.height + -event.delta.y };
         case "bottom": return { ...size, height: size.height + event.delta.y };
@@ -72,18 +60,16 @@ export const Resizable = <
         case "right": return { ...size, width: size.width + event.delta.x };
       }
     };
-    switch (event.phase) {
-      case "confirmed":
-        size.set(getNextSize);
-        inActionDelta.set(direction, undefined);
-        break;
-      case "start":
-        inActionDelta.set(direction, 0);
-        break;
-      case "preview":
-        inActionDelta.set(direction, delta());
-        break;
-    }
+
+    const prev = event.start;
+    const next = getNextSize(prev);
+    size.set(next);
+    onResize({
+      phase: event.phase,
+      result: next,
+      ratio: { width: next.width / prev.width, height: next.height / prev.height },
+    });
+    inAction.set(event.phase !== "confirmed");
   };
 
   const style = () => {
@@ -122,33 +108,33 @@ export const Resizable = <
           <Show when={!p.resizable || p.resizable.includes("left")}>
             <DragDetector
               class={clsx(styles.Resizer, styles.Left)}
-              dragContainer={ref()}
-              startState={size}
-              onDrag={getOnDrag("left")}
+              dragContainer={document.body}
+              startState={getStartSize}
+              onDrag={(event) => onDrag("left", event)}
             />
           </Show>
           <Show when={!p.resizable || p.resizable.includes("right")}>
             <DragDetector
               class={clsx(styles.Resizer, styles.Right)}
-              dragContainer={ref()}
-              startState={size}
-              onDrag={getOnDrag("right")}
+              dragContainer={document.body}
+              startState={getStartSize}
+              onDrag={(event) => onDrag("right", event)}
             />
           </Show>
           <Show when={!p.resizable || p.resizable.includes("top")}>
             <DragDetector
               class={clsx(styles.Resizer, styles.Top)}
-              dragContainer={ref()}
-              startState={size}
-              onDrag={getOnDrag("top")}
+              dragContainer={document.body}
+              startState={getStartSize}
+              onDrag={(event) => onDrag("top", event)}
             />
           </Show>
           <Show when={!p.resizable || p.resizable.includes("bottom")}>
             <DragDetector
               class={clsx(styles.Resizer, styles.Bottom)}
-              dragContainer={ref()}
-              startState={size}
-              onDrag={getOnDrag("bottom")}
+              dragContainer={document.body}
+              startState={getStartSize}
+              onDrag={(event) => onDrag("bottom", event)}
             />
           </Show>
         </div>
@@ -156,4 +142,21 @@ export const Resizable = <
       {child()}
     </Dynamic>
   );
+};
+
+/** @public */
+export type OnResize = (event: ResizeEvent) => void;
+
+type ResizeEvent = {
+  phase: "start" | "confirmed" | "preview";
+  result: Size;
+  ratio: {
+    width: number;
+    height: number;
+  };
+};
+
+type Size = {
+  width: number;
+  height: number;
 };

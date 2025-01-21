@@ -1,4 +1,5 @@
 import { createElementSize } from "@solid-primitives/resize-observer";
+import { throttle } from "@solid-primitives/scheduled";
 import { createSignal } from "solid-js";
 
 import { ScrollBar } from "~/component/render/ScrollBar";
@@ -23,14 +24,15 @@ export const Timeline = (p: {
   timer: Timer;
   ghost: boolean;
   maxTime: number;
-  duration: number;
+  duration: Wve<number>;
   beats: Beat[];
   currentBeat: Beat | undefined;
 }) => {
+  const duration = Wve.from(() => p.duration);
   const [container, setContainer] = createSignal<HTMLElement>();
   const size = createElementSize(container);
   const viewLength = () => (size.height ?? 0);
-  const maxScrollPx = () => (viewLength() * p.maxTime) / p.duration;
+  const maxScrollPx = () => (viewLength() * p.maxTime) / duration();
   const syncToScroll = createSyncTimerToScroll({
     get timer() { return p.timer; },
     get maxTime() { return p.maxTime; },
@@ -38,7 +40,8 @@ export const Timeline = (p: {
     applyScroll: (scrollPx) => container()?.scrollTo({ top: scrollPx }),
   });
   const gameProgessPercentage = () => syncToScroll.gameProgessPercentage;
-  const viewRatio = () => p.duration / p.maxTime;
+  const viewRatio = () => duration() / p.maxTime;
+  const setDurationByViewRatio = throttle((viewRatio: number) => duration.set(Math.max(0.1, p.maxTime * viewRatio)), 50);
 
   const [timelineOffsetRatio] = createSignal(0.5);
   const timelineOffsetPx = () => viewLength() * timelineOffsetRatio();
@@ -81,6 +84,7 @@ export const Timeline = (p: {
         viewRatio={viewRatio()}
         reverse
         onScroll={syncToScroll.onScrollInScrollBar}
+        onScale={setDurationByViewRatio}
       />
     </div>
   );

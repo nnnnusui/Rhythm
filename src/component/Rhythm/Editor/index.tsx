@@ -100,7 +100,7 @@ export const Editor = (p: {
           timer={timer}
           ghost={viewMode() !== "edit"}
           maxTime={maxTime()}
-          duration={duration()}
+          duration={duration}
           beats={beats()}
           currentBeat={currentBeat()}
         />

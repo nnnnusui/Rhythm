@@ -112,7 +112,8 @@ export const DragDetector = <
 /** @public */
 export type OnDrag<StartState> = (event: DragEvent<StartState>) => void;
 
-type DragEvent<StartState> = {
+/** @public */
+export type DragEvent<StartState> = {
   phase: DragEventPhase;
   delta: Pos;
   start: StartState;
