@@ -2,6 +2,7 @@ import { children, createMemo, JSX } from "solid-js";
 
 import { Fps } from "~/component/indicate/Fps";
 import { TimerInteraction } from "~/component/interaction/TimerInteraction";
+import { Resizable } from "~/component/render/Resizable";
 import { Objects } from "~/fn/objects";
 import { action } from "~/fn/signal/createAction";
 import { Timer } from "~/fn/signal/createTimer";
@@ -108,7 +109,9 @@ export const Editor = (p: {
       <div class={styles.Detail}>
         details.
       </div>
-      <div class={styles.Interactions}>
+      <Resizable class={styles.Interactions}
+        resizable={["left"]}
+      >
         <Fps />
         <EditScoreInfo score={score} />
         <TimerInteraction timer={timer} />
@@ -131,7 +134,7 @@ export const Editor = (p: {
           sourceMap={sourceMap}
         />
         {/* <InteractEditor /> */}
-      </div>
+      </Resizable>
     </div>
   );
 };

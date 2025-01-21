@@ -25,6 +25,7 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
+    "@solid-primitives/bounds": "^0.0.123",
     "@solid-primitives/raf": "^2.2.0",
     "@solid-primitives/resize-observer": "^2.0.26",
     "@solid-primitives/scheduled": "^1.4.4",
