@@ -3,6 +3,7 @@ import { children, createMemo, JSX } from "solid-js";
 import { Fps } from "~/component/indicate/Fps";
 import { TimerInteraction } from "~/component/interaction/TimerInteraction";
 import { Objects } from "~/fn/objects";
+import { action } from "~/fn/signal/createAction";
 import { Timer } from "~/fn/signal/createTimer";
 import { NoteValue } from "~/type/struct/music/NoteValue";
 import { Wve } from "~/type/struct/Wve";
@@ -59,9 +60,36 @@ export const Editor = (p: {
   });
 
   const resetGame = () => p.resetGame();
+  const playPause = () => {
+    if (timer.measuring) {
+      timer.pause();
+      resetGame();
+    } else {
+      timer.start();
+    }
+  };
+  const reset = () => {
+    timer.stop();
+    resetGame();
+  };
 
+  action;
   return (
-    <div class={styles.Editor}>
+    <div class={styles.Editor}
+      use:action={{
+        keyPrefix: "rhythm.editor",
+        actionMap: {
+          ["play/pause"]: {
+            keyEvent: " ",
+            action: playPause,
+          },
+          ["reset"]: {
+            keyEvent: "Escape",
+            action: reset,
+          },
+        },
+      }}
+    >
       <div class={styles.View}>
         {child()}
         <Timeline
