@@ -37,14 +37,16 @@ export const KeyframeInteraction = (p: {
     if (action().kind !== "move") return;
     const start = event.start;
     const id = start.id;
-    const rawTime = start.time + p.getTimeDeltaFromPx(event.delta);
-    const nextTime = event.raw.ctrlKey
-      ? rawTime
-      : p.getAdjustedTime(rawTime);
-    draggedKeyframe.set(({
-      ...start,
-      time: nextTime,
-    }));
+    if (event.phase === "preview") {
+      const rawTime = start.time + p.getTimeDeltaFromPx(event.delta);
+      const nextTime = event.raw.ctrlKey
+        ? rawTime
+        : p.getAdjustedTime(rawTime);
+      draggedKeyframe.set(({
+        ...start,
+        time: nextTime,
+      }));
+    }
     const draggedNote = draggedKeyframe.when((it) => it?.kind === "note");
     if (draggedNote) {
       const pos = Pos.fromEvent(event.raw, { relativeTo: p.dragContainer });
