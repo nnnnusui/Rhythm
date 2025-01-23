@@ -3,7 +3,7 @@ import { isServer } from "solid-js/web";
 
 import { Id } from "~/type/struct/Id";
 import { Wve } from "~/type/struct/Wve";
-import { useOperated } from "./OperatedContext";
+import { useOperated } from "../signal/root/useOperated";
 
 type Store = {
   storeByFetch: (id: Id, url: string) => void;

@@ -1,7 +1,7 @@
 import { createContext, JSX, useContext } from "solid-js";
 import { isServer } from "solid-js/web";
 
-import { useOperated } from "./OperatedContext";
+import { useOperated } from "../signal/root/useOperated";
 
 type Store = () => AudioContext | undefined;
 const Context = createContext<Store>();

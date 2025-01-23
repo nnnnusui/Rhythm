@@ -1,7 +1,6 @@
 import { createSignal, For, Show, untrack } from "solid-js";
 
 import { AudioContextProvider } from "~/fn/context/AudioContext";
-import { OperatedProvider } from "~/fn/context/OperatedContext";
 import { SoundEffectProvider } from "~/fn/context/SoundEffectContext";
 import { getNestedComponent } from "~/fn/getNestedComponent";
 import { Objects } from "~/fn/objects";
@@ -21,7 +20,6 @@ import styles from "./Rhythm.module.css";
 /** @public */
 export const Rhythm = () => {
   const Providers = getNestedComponent(
-    OperatedProvider,
     AudioContextProvider,
     SoundEffectProvider,
   );

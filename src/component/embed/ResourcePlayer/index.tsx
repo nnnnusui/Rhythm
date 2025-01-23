@@ -1,7 +1,7 @@
 import { createMemo, For, Match, Show, Switch } from "solid-js";
 
-import { useOperated } from "~/fn/context/OperatedContext";
 import { Objects } from "~/fn/objects";
+import { useOperated } from "~/fn/signal/root/useOperated";
 import { SoundCloudPlayer } from "../SoundCloudPlayer";
 import { YouTubePlayer } from "../YouTubePlayer";
 
