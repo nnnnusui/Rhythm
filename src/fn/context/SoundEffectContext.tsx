@@ -1,9 +1,8 @@
 import { createContext, createEffect, JSX, untrack, useContext } from "solid-js";
-import { isServer } from "solid-js/web";
 
 import { Id } from "~/type/struct/Id";
 import { Wve } from "~/type/struct/Wve";
-import { useOperated } from "../signal/root/useOperated";
+import { useAudioContext } from "../signal/root/useAudioContext";
 
 type Store = {
   storeByFetch: (id: Id, url: string) => void;
@@ -15,20 +14,12 @@ const Context = createContext<Store>();
 export const SoundEffectProvider = (p: {
   children: JSX.Element;
 }) => {
-  const operated = useOperated();
   const sourceMap = Wve.create<Record<Id, AudioBufferSourceNode>>({});
-
-  let audioContextCache: AudioContext | undefined;
-  const getAudioContext = () => {
-    if (isServer) return;
-    if (!operated()) return;
-    if (!audioContextCache) return audioContextCache = new AudioContext();
-    return audioContextCache;
-  };
+  const audioContext = useAudioContext();
 
   const notYetLoadedMap = Wve.create<Record<Id, string>>({});
   const storeByFetch = (id: Id, url: string) => {
-    const context = getAudioContext();
+    const context = audioContext();
     if (!context) return notYetLoadedMap.set(id, url);
     const source = context.createBufferSource();
     fetch(url).then((response) =>
@@ -41,7 +32,7 @@ export const SoundEffectProvider = (p: {
     sourceMap.set(id, source);
   };
   createEffect(() => {
-    const context = getAudioContext();
+    const context = audioContext();
     if (!context) return;
     const reloadMap = untrack(notYetLoadedMap);
     Object.entries(reloadMap)
@@ -49,7 +40,7 @@ export const SoundEffectProvider = (p: {
   });
 
   const play: Store["play"] = (id, options) => {
-    const context = getAudioContext();
+    const context = audioContext();
     if (!context) return;
     const sound = sourceMap()[id];
     if (!sound) return;
