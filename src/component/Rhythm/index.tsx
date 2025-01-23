@@ -1,7 +1,5 @@
 import { createSignal, For, Show, untrack } from "solid-js";
 
-import { SoundEffectProvider } from "~/fn/context/SoundEffectContext";
-import { getNestedComponent } from "~/fn/getNestedComponent";
 import { Objects } from "~/fn/objects";
 import { createTimer } from "~/fn/signal/createTimer";
 import { makePersisted } from "~/fn/signal/makePersisted";
@@ -18,18 +16,6 @@ import styles from "./Rhythm.module.css";
 
 /** @public */
 export const Rhythm = () => {
-  const Providers = getNestedComponent(
-    SoundEffectProvider,
-  );
-
-  return (
-    <Providers>
-      <WithContext />
-    </Providers>
-  );
-};
-
-const WithContext = () => {
   const status = Wve.create(PerUserStatus.init())
     .with(makePersisted({ name: "perUserStatus", init: PerUserStatus.init }));
 

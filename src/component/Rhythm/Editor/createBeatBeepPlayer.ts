@@ -1,8 +1,8 @@
 import { createEffect, onCleanup, onMount, untrack } from "solid-js";
 import { isServer } from "solid-js/web";
 
-import { useSoundEffect } from "~/fn/context/SoundEffectContext";
 import { Timer } from "~/fn/signal/createTimer";
+import { useSoundEffectPlayer } from "~/fn/signal/root/useSoundEffectPlayer";
 import { Wve } from "~/type/struct/Wve";
 import { Beat } from "./Beat";
 
@@ -11,7 +11,7 @@ export const createBeatBeepPlayer = (p: {
   beats: Beat[];
   play: boolean;
 }) => {
-  const se = useSoundEffect();
+  const sePlayer = useSoundEffectPlayer();
   const seIdMap: Record<Beat["kind"], string> = {
     head: "beatBeepPerMeasure",
     bar: "beatBeepPerMeasure",
@@ -19,9 +19,9 @@ export const createBeatBeepPlayer = (p: {
     auxiliary: "beatBeepOff",
   };
   onMount(() => {
-    se.storeByFetch("beatBeepPerMeasure", "/sound/beatBeepPerMeasure.wav");
-    se.storeByFetch("beatBeepOn", "/sound/beatBeepOn.wav");
-    se.storeByFetch("beatBeepOff", "/sound/beatBeepOff.wav");
+    sePlayer.storeByFetch("beatBeepPerMeasure", "/sound/beatBeepPerMeasure.wav");
+    sePlayer.storeByFetch("beatBeepOn", "/sound/beatBeepOn.wav");
+    sePlayer.storeByFetch("beatBeepOff", "/sound/beatBeepOff.wav");
   });
 
   const beats = () => p.beats;
@@ -74,7 +74,7 @@ export const createBeatBeepPlayer = (p: {
     if (prev.nextKind == null) return;
     if (timer.current < prev.nextMs) return;
     const seId = seIdMap[prev.nextKind];
-    se.play(seId, { gain: 0.2 });
+    sePlayer.play(seId, { gain: 0.2 });
     cacheNext(prev.index + 1);
   });
 

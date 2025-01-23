@@ -1,10 +1,10 @@
 import { onMount } from "solid-js";
 
-import { useSoundEffect } from "~/fn/context/SoundEffectContext";
 import { Objects } from "~/fn/objects";
+import { useSoundEffectPlayer } from "~/fn/signal/root/useSoundEffectPlayer";
 
 export const createSoundEffectPlayer = () => {
-  const se = useSoundEffect();
+  const sePlayer = useSoundEffectPlayer();
   const seIdMap = {
     ["judge.perfect"]: "/sound/judgePerfect.wav",
     ["judge.great"]: "/sound/judgeGreat.wav",
@@ -13,7 +13,7 @@ export const createSoundEffectPlayer = () => {
   onMount(() => {
     Objects.entries(seIdMap)
       .forEach(([key, path]) => {
-        se.storeByFetch(key, path);
+        sePlayer.storeByFetch(key, path);
       });
   });
 
@@ -23,8 +23,8 @@ export const createSoundEffectPlayer = () => {
       const id = (targetId in seIdMap)
         ? targetId
         : "judge.great";
-      se.play(id);
+      sePlayer.play(id);
     },
-    playTap: () => se.play("tap"),
+    playTap: () => sePlayer.play("tap"),
   };
 };
