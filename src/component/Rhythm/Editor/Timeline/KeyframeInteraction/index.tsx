@@ -6,6 +6,7 @@ import { Pos } from "~/type/struct/2d/Pos";
 import { Id } from "~/type/struct/Id";
 import { Wve } from "~/type/struct/Wve";
 import { Action } from "../Action";
+import { TimeFns } from "../createTimeFns";
 import { Keyframe } from "../Keyframe";
 
 import styles from "./KeyframeInteraction.module.css";
@@ -13,16 +14,15 @@ import styles from "./KeyframeInteraction.module.css";
 export const KeyframeInteraction = (p: {
   keyframe: Wve<Keyframe>;
   action: Wve<Action>;
-  getLaneOrder: (judgeAreaId: Id) => undefined | number;
+  timeFns: TimeFns;
   dragContainer: HTMLElement | undefined;
-  getProgressPxFromTime: (time: number) => number;
-  getTimeDeltaFromPx: (pxDeltaPos: Pos) => number;
-  getAdjustedTime: (raw: number) => number;
+  getLaneOrder: (judgeAreaId: Id) => undefined | number;
   getJudgeAreaFromPx: (pxPos: Pos) => JudgeArea | undefined;
   selected: boolean;
 }) => {
   const keyframe = Wve.from(() => p.keyframe);
   const action = Wve.from(() => p.action);
+  const Time = TimeFns.from(() => p.timeFns);
   const getGridOrderFromKeyframe = (keyframe?: Keyframe) => {
     if (!keyframe) return;
     if (keyframe.kind !== "note") return;
@@ -38,10 +38,10 @@ export const KeyframeInteraction = (p: {
     const start = event.start;
     const id = start.id;
     if (event.phase === "preview") {
-      const rawTime = start.time + p.getTimeDeltaFromPx(event.delta);
+      const rawTime = start.time + Time.fromDeltaPxPos(event.delta);
       const nextTime = event.raw.ctrlKey
         ? rawTime
-        : p.getAdjustedTime(rawTime);
+        : Time.toAdjusted(Time.validate(rawTime));
       draggedKeyframe.set(({
         ...start,
         time: nextTime,
@@ -71,7 +71,7 @@ export const KeyframeInteraction = (p: {
           [styles.Selected]: p.selected,
         }}
         style={{
-          "--progress": `${p.getProgressPxFromTime(keyframe().time)}px`,
+          "--progress": `${Time.toProgressPx(Time.validate(keyframe().time))}px`,
           "--gridOrder": getGridOrderFromKeyframe(keyframe()),
         }}
         dragContainer={p.dragContainer}
@@ -84,7 +84,7 @@ export const KeyframeInteraction = (p: {
       <Show when={draggedKeyframe()}>{(keyframe) => (
         <div class={styles.KeyframeInteraction}
           style={{
-            "--progress": `${p.getProgressPxFromTime(keyframe().time)}px`,
+            "--progress": `${Time.toProgressPx(Time.validate(keyframe().time))}px`,
             "--gridOrder": getGridOrderFromKeyframe(keyframe()),
           }}
         >

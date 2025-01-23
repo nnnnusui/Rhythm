@@ -2,14 +2,16 @@ import { For } from "solid-js";
 
 import { NoteValue } from "~/type/struct/music/NoteValue";
 import { Beat } from "../../Beat";
+import { TimeFns } from "../createTimeFns";
 
 import styles from "./Beats.module.css";
 
 export const Beats = (p: {
   beats: Beat[];
   currentBeat: undefined | Beat;
-  getProgressPxFromTime: (time: number) => number;
+  timeFns: TimeFns;
 }) => {
+  const Time = TimeFns.from(() => p.timeFns);
   const beats = () => p.beats
     .map((it, index, all) => {
       const next = all[index + 1];
@@ -21,7 +23,7 @@ export const Beats = (p: {
       <div class={styles.Lines}>
         <For each={beats()}>{(beat) => (
           <div class={styles.BeatLine}
-            style={{ "--progress": `${p.getProgressPxFromTime(beat.time)}px` }}
+            style={{ "--progress": `${Time.toProgressPx(Time.validate(beat.time))}px` }}
             classList={{
               [styles.Current]: p.currentBeat?.time === beat.time,
             }}
@@ -32,8 +34,8 @@ export const Beats = (p: {
         <For each={beats()}>{(beat) => (
           <div class={styles.LineInfo}
             style={{
-              "--progress": `${p.getProgressPxFromTime(beat.time)}px`,
-              "--length": `${p.getProgressPxFromTime(beat.diff)}px`,
+              "--progress": `${Time.toProgressPx(Time.validate(beat.time))}px`,
+              "--length": `${Time.toProgressPx(Time.validate(beat.diff))}px`,
             }}
             classList={{
               [styles.Current]: p.currentBeat?.time === beat.time,

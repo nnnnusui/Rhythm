@@ -5,13 +5,13 @@ import { createSignal } from "solid-js";
 import { ScrollBar } from "~/component/render/ScrollBar";
 import { ScrollBarTo } from "~/component/render/ScrollBarTo";
 import { Timer } from "~/fn/signal/createTimer";
-import { Pos } from "~/type/struct/2d/Pos";
 import { Id } from "~/type/struct/Id";
 import { Wve } from "~/type/struct/Wve";
 import { Action } from "./Action";
 import { Beats } from "./Beats";
 import { Beat } from "../Beat";
 import { createSyncTimerToScroll } from "./createSyncTimerToScroll";
+import { createTimeFns } from "./createTimeFns";
 import { Keyframe } from "./Keyframe";
 import { LaneContainer } from "./LaneContainer";
 import { JudgeArea } from "../../type/JudgeArea";
@@ -46,12 +46,11 @@ export const Timeline = (p: {
 
   const [timelineOffsetRatio] = createSignal(0.5);
   const timelineOffsetPx = () => viewLength() * timelineOffsetRatio();
-  const getProgressPxFromTime = (time: number) => time / p.maxTime * maxScrollPx();
-  const getTimeFromProgressPxPos = (pxPos: Pos) => {
-    const pxFromStart = maxScrollPx() - pxPos.y;
-    const progress = pxFromStart / maxScrollPx();
-    return progress * p.maxTime;
-  };
+  const Time = createTimeFns({
+    get maxTime() { return p.maxTime; },
+    get maxScrollPx() { return maxScrollPx(); },
+    get beats() { return p.beats; },
+  });
 
   return (
     <div class={styles.Timeline}
@@ -73,17 +72,13 @@ export const Timeline = (p: {
         <Beats
           beats={p.beats}
           currentBeat={p.currentBeat}
-          getProgressPxFromTime={getProgressPxFromTime}
+          timeFns={Time}
         />
         <LaneContainer
           keyframeMap={p.keyframeMap}
           judgeAreaMap={p.judgeAreaMap}
           editAction={p.action}
-          beats={p.beats}
-          maxScrollPx={maxScrollPx()}
-          maxTime={p.maxTime}
-          getProgressPxFromTime={getProgressPxFromTime}
-          getTimeFromProgressPxPos={getTimeFromProgressPxPos}
+          timeFns={Time}
         />
       </ScrollBarTo>
       <ScrollBar

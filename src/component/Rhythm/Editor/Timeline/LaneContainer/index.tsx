@@ -2,13 +2,12 @@ import { createElementSize } from "@solid-primitives/resize-observer";
 import { createSignal, For, JSX, Show } from "solid-js";
 
 import { JudgeArea } from "~/component/Rhythm/type/JudgeArea";
-import { Arrays } from "~/fn/arrays";
 import { Objects } from "~/fn/objects";
 import { Pos } from "~/type/struct/2d/Pos";
 import { Id } from "~/type/struct/Id";
 import { Wve } from "~/type/struct/Wve";
-import { Beat } from "../../Beat";
 import { Action } from "../Action";
+import { TimeFns } from "../createTimeFns";
 import { Keyframe } from "../Keyframe";
 import { KeyframeInteraction } from "../KeyframeInteraction";
 
@@ -18,31 +17,12 @@ export const LaneContainer = (p: {
   keyframeMap: Wve<Record<Keyframe["id"], Keyframe>>;
   judgeAreaMap: Wve<Record<Id, JudgeArea>>;
   editAction: Wve<Action>;
-  beats: Beat[];
-  maxScrollPx: number;
-  maxTime: number;
-  getProgressPxFromTime: (time: number) => number;
-  getTimeFromProgressPxPos: (progressPxPos: Pos) => number;
+  timeFns: TimeFns;
 }) => {
-  const beats = () => p.beats;
+  const Time = TimeFns.from(() => p.timeFns);
 
   const [container, setContainer] = createSignal<HTMLElement>();
   const containerSize = createElementSize(container);
-
-  const getTimeDeltaFromPx = (pxDeltaPos: Pos) =>
-    (pxDeltaPos.y * -1 / p.maxScrollPx) * p.maxTime;
-
-  const getAdjustedTime = (raw: number) => {
-    const getByBeat = (rawNextTime: number) => {
-      const nextBeatIndex = beats().findIndex((it) => rawNextTime < it.time);
-      const nextBeat = beats()[nextBeatIndex];
-      const prevBeat = beats()[nextBeatIndex - 1];
-      if (!prevBeat) return rawNextTime;
-      if (!nextBeat) return rawNextTime;
-      return Arrays.closest([nextBeat.time, prevBeat.time])(rawNextTime);
-    };
-    return Math.max(0, Math.min(getByBeat(raw), p.maxTime));
-  };
 
   const keyframeMap = Wve.from(() => p.keyframeMap);
   const judgeAreaMap = Wve.from(() => p.judgeAreaMap);
@@ -68,8 +48,8 @@ export const LaneContainer = (p: {
     const action = editAction();
     if (action.kind !== "insert") return;
     const pos = Pos.fromEvent(event);
-    const timeRaw = p.getTimeFromProgressPxPos(pos);
-    const time = getAdjustedTime(timeRaw);
+    const timeRaw = Time.fromProgressPxPos(pos);
+    const time = Time.toAdjusted(timeRaw);
     const id = Id.new();
     if (action.keyframe.kind === "note") {
       const judgeArea = getJudgeAreaFromPx(pos);
@@ -113,9 +93,7 @@ export const LaneContainer = (p: {
               keyframe={keyframe()}
               action={editAction}
               dragContainer={container()}
-              getProgressPxFromTime={p.getProgressPxFromTime}
-              getTimeDeltaFromPx={getTimeDeltaFromPx}
-              getAdjustedTime={getAdjustedTime}
+              timeFns={Time}
               getJudgeAreaFromPx={getJudgeAreaFromPx}
               selected={isSelected(keyframeId)}
               getLaneOrder={(judgeAreaId?: Id) => judgeAreaOrderMap()[judgeAreaId ?? -1]}
