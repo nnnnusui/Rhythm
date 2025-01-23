@@ -5,6 +5,7 @@ import { createSignal } from "solid-js";
 import { ScrollBar } from "~/component/render/ScrollBar";
 import { ScrollBarTo } from "~/component/render/ScrollBarTo";
 import { Timer } from "~/fn/signal/createTimer";
+import { Pos } from "~/type/struct/2d/Pos";
 import { Id } from "~/type/struct/Id";
 import { Wve } from "~/type/struct/Wve";
 import { Action } from "./Action";
@@ -46,6 +47,11 @@ export const Timeline = (p: {
   const [timelineOffsetRatio] = createSignal(0.5);
   const timelineOffsetPx = () => viewLength() * timelineOffsetRatio();
   const getProgressPxFromTime = (time: number) => time / p.maxTime * maxScrollPx();
+  const getTimeFromProgressPxPos = (pxPos: Pos) => {
+    const pxFromStart = maxScrollPx() - pxPos.y;
+    const progress = pxFromStart / maxScrollPx();
+    return progress * p.maxTime;
+  };
 
   return (
     <div class={styles.Timeline}
@@ -77,6 +83,7 @@ export const Timeline = (p: {
           maxScrollPx={maxScrollPx()}
           maxTime={p.maxTime}
           getProgressPxFromTime={getProgressPxFromTime}
+          getTimeFromProgressPxPos={getTimeFromProgressPxPos}
         />
       </ScrollBarTo>
       <ScrollBar

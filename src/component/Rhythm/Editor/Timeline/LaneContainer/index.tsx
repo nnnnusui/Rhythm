@@ -22,17 +22,13 @@ export const LaneContainer = (p: {
   maxScrollPx: number;
   maxTime: number;
   getProgressPxFromTime: (time: number) => number;
+  getTimeFromProgressPxPos: (progressPxPos: Pos) => number;
 }) => {
   const beats = () => p.beats;
 
   const [container, setContainer] = createSignal<HTMLElement>();
   const containerSize = createElementSize(container);
 
-  const getTimeFromPx = (pxPos: Pos) => {
-    const pxFromStart = p.maxScrollPx - pxPos.y;
-    const progress = pxFromStart / p.maxScrollPx;
-    return progress * p.maxTime;
-  };
   const getTimeDeltaFromPx = (pxDeltaPos: Pos) =>
     (pxDeltaPos.y * -1 / p.maxScrollPx) * p.maxTime;
 
@@ -72,7 +68,7 @@ export const LaneContainer = (p: {
     const action = editAction();
     if (action.kind !== "insert") return;
     const pos = Pos.fromEvent(event);
-    const timeRaw = getTimeFromPx(pos);
+    const timeRaw = p.getTimeFromProgressPxPos(pos);
     const time = getAdjustedTime(timeRaw);
     const id = Id.new();
     if (action.keyframe.kind === "note") {
