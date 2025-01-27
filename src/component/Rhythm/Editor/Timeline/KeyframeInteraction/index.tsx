@@ -19,6 +19,7 @@ export const KeyframeInteraction = (p: {
   getLaneOrder: (judgeAreaId: Id) => undefined | number;
   getJudgeAreaFromPx: (pxPos: Pos) => JudgeArea | undefined;
   selected: boolean;
+  mayBe?: boolean;
 }) => {
   const keyframe = Wve.from(() => p.keyframe);
   const action = Wve.from(() => p.action);
@@ -69,6 +70,7 @@ export const KeyframeInteraction = (p: {
         classList={{
           [styles.InAction]: draggedKeyframe()?.id === keyframe().id,
           [styles.Selected]: p.selected,
+          [styles.MayBe]: p.mayBe,
         }}
         style={{
           "--progress": `${Time.toProgressPx(Time.validate(keyframe().time))}px`,

@@ -1,5 +1,5 @@
 import { createElementSize } from "@solid-primitives/resize-observer";
-import { createSignal, For, JSX, Show } from "solid-js";
+import { createSignal, For, Show } from "solid-js";
 
 import { JudgeArea } from "~/component/Rhythm/type/JudgeArea";
 import { Objects } from "~/fn/objects";
@@ -44,7 +44,11 @@ export const LaneContainer = (p: {
   const isSelected = (keyframeId: Id) =>
     editAction.when((it) => it.kind === "move")?.().keyframeId === keyframeId;
 
-  const addNote: JSX.EventHandler<HTMLElement, PointerEvent> = (event) => {
+  const state = Wve.create<{
+    mayBeKeyframe?: Keyframe;
+  }>({});
+  const mayBeKeyframe = state.partial("mayBeKeyframe");
+  const getKeyframeFromEvent = (event: PointerEvent): Keyframe | undefined => {
     const action = editAction();
     if (action.kind !== "insert") return;
     const pos = Pos.fromEvent(event);
@@ -54,22 +58,19 @@ export const LaneContainer = (p: {
     if (action.keyframe.kind === "note") {
       const judgeArea = getJudgeAreaFromPx(pos);
       if (!judgeArea) return;
-      const keyframe = {
+      return {
         ...action.keyframe,
         judgeAreaId: judgeArea.id,
         time,
         id,
       };
-      keyframeMap.set(id, keyframe);
     } else {
-      const keyframe = {
+      return {
         ...action.keyframe,
         time,
         id,
       };
-      keyframeMap.set(id, keyframe);
     }
-    editAction.set(event.pointerType === "mouse" ? { kind: "move" } : Action.init());
   };
 
   return (
@@ -80,7 +81,22 @@ export const LaneContainer = (p: {
     >
       <div class={styles.Lanes}
         ref={setContainer}
-        onPointerDown={addNote}
+        onPointerDown={(event) => {
+          event.stopPropagation();
+          mayBeKeyframe.set(getKeyframeFromEvent(event));
+        }}
+        onPointerMove={(event) => {
+          mayBeKeyframe.set(getKeyframeFromEvent(event));
+        }}
+        onPointerUp={(event) => {
+          if (mayBeKeyframe()) {
+            mayBeKeyframe.set(undefined);
+            const keyframe = getKeyframeFromEvent(event);
+            if (!keyframe) return;
+            keyframeMap.set(keyframe.id, keyframe);
+            return;
+          }
+        }}
       >
         <For each={Objects.entries(judgeAreaMap())}>{() => (
           <div />
@@ -100,6 +116,18 @@ export const LaneContainer = (p: {
             />
           )}</Show>
         )}</For>
+        <Show when={mayBeKeyframe.whenPresent()}>{(keyframe) => (
+          <KeyframeInteraction
+            keyframe={keyframe()}
+            action={editAction}
+            dragContainer={container()}
+            timeFns={Time}
+            getJudgeAreaFromPx={getJudgeAreaFromPx}
+            selected={false}
+            mayBe
+            getLaneOrder={(judgeAreaId?: Id) => judgeAreaOrderMap()[judgeAreaId ?? -1]}
+          />
+        )}</Show>
       </div>
     </div>
   );

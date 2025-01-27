@@ -14,3 +14,9 @@
 .Selected {
   outline: 1px solid currentColor;
 }
+
+.MayBe {
+  pointer-events: none;
+
+  color: color-mix(in srgb, currentColor, transparent 60%);
+}
