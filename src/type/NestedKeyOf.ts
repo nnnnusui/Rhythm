@@ -5,7 +5,7 @@
 export type NestedKeyOf<T> =
   T extends Record<PropertyKey, unknown>
     ? {
-      [Key in keyof T]: Required<T>[Key] extends object
+      [Key in keyof Required<T>]: Required<T>[Key] extends object
         ? [Key, ...NestedKeyOf<Required<T>[Key]>]
         : [Key]
     }[keyof T]
