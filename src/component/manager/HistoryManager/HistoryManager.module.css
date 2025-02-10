@@ -1,0 +1,13 @@
+.HistoryManager {
+}
+
+.Siblings {
+
+  & > .Siblings:not(:last-child) {
+    margin-left: 10px;
+  }
+}
+
+.CurrentState {
+  background-color: rgb(1, 68, 90);
+}

@@ -6,6 +6,7 @@ import { Resizable } from "~/component/render/Resizable";
 import { Objects } from "~/fn/objects";
 import { action } from "~/fn/signal/createAction";
 import { Timer } from "~/fn/signal/createTimer";
+import { makeHistorical } from "~/fn/signal/makeHistorical";
 import { NoteValue } from "~/type/struct/music/NoteValue";
 import { Wve } from "~/type/struct/Wve";
 import { Beat } from "./Beat";
@@ -32,7 +33,9 @@ export const Editor = (p: {
 }) => {
   const child = children(() => p.children);
   const timer = Timer.from(() => p.timer);
-  const score = Wve.from(() => p.score);
+  const score = Wve.from(() => p.score)
+    .with(makeHistorical());
+
   const sourceMap = score.partial("sourceMap");
   const timeline = score.partial("timeline");
   const keyframeMap = timeline.partial("keyframeMap");
@@ -134,6 +137,9 @@ export const Editor = (p: {
           sourceMap={sourceMap}
         />
         {/* <InteractEditor /> */}
+        {/* <HistoryManager history={score.history}>{(it) => (
+          <p>{it.delta[0]?.path ?? it.id}</p>
+        )}</HistoryManager> */}
       </Resizable>
     </div>
   );

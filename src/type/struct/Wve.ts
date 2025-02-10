@@ -193,4 +193,4 @@ interface FilterFnOfObject<T> {
   ): Wve<T>;
 }
 
-type WithFn<T> = <S extends T>(apply: (wve: Wve<T>) => Wve<S>) => Wve<S>;
+type WithFn<T> = <S extends T, W extends Wve<S>>(apply: (wve: Wve<T>) => W) => W;
