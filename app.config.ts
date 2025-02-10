@@ -14,11 +14,5 @@ export default defineConfig({
     build: {
       target: "esnext",
     },
-    server: {
-      hmr: {
-        protocol: "ws",
-        port: 5000,
-      },
-    },
   },
 });
