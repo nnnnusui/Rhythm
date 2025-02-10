@@ -1,8 +1,10 @@
 import { For } from "solid-js";
 
+import { Pos } from "~/type/struct/2d/Pos";
 import { NoteValue } from "~/type/struct/music/NoteValue";
+import { Wve } from "~/type/struct/Wve";
 import { Beat } from "../../Beat";
-import { TimeFns } from "../createTimeFns";
+import { Time, TimeFns } from "../createTimeFns";
 
 import styles from "./Beats.module.css";
 
@@ -18,8 +20,39 @@ export const Beats = (p: {
       return { ...it, diff: (next?.time ?? 0) - it.time };
     });
 
+  const selection = Wve.create<{
+    from?: Time;
+    to?: Time;
+  }>({});
+  const setSelectionFrom = (event: PointerEvent) => {
+    const pos = Pos.fromEvent(event);
+    const time = Time.fromProgressPxPos(pos);
+    selection.set("from", time);
+    selection.set("to", undefined);
+  };
+  const setSelectionTo = (event: PointerEvent) => {
+    const pos = Pos.fromEvent(event);
+    const time = Time.fromProgressPxPos(pos);
+    selection.set("to", time);
+  };
+  const selectionStyle = () => {
+    const { from, to } = selection();
+    if (!from) return;
+    if (!to) return;
+    const low = Time.validate(Math.min(from, to));
+    const high = Math.max(from, to);
+    const diff = Time.validate(high - low);
+    return {
+      "--progress": `${Time.toProgressPx(low)}px`,
+      "--range": `${Time.toProgressPx(diff)}px`,
+    };
+  };
+
   return (
     <div class={styles.Beats}>
+      <div class={styles.Selection}
+        style={selectionStyle()}
+      />
       <div class={styles.Lines}>
         <For each={beats()}>{(beat) => (
           <div class={styles.BeatLine}
@@ -30,7 +63,19 @@ export const Beats = (p: {
           />
         )}</For>
       </div>
-      <div class={styles.BeatIndicateLane}>
+      <div class={styles.BeatIndicateLane}
+        onPointerDown={(event) => {
+          event.stopPropagation();
+          event.currentTarget.setPointerCapture(event.pointerId);
+          if (event.shiftKey) return setSelectionTo(event);
+          setSelectionFrom(event);
+        }}
+        onPointerMove={(event) => {
+          if (!event.currentTarget.hasPointerCapture(event.pointerId)) return;
+          setSelectionTo(event);
+        }}
+        onPointerUp={setSelectionTo}
+      >
         <For each={beats()}>{(beat) => (
           <div class={styles.LineInfo}
             style={{

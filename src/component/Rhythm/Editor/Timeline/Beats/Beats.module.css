@@ -4,6 +4,16 @@
   border-right: 1px solid color-mix(in srgb, currentColor 30%, transparent);
 }
 
+.Selection {
+  pointer-events: none;
+  position: absolute;
+  bottom: var(--progress);
+  width: 100%;
+  height: var(--range);
+
+  background-color: color-mix(in srgb, currentColor, transparent 80%);
+}
+
 .Lines {
 }
 
@@ -23,6 +33,7 @@
 }
 
 .LineInfo {
+  pointer-events: none;
   position: absolute;
   left: 0;
   right: 0;
