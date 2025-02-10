@@ -1,7 +1,9 @@
 import { Show } from "solid-js";
 
 import { SourceMap } from "~/component/embed/ResourcePlayer";
+import { Id } from "~/type/struct/Id";
 import { Wve } from "~/type/struct/Wve";
+import { JudgeArea } from "../../type/JudgeArea";
 import { EditKeyframeDetail } from "../EditKeyframeDetail";
 import { TimelineAction, TimelineKeyframe } from "../Timeline";
 
@@ -12,6 +14,7 @@ export const EditKeyframeMove = (p: {
   action: Wve<MoveAction>;
   keyframeMap: Wve<Record<TimelineKeyframe["id"], TimelineKeyframe>>;
   sourceMap: Wve<SourceMap>;
+  judgeAreaMap: Wve<Record<Id, JudgeArea>>;
 }) => {
   const action = Wve.from(() => p.action);
   const keyframeIds = action.partial("keyframeIds");
@@ -35,6 +38,7 @@ export const EditKeyframeMove = (p: {
         <EditKeyframeDetail
           keyframe={keyframe()}
           sourceMap={p.sourceMap}
+          judgeAreaMap={p.judgeAreaMap}
         />
       )}</Show>
     </fieldset>

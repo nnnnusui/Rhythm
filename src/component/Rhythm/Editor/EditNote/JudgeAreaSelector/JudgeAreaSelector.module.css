@@ -1,0 +1,50 @@
+.JudgeArea {
+  display: grid;
+  align-items: center;
+  grid-template-columns: auto 1fr;
+  gap: 1em;
+
+  & .AreaButtons {
+    display: flex;
+    gap: 0.5em;
+  }
+
+  & .AreaButton {
+    cursor: pointer;
+
+    padding: 0.5em 0.75em;
+    background: #2a2a2a;
+    border: 1px solid #404040;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+
+    display: flex;
+    align-items: center;
+    gap: 0.5em;
+
+    color: var(--color-main);
+
+    &:hover {
+      background: #353535;
+      border-color: #505050;
+    }
+
+    &.Selected {
+      background: #404040;
+      border-color: #606060;
+    }
+  }
+
+  & .AreaIcon {
+    width: 0.3em;
+    height: 1.2em;
+
+    background: var(--color-main);
+    opacity: 0.8;
+    border-radius: 1px;
+  }
+
+  & .AreaLabel {
+    font-size: 0.9em;
+  }
+}

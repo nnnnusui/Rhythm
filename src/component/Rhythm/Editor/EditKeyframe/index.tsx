@@ -1,7 +1,9 @@
 import { Match, Switch } from "solid-js";
 
 import { SourceMap } from "~/component/embed/ResourcePlayer";
+import { Id } from "~/type/struct/Id";
 import { Wve } from "~/type/struct/Wve";
+import { JudgeArea } from "../../type/JudgeArea";
 import { EditKeyframeInsert } from "../EditKeyframeInsert";
 import { EditKeyframeMove } from "../EditKeyframeMove";
 import { TimelineAction, TimelineKeyframe } from "../Timeline";
@@ -12,6 +14,7 @@ export const EditKeyframe = (p: {
   action: Wve<TimelineAction>;
   keyframeMap: Wve<Record<TimelineKeyframe["id"], TimelineKeyframe>>;
   sourceMap: Wve<SourceMap>;
+  judgeAreaMap: Wve<Record<Id, JudgeArea>>;
 }) => {
   const action = Wve.from(() => p.action);
 
@@ -40,6 +43,7 @@ export const EditKeyframe = (p: {
           <EditKeyframeInsert
             action={insert()}
             sourceMap={p.sourceMap}
+            judgeAreaMap={p.judgeAreaMap}
           />
         )}</Match>
         <Match when={action.when((it) => it.kind === "move")}>{(move) => (
@@ -47,6 +51,7 @@ export const EditKeyframe = (p: {
             action={move()}
             keyframeMap={p.keyframeMap}
             sourceMap={p.sourceMap}
+            judgeAreaMap={p.judgeAreaMap}
           />
         )}</Match>
       </Switch>

@@ -2,7 +2,10 @@ import { Switch, Match } from "solid-js";
 
 import { SourceMap } from "~/component/embed/ResourcePlayer";
 import { TempoInteraction } from "~/component/interaction/TempoInteraction";
+import { Id } from "~/type/struct/Id";
 import { Wve } from "~/type/struct/Wve";
+import { JudgeArea } from "../../type/JudgeArea";
+import { EditNote } from "../EditNote";
 import { EditSource } from "../EditSource";
 import { TimelineKeyframe } from "../Timeline";
 
@@ -11,6 +14,7 @@ import styles from "./EditKeyframeDetail.module.css";
 export const EditKeyframeDetail = (p: {
   keyframe: Wve<TimelineKeyframe>;
   sourceMap: Wve<SourceMap>;
+  judgeAreaMap: Wve<Record<Id, JudgeArea>>;
 }) => {
   const keyframe = Wve.from(() => p.keyframe);
 
@@ -28,6 +32,12 @@ export const EditKeyframeDetail = (p: {
         <Match when={keyframe.when((it) => it.kind === "tempo")}>{(tempo) => (
           <TempoInteraction
             tempo={tempo()}
+          />
+        )}</Match>
+        <Match when={keyframe.when((it) => it.kind === "note")}>{(note) => (
+          <EditNote
+            keyframe={note()}
+            judgeAreaMap={p.judgeAreaMap}
           />
         )}</Match>
       </Switch>

@@ -1,5 +1,7 @@
 import { SourceMap } from "~/component/embed/ResourcePlayer";
+import { Id } from "~/type/struct/Id";
 import { Wve } from "~/type/struct/Wve";
+import { JudgeArea } from "../../type/JudgeArea";
 import { EditKeyframeDetail } from "../EditKeyframeDetail";
 import { TimelineAction } from "../Timeline";
 
@@ -9,6 +11,7 @@ type InsertAction = Extract<TimelineAction, { kind: "insert" }>;
 export const EditKeyframeInsert = (p: {
   action: Wve<InsertAction>;
   sourceMap: Wve<SourceMap>;
+  judgeAreaMap: Wve<Record<Id, JudgeArea>>;
 }) => {
   const action = Wve.from(() => p.action);
   const keyframe = action.partial("keyframe");
@@ -34,6 +37,7 @@ export const EditKeyframeInsert = (p: {
       <EditKeyframeDetail
         keyframe={keyframe}
         sourceMap={p.sourceMap}
+        judgeAreaMap={p.judgeAreaMap}
       />
     </fieldset>
   );

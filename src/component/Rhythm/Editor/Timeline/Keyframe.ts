@@ -69,8 +69,9 @@ type TempoKeyframe
   = KeyframeBase<"tempo">
   & Partial<Tempo>;
 
-export type NoteKeyframe
+type NoteKeyframe
   = KeyframeBase<"note">
   & {
     judgeAreaId: string;
+    noteKind: "press" | "release" | "trace" | "flick";
   };

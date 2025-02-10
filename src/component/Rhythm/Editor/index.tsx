@@ -133,6 +133,7 @@ export const Editor = (p: {
           action={timelineAction}
           keyframeMap={keyframeMap}
           sourceMap={sourceMap}
+          judgeAreaMap={judgeAreaMap}
         />
         {/* <InteractEditor /> */}
         {/* <HistoryManager history={score.history}>{(it) => (
