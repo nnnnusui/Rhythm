@@ -13,7 +13,8 @@
 - emoji-prefix は :emoji: の形式で使用すること
 - 1行目は可能であれば簡潔に納める
 - 2行目に空行を入れる
-- 3行目は "AI assisted" を必ず含める
+- 3行目は "AI assisted by [Model Name] in [Platform]" の形式で記述する
+  例：AI assisted by Claude 3.5 Sonnet in Cursor
 - 4行目以降は必要なら、変更についての詳細や備考などを追記する
 - 4行目以降は自明なら省略してよい
 - 技術的な単語は正確に記述すること
