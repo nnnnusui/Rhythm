@@ -9,18 +9,59 @@ import { PartializedTuple } from "../PartializedTuple";
 import { ValueOf } from "../ValueOf";
 
 /**
- * Dividable `solid-js/store` wrapper.
+ * A wrapper for Solid.js store that enables easy manipulation of complex data structures.
+ *
+ * @example
+ * ```ts
+ * const store = Wve.create({ user: { name: "John", age: 25 } });
+ *
+ * // Accessing nested properties
+ * const userName = store.partial("user", "name");
+ * console.log(userName()); // "John"
+ * userName.set("Jane");
+ *
+ * // Filtering
+ * const adult = store.filter(user => user.age >= 18);
+ * ```
+ *
+ * @typeParam T - The type of data held by the store
  * @public
  */
 export type Wve<T> = Atomic<T> & {
+  /**
+   * Creates a substore for a specific path in nested objects
+   * @param keys - Property path to access
+   */
   partial: PartialFn<T>;
+
+  /**
+   * Creates a new store containing only elements that match the condition
+   * @param predicate - Filtering condition
+   */
   filter: FilterFn<T>;
+
+  /**
+   * Applies a transformation to the store
+   * @param apply - Transformation function
+   */
   with: WithFn<T>;
+
+  /**
+   * Returns the store only if it matches the condition
+   * @param matcher - Type guard function
+   */
   when: WhenFn<T>;
+
+  /**
+   * Returns the store only if the value exists (not null/undefined)
+   */
   whenPresent: WhenPresentFn<T>;
 };
 
-/** @public */
+/**
+ * Factory functions for creating and manipulating Wve stores
+ * @public
+ */
 export const Wve = (() => {
   const atomicFrom = <T>(get: () => T, set: SetStoreFunction<T>): Atomic<T> =>
     Object.assign(get, { set });
@@ -36,12 +77,19 @@ export const Wve = (() => {
     });
   };
 
+  /**
+   * Creates a new Wve store
+   * @param init - Initial value
+   * @returns Wve store instance
+   */
   const create = <T extends object>(init: T): Wve<T> => {
     const [get, set] = createStore<T>(init);
     return completion(atomicFrom(() => get, set));
   };
 
   /**
+   * Creates a new Wve store from an existing one
+   * @param accessor - Function that returns an existing Wve store
    * @ts-ignore: overloaded `from()` */
   const from: FromFn = (accessor) => {
     let cache: any;
@@ -57,10 +105,17 @@ export const Wve = (() => {
     return completion(atomicFrom(get, set));
   };
 
+  /**
+   * Creates a Wve store from separated getter/setter
+   * @param get - Function to get value
+   * @param set - Function that returns setter function
+   */
   const fromSeparated = <T>(get: () => T, set: () => SetStoreFunction<T>): Wve<T> =>
     completion(atomicFrom(get, set()));
 
   /**
+   * Wraps an optional Wve store
+   * @param accessor - Function that returns an optional Wve store
    * @ts-ignore: overloaded `from()` */
   const mayBe = <T>(accessor: () => Wve<T> | undefined): Wve<T | undefined> => {
     const get = () => accessor()?.();
@@ -69,6 +124,10 @@ export const Wve = (() => {
     return completion(atomicFrom(get, set));
   };
 
+  /**
+   * Creates a substore for a specific path in nested objects
+   * @param keys - Property path to access
+   */
   const partial = <T>(wve: Atomic<T>): PartialFn<T> => (...keys) =>
     // @ts-ignore: fold partial.
     completion(keys.reduce((wve, key) => partialOnce(wve, key), wve));
@@ -142,6 +201,10 @@ export const Wve = (() => {
   };
 })();
 
+/**
+ * Type providing basic store operations
+ * @typeParam T - The type of data held by the store
+ */
 type Atomic<T> = (() => T) & {
   set: SetStoreFunction<T>;
 };
