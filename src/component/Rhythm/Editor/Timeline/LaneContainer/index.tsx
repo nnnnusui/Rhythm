@@ -42,7 +42,7 @@ export const LaneContainer = (p: {
 
   const editAction = Wve.from(() => p.editAction);
   const isSelected = (keyframeId: Id) =>
-    editAction.when((it) => it.kind === "move")?.().keyframeId === keyframeId;
+    editAction.when((it) => it.kind === "move")?.().keyframeIds.includes(keyframeId) ?? false;
 
   const state = Wve.create<{
     mayBeKeyframe?: Keyframe;

@@ -14,9 +14,9 @@ export const EditKeyframeMove = (p: {
   sourceMap: Wve<SourceMap>;
 }) => {
   const action = Wve.from(() => p.action);
-  const keyframeId = action.partial("keyframeId");
+  const keyframeIds = action.partial("keyframeIds");
   const keyframe = Wve.mayBe(() => {
-    const id = keyframeId();
+    const [id] = keyframeIds();
     if (!id) return;
     return p.keyframeMap.partial(id);
   });

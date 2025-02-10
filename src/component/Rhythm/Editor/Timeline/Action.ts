@@ -7,7 +7,7 @@ export type Action = {
   keyframe: Keyframe;
 } | {
   kind: "move";
-  keyframeId?: Keyframe["id"];
+  keyframeIds: Keyframe["id"][];
 };
 
 export const Action = (() => {
@@ -16,7 +16,7 @@ export const Action = (() => {
     switch (kind) {
       case "none": return { kind: "none" };
       case "insert": return { kind: "insert", keyframe: { id: "", time: 0, kind: "source" } };
-      case "move": return { kind: "move" };
+      case "move": return { kind: "move", keyframeIds: [] };
     }
   };
   return {

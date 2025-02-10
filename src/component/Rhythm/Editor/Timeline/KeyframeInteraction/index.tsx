@@ -59,8 +59,8 @@ export const KeyframeInteraction = (p: {
     const resultKeyframe = draggedKeyframe();
     if (resultKeyframe) keyframe.set(resultKeyframe);
     action.when((it) => it.kind === "move")
-      ?.partial("keyframeId")
-      .set(id);
+      ?.partial("keyframeIds")
+      .set([id]);
     dragged.set("keyframe", undefined);
   };
 
