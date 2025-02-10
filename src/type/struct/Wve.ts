@@ -56,6 +56,11 @@ export type Wve<T> = Atomic<T> & {
    * Returns the store only if the value exists (not null/undefined)
    */
   whenPresent: WhenPresentFn<T>;
+
+  /**
+   * Converts a Wve<T> to Wve<T | undefined>
+   */
+  asMayBe: () => Wve<T | undefined>;
 };
 
 /**
@@ -74,6 +79,7 @@ export const Wve = (() => {
       with: withFn(wve),
       when: when(wve),
       whenPresent: whenPresent(wve),
+      asMayBe: asMayBe(wve),
     });
   };
 
@@ -189,6 +195,8 @@ export const Wve = (() => {
 
   const whenPresent = <T>(wve: Wve<T>): WhenPresentFn<T> => () => when(wve)((it) => it != null);
 
+  const asMayBe = <T>(wve: Wve<T>): AsMayBeFn<T> => () => wve as Wve<T | undefined>;
+
   const as = <To>(accessor: () => Wve<any>): Wve<To> =>
     accessor() as Wve<To>;
 
@@ -210,6 +218,7 @@ type Atomic<T> = (() => T) & {
 };
 type WhenFn<T> = <S extends T>(matcher: (it: T) => it is S) => Wve<S> | undefined;
 type WhenPresentFn<T> = () => Wve<NonNullable<T>> | undefined;
+type AsMayBeFn<T> = () => Wve<T | undefined>;
 interface FromFn {
   <T>(accessor: () => Wve<T>): Wve<T>;
   <W extends Wve<any> | undefined>(accessor: () => W): W extends Wve<infer T> ? Wve<T | undefined> : never;
