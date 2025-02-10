@@ -8,10 +8,9 @@
 ### Commit Message
 
 - 英文で記述する
-- 1行目に emoji-prefix を含める
-- .gitmessageに定義されたprefixに則ること
-- 複数のprefixは使用しないこと
-- 該当するemojiが無ければ新しく提案すること
+- もし .gitmessage に妥当な emoji-prefix が定義されていれば、1行目の先頭に付与する
+- 複数の emoji-prefix は使用しないこと
+- emoji-prefix は :emoji: の形式で使用すること
 - 1行目は可能であれば簡潔に納める
 - 2行目に空行を入れる
 - 3行目は "AI assisted" を必ず含める
