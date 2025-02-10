@@ -49,7 +49,7 @@ export const Note = (p: {
   });
 
   return (
-    <Show when={!offScreen()}>
+    <Show when={!(offScreen() || judged())}>
       <div class={styles.Note}
         ref={setRef}
         style={p.style}
