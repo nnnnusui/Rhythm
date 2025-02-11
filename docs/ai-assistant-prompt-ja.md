@@ -20,3 +20,41 @@
 - 技術的な単語は正確に記述すること
 - コミットメッセージの日本語訳をプロンプト内でのみ表示すること
 - コミットメッセージ本体には日本語を含めないこと
+
+#### Message Format
+```
+(?:[emoji-prefix]) [overview-message]
+
+Created with AI ([Model Name]) in [Platform Name]
+
+[detailed-messages]
+```
+
+#### Message Examples
+```
+:hammer_and_wrench: Fix type errors in `/script/plopfile.ts`
+
+Created with AI (Claude 3.5 Sonnet) in Cursor
+```
+
+```
+Ensure `Wve#partial()` infers undefineable type when the target is a record
+
+Created with AI (Claude 3.5 Sonnet) in Cursor
+```
+
+```
+Add note kind editing feature
+
+Created with AI (Claude 3.5 Sonnet) in Cursor
+
+- Add `<EditNote/>` component for note editing functionality
+- Implement note kind selection with visual feedback
+- Add lane selection for note placement
+```
+
+#### Command Examples
+```bash
+# 4行目以降に余分な空行を含めないよう、`git commit -F` を使用する
+echo -e "improve note kind visualization\n\nCreated with AI (Claude 3.5 Sonnet) in Cursor\n\n- Use mask-image for note kind icons\n- Improve keyframe positioning in timeline\n- Adjust icon sizes and styles" > commit-message.txt && git commit -F commit-message.txt && rm commit-message.txt
+```
