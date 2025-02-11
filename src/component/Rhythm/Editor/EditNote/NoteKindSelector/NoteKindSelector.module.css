@@ -39,24 +39,26 @@
     width: 1.2em;
     height: 1.2em;
 
-    background: var(--color-main);
+    background-color: var(--color-main);
     opacity: 0.8;
-    border-radius: 2px;
+    mask-position: center;
+    mask-repeat: no-repeat;
+    mask-size: contain;
 
     &[data-kind="press"] {
-      clip-path: polygon(0% 100%, 50% 0%, 100% 100%);
+      mask-image: url("/icon/note-press.svg");
     }
 
     &[data-kind="release"] {
-      clip-path: polygon(0% 0%, 50% 100%, 100% 0%);
+      mask-image: url("/icon/note-release.svg");
     }
 
     &[data-kind="trace"] {
-      clip-path: circle(40%);
+      mask-image: url("/icon/note-trace.svg");
     }
 
     &[data-kind="flick"] {
-      clip-path: polygon(0% 50%, 70% 0%, 70% 100%);
+      mask-image: url("/icon/note-flick.svg");
     }
   }
 

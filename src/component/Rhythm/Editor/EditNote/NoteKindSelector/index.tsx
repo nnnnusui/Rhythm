@@ -20,7 +20,8 @@ export const NoteKindSelector = (p: {
             classList={{ [styles.Selected]: value() === kind }}
             onClick={() => value.set(kind)}
           >
-            <div class={styles.KindIcon}
+            <div
+              class={styles.KindIcon}
               data-kind={kind}
             />
             <span class={styles.KindLabel}>{kind}</span>

@@ -1,4 +1,4 @@
-import { Show } from "solid-js";
+import { Show, Switch, Match } from "solid-js";
 
 import { DragDetector, OnDrag } from "~/component/detect/DragDetector";
 import { JudgeArea } from "~/component/Rhythm/type/JudgeArea";
@@ -8,6 +8,7 @@ import { Wve } from "~/type/struct/Wve";
 import { Action } from "../Action";
 import { TimeFns } from "../createTimeFns";
 import { Keyframe } from "../Keyframe";
+import { NoteKeyframe } from "./NoteKeyframe";
 
 import styles from "./KeyframeInteraction.module.css";
 
@@ -64,6 +65,20 @@ export const KeyframeInteraction = (p: {
     dragged.set("keyframe", undefined);
   };
 
+  const renderKeyframe = () => (
+    <Switch>
+      <Match when={keyframe.when((it) => it.kind === "source")}>
+        <div>source</div>
+      </Match>
+      <Match when={keyframe.when((it) => it.kind === "tempo")}>
+        <div>tempo</div>
+      </Match>
+      <Match when={keyframe.when((it) => it.kind === "note")}>{(note) => (
+        <NoteKeyframe keyframe={note()} />
+      )}</Match>
+    </Switch>
+  );
+
   return (
     <>
       <DragDetector class={styles.KeyframeInteraction}
@@ -75,22 +90,24 @@ export const KeyframeInteraction = (p: {
         style={{
           "--progress": `${Time.toProgressPx(Time.validate(keyframe().time))}px`,
           "--gridOrder": getGridOrderFromKeyframe(keyframe()),
+          "--gridWidth": 1,
         }}
         dragContainer={p.dragContainer}
         onDrag={onDrag}
         startState={() => keyframe()}
         onDblClick={() => keyframe.set(undefined!)}
       >
-        <span>{JSON.stringify(keyframe().kind)}</span>
+        {renderKeyframe()}
       </DragDetector>
       <Show when={draggedKeyframe()}>{(keyframe) => (
         <div class={styles.KeyframeInteraction}
           style={{
             "--progress": `${Time.toProgressPx(Time.validate(keyframe().time))}px`,
             "--gridOrder": getGridOrderFromKeyframe(keyframe()),
+            "--gridWidth": 1,
           }}
         >
-          <span>{JSON.stringify(keyframe().kind)}</span>
+          {renderKeyframe()}
         </div>
       )}</Show>
     </>

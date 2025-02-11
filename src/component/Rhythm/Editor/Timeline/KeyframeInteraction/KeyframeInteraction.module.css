@@ -1,22 +1,23 @@
 .KeyframeInteraction {
   pointer-events: auto;
-  grid-column: var(--gridOrder);
+  grid-column: var(--gridOrder) / span var(--gridWidth);
   position: absolute;
   left: 0;
   right: 0;
   bottom: var(--progress);
-}
+  transform: translateY(50%);
 
-.InAction {
-  opacity: .2;
-}
+  .InAction {
+    opacity: .2;
+  }
 
-.Selected {
-  outline: 1px solid currentColor;
-}
+  .Selected {
+    outline: 1px solid currentColor;
+  }
 
-.MayBe {
-  pointer-events: none;
+  .MayBe {
+    pointer-events: none;
 
-  color: color-mix(in srgb, currentColor, transparent 60%);
+    color: color-mix(in srgb, currentColor, transparent 60%);
+  }
 }
