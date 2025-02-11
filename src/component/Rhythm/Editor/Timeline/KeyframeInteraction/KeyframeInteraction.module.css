@@ -7,15 +7,15 @@
   bottom: var(--progress);
   transform: translateY(50%);
 
-  .InAction {
+  &.InAction {
     opacity: .2;
   }
 
-  .Selected {
+  &.Selected {
     outline: 1px solid currentColor;
   }
 
-  .MayBe {
+  &.MayBe {
     pointer-events: none;
 
     color: color-mix(in srgb, currentColor, transparent 60%);

@@ -101,6 +101,10 @@ export const KeyframeInteraction = (p: {
       </DragDetector>
       <Show when={draggedKeyframe()}>{(keyframe) => (
         <div class={styles.KeyframeInteraction}
+          classList={{
+            [styles.InAction]: true,
+            [styles.MayBe]: true,
+          }}
           style={{
             "--progress": `${Time.toProgressPx(Time.validate(keyframe().time))}px`,
             "--gridOrder": getGridOrderFromKeyframe(keyframe()),
