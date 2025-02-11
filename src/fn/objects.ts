@@ -45,6 +45,11 @@ export const Objects = (() => {
   const when = <T extends AnyObject, S extends T>(obj: T, matcher: (it: T) => it is S): S | undefined =>
     matcher(obj) ? obj : undefined;
 
+  const groupBy = <K extends PropertyKey, T>(
+    items: Iterable<T>,
+    keySelector: (item: T, index: number) => K,
+  ): Record<K, T[]> => Object.groupBy(items, keySelector) as Record<K, T[]>;
+
   return {
     entries,
     fromEntries,
@@ -56,6 +61,7 @@ export const Objects = (() => {
     partition,
     isRequired,
     when,
+    groupBy,
   };
 })();
 

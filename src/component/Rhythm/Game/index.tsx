@@ -1,17 +1,14 @@
 import { createElementSize } from "@solid-primitives/resize-observer";
-import { createSignal, For, JSX, onCleanup, onMount } from "solid-js";
-import { isServer } from "solid-js/web";
+import { createSignal, For } from "solid-js";
 
 import { Objects } from "~/fn/objects";
-import { Pos } from "~/type/struct/2d/Pos";
-import { Id } from "~/type/struct/Id";
 import { Wve } from "~/type/struct/Wve";
-import { createSoundEffectPlayer } from "./createSoundEffectPlayer";
-import { Judge } from "./Judge";
+import { createJudge } from "./createJudge";
+import { createKeyboardInput } from "./createKeyboardInput";
+import { createPointerInput } from "./createPointerInput";
 import { Lane } from "./Lane";
 import { LatestJudge } from "./LatestJudge";
 import { Note } from "./Note";
-import { JudgeArea } from "../type/JudgeArea";
 import { Score } from "../type/Score";
 
 import styles from "./Game.module.css";
@@ -30,101 +27,35 @@ export const Game = (p: {
 
   const notes = () => keyframes().filter((it) => it.kind === "note")
     .sort((prev, next) => prev.time - next.time);
-  const notesMap = () => Object.groupBy(notes(), (it) => it.judgeAreaId);
+  const notesMap = () => Objects.groupBy(notes(), (it) => it.judgeAreaId);
 
-  const se = createSoundEffectPlayer();
-  const judgeMsMap = {
-    perfect: 40,
-    great: 100,
-    good: 160,
-    bad: 210,
-    miss: 240,
-  };
-  const judgedMap = Wve.create<Record<Id, Judge>>({});
   const state = Wve.create({
     judgeLineMarginBottomPx: 80,
-    latestJudge: undefined as Judge | undefined,
   });
   const judgeLineMarginBottomPx = state.partial("judgeLineMarginBottomPx");
-  const latestJudge = state.partial("latestJudge");
-  const judgeAreaActiveMap = Wve.create<Record<JudgeArea["id"], boolean>>({});
-
-  const onJudge = (judgeAreaId: string) => {
-    const [judgeTarget] = notesMap()[judgeAreaId]
-      ?.flatMap((note) => {
-        if (judgedMap()[note.id]) return [];
-        const untilSecond = p.judgeDelay + note.time - p.time;
-        const diffMs = Math.abs(untilSecond) * 1000;
-        const judgeKind = Objects.entries(judgeMsMap)
-          .find(([, ms]) => diffMs <= ms)
-          ?.[0];
-        if (judgeKind == null) return [];
-        const judge: Judge = {
-          kind: judgeKind,
-          untilSecond,
-        };
-        return [{ note, judge }];
-      })
-      ?? [];
-    if (!judgeTarget) return se.playTap();
-    const { note, judge } = judgeTarget;
-    se.playJudge(judge.kind);
-    judgedMap.set(note.id, judge);
-    latestJudge.set(judge);
-  };
-
-  const getJudgeAreaFromKey = (key: string) => {
-    const keys = "asdjkl".split("");
-    const index = keys.indexOf(key);
-    if (index === -1) return;
-    return judgeAreas()[index];
-  };
-  const keyDown = (event: KeyboardEvent) => {
-    if (event.repeat) return;
-    const judgeArea = getJudgeAreaFromKey(event.key);
-    if (!judgeArea) return;
-    judgeAreaActiveMap.set(judgeArea.id, true);
-    onJudge(judgeArea.id);
-  };
-  const keyUp = (event: KeyboardEvent) => {
-    const judgeArea = getJudgeAreaFromKey(event.key);
-    if (!judgeArea) return;
-    judgeAreaActiveMap.set(judgeArea.id, false);
-  };
-  onMount(() => {
-    if (isServer) return;
-    window.addEventListener("keydown", keyDown);
-    window.addEventListener("keyup", keyUp);
-  });
-  onCleanup(() => {
-    if (isServer) return;
-    window.removeEventListener("keydown", keyDown);
-    window.removeEventListener("keyup", keyUp);
-  });
 
   const [playArea, setPlayArea] = createSignal<HTMLElement>();
   const playAreaSize = createElementSize(playArea);
   const playAreaHeight = () => playAreaSize.height ?? 0;
-  const getJudgeAreaFromPos = (pos: Pos) => {
-    if (!playAreaSize.width) return;
-    const order = Math.floor(pos.x * (maxOrder() + 1) / playAreaSize.width);
-    return judgeAreas()[order];
-  };
-  const pointerJudgeAreaIdMap = Wve.create<Record<number, Id>>({});
-  const onPointerDown: JSX.EventHandler<HTMLElement, PointerEvent> = (event) => {
-    const pos = Pos.fromEvent(event, { relativeTo: playArea() });
-    const judgeArea = getJudgeAreaFromPos(pos);
-    if (!judgeArea) return;
-    pointerJudgeAreaIdMap.set(event.pointerId, judgeArea.id);
-    judgeAreaActiveMap.set(judgeArea.id, true);
-    onJudge(judgeArea.id);
-  };
-  const onPointerUp: JSX.EventHandler<HTMLElement, PointerEvent> = (event) => {
-    const judgeAreaId = pointerJudgeAreaIdMap()[event.pointerId];
-    const judgeArea = judgeAreaMap()[judgeAreaId ?? -1];
-    if (!judgeArea) return;
-    judgeAreaActiveMap.set(judgeArea.id, false);
-  };
+
+  const judge = createJudge({
+    get time() { return p.time; },
+    get judgeDelay() { return p.judgeDelay; },
+    get notesMap() { return notesMap(); },
+  });
+
+  createKeyboardInput({
+    judge,
+    getJudgeAreas: judgeAreas,
+  });
+
+  const pointer = createPointerInput({
+    judge,
+    playArea,
+    maxOrder,
+    getJudgeAreas: judgeAreas,
+    getJudgeAreaMap: judgeAreaMap,
+  });
 
   return (
     <div class={styles.Game}
@@ -135,9 +66,9 @@ export const Game = (p: {
       <span>judgeDelay: {p.judgeDelay}</span>
       <div class={styles.PlayArea}
         ref={setPlayArea}
-        onPointerDown={onPointerDown}
-        onPointerUp={onPointerUp}
-        onPointerLeave={onPointerUp}
+        onPointerDown={pointer.onPointerDown}
+        onPointerUp={pointer.onPointerUp}
+        onPointerLeave={pointer.onPointerUp}
         on:touchstart={{ // suppress pinch-in and pinch-out
           handleEvent: (event) => event.preventDefault(),
           passive: false,
@@ -147,7 +78,7 @@ export const Game = (p: {
           <For each={judgeAreas()}>{(judgeArea) => (
             <Lane
               judgeLineMarginBottomPx={judgeLineMarginBottomPx()}
-              active={judgeAreaActiveMap()[judgeArea.id]}
+              active={judge.activeMap()[judgeArea.id]}
             >
               <For each={notesMap()[judgeArea.id]}>{(note) => (
                 <Note
@@ -171,7 +102,7 @@ export const Game = (p: {
                     height: "1em",
                     "background-color": "orange",
                   }}
-                  judged={judgedMap.partial(note.id)}
+                  judged={judge.judgedMap.partial(note.id)}
                 />
               )}</For>
             </Lane>
@@ -181,7 +112,7 @@ export const Game = (p: {
           style={{ "--marginBottom": `${judgeLineMarginBottomPx()}px` }}
         />
         <LatestJudge
-          judge={latestJudge()}
+          judge={judge.latestJudge()}
         />
       </div>
     </div>
