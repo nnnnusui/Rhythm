@@ -2,18 +2,18 @@ import { For } from "solid-js";
 
 import { Wve } from "~/type/struct/Wve";
 
-import styles from "./NoteKindSelector.module.css";
+import styles from "./JudgeKindSelector.module.css";
 
-export const NoteKindSelector = (p: {
-  value: Wve<NoteKind>;
+export const JudgeKindSelector = (p: {
+  value: Wve<JudgeKind>;
 }) => {
   const value = Wve.from(() => p.value);
 
   return (
-    <div class={styles.NoteKind}>
+    <div class={styles.JudgeKind}>
       <span>Kind:</span>
       <div class={styles.KindButtons}>
-        <For each={noteKinds}>{(kind) => (
+        <For each={judgeKinds}>{(kind) => (
           <button
             type="button"
             class={styles.KindButton}
@@ -32,5 +32,5 @@ export const NoteKindSelector = (p: {
   );
 };
 
-type NoteKind = "press" | "release" | "trace" | "flick";
-const noteKinds: NoteKind[] = ["press", "release", "trace", "flick"];
+type JudgeKind = "press" | "release" | "trace" | "flick";
+const judgeKinds: JudgeKind[] = ["press", "release", "trace", "flick"];

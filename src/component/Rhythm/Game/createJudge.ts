@@ -66,14 +66,14 @@ export const createJudge = (p: {
     batch(() => {
       const mayBeJudgedNotes = findMayBeJudgedNotes(p.notesMap[judgeAreaId] ?? []);
       (() => { // judge press notes: only once
-        const pressNotes = mayBeJudgedNotes.filter(({ note }) => note.noteKind === "press");
+        const pressNotes = mayBeJudgedNotes.filter(({ note }) => note.judgeKind === "press");
         const head = pressNotes[0];
         if (head == null) return;
         const { note, judge } = head;
         setJudge(note.id, judge);
       })();
       (() => { // judge trace notes: bulk judgement
-        const traceNotes = mayBeJudgedNotes.filter(({ note }) => note.noteKind === "trace");
+        const traceNotes = mayBeJudgedNotes.filter(({ note }) => note.judgeKind === "trace");
         return traceNotes.map(({ note, judge }) => {
           const currentJudge = judgedMap()[note.id];
           if (currentJudge && currentJudge.diffMs < judge.diffMs) return false;
@@ -89,14 +89,14 @@ export const createJudge = (p: {
     batch(() => {
       const mayBeJudgedNotes = findMayBeJudgedNotes(p.notesMap[judgeAreaId] ?? []);
       (() => { // judge release notes: only once
-        const releaseNotes = mayBeJudgedNotes.filter(({ note }) => note.noteKind === "release");
+        const releaseNotes = mayBeJudgedNotes.filter(({ note }) => note.judgeKind === "release");
         const head = releaseNotes[0];
         if (head == null) return;
         const { note, judge } = head;
         setJudge(note.id, judge);
       })();
       (() => { // judge trace notes: bulk judgement
-        const traceNotes = mayBeJudgedNotes.filter(({ note }) => note.noteKind === "trace");
+        const traceNotes = mayBeJudgedNotes.filter(({ note }) => note.judgeKind === "trace");
         return traceNotes.map(({ note, judge }) => {
           const currentJudge = judgedMap()[note.id];
           if (currentJudge && currentJudge.diffMs < judge.diffMs) return;
@@ -107,7 +107,7 @@ export const createJudge = (p: {
   };
 
   const traceNotesMap = () => {
-    const traceNotes = Objects.values(p.notesMap).flatMap((it) => it.filter((note) => note.noteKind === "trace"));
+    const traceNotes = Objects.values(p.notesMap).flatMap((it) => it.filter((note) => note.judgeKind === "trace"));
     return Objects.groupBy(traceNotes, (it) => it.judgeAreaId);
   };
   let latestTime = 0;
@@ -148,6 +148,6 @@ type JudgeKind = "perfect" | "great" | "good" | "bad" | "miss";
 type Note = {
   id: string;
   time: number;
-  noteKind: string;
+  judgeKind: string;
   judgeAreaId: string;
 };

@@ -3,7 +3,7 @@ import { Id } from "~/type/struct/Id";
 import { Wve } from "~/type/struct/Wve";
 import { TimelineKeyframe } from "../Timeline";
 import { JudgeAreaSelector } from "./JudgeAreaSelector";
-import { NoteKindSelector } from "./NoteKindSelector";
+import { JudgeKindSelector } from "./JudgeKindSelector";
 
 import styles from "./EditNote.module.css";
 
@@ -13,7 +13,7 @@ export const EditNote = (p: {
 }) => {
   const keyframe = Wve.from(() => p.keyframe);
   const judgeAreaId = keyframe.partial("judgeAreaId");
-  const noteKind = keyframe.partial("noteKind");
+  const judgeKind = keyframe.partial("judgeKind");
 
   return (
     <fieldset class={styles.EditNote}>
@@ -23,7 +23,7 @@ export const EditNote = (p: {
           value={judgeAreaId}
           judgeAreaMap={p.judgeAreaMap}
         />
-        <NoteKindSelector value={noteKind} />
+        <JudgeKindSelector value={judgeKind} />
       </div>
     </fieldset>
   );
