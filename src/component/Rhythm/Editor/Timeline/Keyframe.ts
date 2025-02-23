@@ -44,11 +44,24 @@ export const Keyframe = (() => {
   const getTempoNodes: ToNodes<TempoKeyframe> = (keyframes) => toNodes(keyframes, isTempoNode);
   const getTempoNodeMap: ToNodeMap<TempoKeyframe> = (keyframeMap) => toNodeMap(keyframeMap, isTempoNode);
 
+  const init = <Kind extends Keyframe["kind"]>(p: {
+    kind: Kind;
+  }): Keyframe => {
+    const base: KeyframeBase<Kind> = { id: "", time: 0, kind: p.kind };
+    switch (base.kind) {
+      case "note":
+        return NoteKeyframe.init(base);
+      default:
+        return { ...base } as Extract<Keyframe, { kind: Kind }>;
+    }
+  };
+
   return {
     getSourceNodes,
     getSourceNodeMap,
     getTempoNodes,
     getTempoNodeMap,
+    init,
   };
 })();
 
@@ -74,4 +87,13 @@ type NoteKeyframe
   & {
     judgeAreaId: string;
     judgeKinds: ("press" | "release" | "trace" | "flick")[];
+    judgeGroupId?: string;
   };
+const NoteKeyframe = (() => {
+  const init = (p: Omit<KeyframeBase<"note">, "kind">): NoteKeyframe => {
+    return { ...p, kind: "note", judgeAreaId: "", judgeKinds: [] };
+  };
+  return {
+    init,
+  };
+})();

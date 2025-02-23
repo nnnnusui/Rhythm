@@ -3,7 +3,7 @@ import { Id } from "~/type/struct/Id";
 import { Wve } from "~/type/struct/Wve";
 import { JudgeArea } from "../../type/JudgeArea";
 import { EditKeyframeDetail } from "../EditKeyframeDetail";
-import { TimelineAction } from "../Timeline";
+import { TimelineAction, TimelineKeyframe } from "../Timeline";
 
 import styles from "./EditKeyframeInsert.module.css";
 
@@ -21,17 +21,17 @@ export const EditKeyframeInsert = (p: {
       <legend>Insert</legend>
       <button
         type="button"
-        onClick={() => keyframe.set({ kind: "source" })}
+        onClick={() => keyframe.set(TimelineKeyframe.init({ kind: "source" }))}
         disabled={keyframe().kind === "source"}
       >source</button>
       <button
         type="button"
-        onClick={() => keyframe.set({ kind: "tempo" })}
+        onClick={() => keyframe.set(TimelineKeyframe.init({ kind: "tempo" }))}
         disabled={keyframe().kind === "tempo"}
       >tempo</button>
       <button
         type="button"
-        onClick={() => keyframe.set({ kind: "note" })}
+        onClick={() => keyframe.set(TimelineKeyframe.init({ kind: "note" }))}
         disabled={keyframe().kind === "note"}
       >note</button>
       <EditKeyframeDetail
