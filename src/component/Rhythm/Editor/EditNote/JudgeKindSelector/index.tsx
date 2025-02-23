@@ -5,9 +5,18 @@ import { Wve } from "~/type/struct/Wve";
 import styles from "./JudgeKindSelector.module.css";
 
 export const JudgeKindSelector = (p: {
-  value: Wve<JudgeKind>;
+  value: Wve<JudgeKind[]>;
 }) => {
   const value = Wve.from(() => p.value);
+
+  const toggleKind = (kind: JudgeKind) => {
+    const current = value();
+    if (current.includes(kind)) {
+      value.set(current.filter((it) => it !== kind));
+    } else {
+      value.set([...current, kind]);
+    }
+  };
 
   return (
     <div class={styles.JudgeKind}>
@@ -17,8 +26,8 @@ export const JudgeKindSelector = (p: {
           <button
             type="button"
             class={styles.KindButton}
-            classList={{ [styles.Selected]: value() === kind }}
-            onClick={() => value.set(kind)}
+            classList={{ [styles.Selected]: value().includes(kind) }}
+            onClick={() => toggleKind(kind)}
           >
             <div
               class={styles.KindIcon}

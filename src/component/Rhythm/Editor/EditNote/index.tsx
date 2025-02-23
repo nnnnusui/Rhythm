@@ -13,7 +13,7 @@ export const EditNote = (p: {
 }) => {
   const keyframe = Wve.from(() => p.keyframe);
   const judgeAreaId = keyframe.partial("judgeAreaId");
-  const judgeKind = keyframe.partial("judgeKind");
+  const judgeKinds = keyframe.partial("judgeKinds");
 
   return (
     <fieldset class={styles.EditNote}>
@@ -23,7 +23,7 @@ export const EditNote = (p: {
           value={judgeAreaId}
           judgeAreaMap={p.judgeAreaMap}
         />
-        <JudgeKindSelector value={judgeKind} />
+        <JudgeKindSelector value={judgeKinds} />
       </div>
     </fieldset>
   );

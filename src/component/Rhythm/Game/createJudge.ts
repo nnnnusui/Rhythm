@@ -66,19 +66,21 @@ export const createJudge = (p: {
     batch(() => {
       const mayBeJudgedNotes = findMayBeJudgedNotes(p.notesMap[judgeAreaId] ?? []);
       (() => { // judge press notes: only once
-        const pressNotes = mayBeJudgedNotes.filter(({ note }) => note.judgeKind === "press");
+        const pressNotes = mayBeJudgedNotes.filter(({ note }) => note.judgeKinds.includes("press"));
         const head = pressNotes[0];
         if (head == null) return;
         const { note, judge } = head;
         setJudge(note.id, judge);
       })();
       (() => { // judge trace notes: bulk judgement
-        const traceNotes = mayBeJudgedNotes.filter(({ note }) => note.judgeKind === "trace");
-        return traceNotes.map(({ note, judge }) => {
-          const currentJudge = judgedMap()[note.id];
-          if (currentJudge && currentJudge.diffMs < judge.diffMs) return false;
-          setJudge(note.id, judge);
-        });
+        const traceNotes = mayBeJudgedNotes.filter(({ note }) => note.judgeKinds.includes("trace"));
+        return traceNotes
+          .filter(({ note }) => note.time <= p.time)
+          .map(({ note, judge }) => {
+            const currentJudge = judgedMap()[note.id];
+            if (currentJudge && currentJudge.diffMs < judge.diffMs) return false;
+            setJudge(note.id, judge);
+          });
       })();
     });
   };
@@ -89,25 +91,27 @@ export const createJudge = (p: {
     batch(() => {
       const mayBeJudgedNotes = findMayBeJudgedNotes(p.notesMap[judgeAreaId] ?? []);
       (() => { // judge release notes: only once
-        const releaseNotes = mayBeJudgedNotes.filter(({ note }) => note.judgeKind === "release");
+        const releaseNotes = mayBeJudgedNotes.filter(({ note }) => note.judgeKinds.includes("release"));
         const head = releaseNotes[0];
         if (head == null) return;
         const { note, judge } = head;
         setJudge(note.id, judge);
       })();
       (() => { // judge trace notes: bulk judgement
-        const traceNotes = mayBeJudgedNotes.filter(({ note }) => note.judgeKind === "trace");
-        return traceNotes.map(({ note, judge }) => {
-          const currentJudge = judgedMap()[note.id];
-          if (currentJudge && currentJudge.diffMs < judge.diffMs) return;
-          setJudge(note.id, judge);
-        });
+        const traceNotes = mayBeJudgedNotes.filter(({ note }) => note.judgeKinds.includes("trace"));
+        return traceNotes
+          .filter(({ note }) => note.time >= p.time)
+          .map(({ note, judge }) => {
+            const currentJudge = judgedMap()[note.id];
+            if (currentJudge && currentJudge.diffMs < judge.diffMs) return;
+            setJudge(note.id, judge);
+          });
       })();
     });
   };
 
   const traceNotesMap = () => {
-    const traceNotes = Objects.values(p.notesMap).flatMap((it) => it.filter((note) => note.judgeKind === "trace"));
+    const traceNotes = Objects.values(p.notesMap).flatMap((it) => it.filter((note) => note.judgeKinds.includes("trace")));
     return Objects.groupBy(traceNotes, (it) => it.judgeAreaId);
   };
   let latestTime = 0;
@@ -148,6 +152,6 @@ type JudgeKind = "perfect" | "great" | "good" | "bad" | "miss";
 type Note = {
   id: string;
   time: number;
-  judgeKind: string;
+  judgeKinds: string[];
   judgeAreaId: string;
 };

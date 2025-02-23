@@ -73,5 +73,5 @@ type NoteKeyframe
   = KeyframeBase<"note">
   & {
     judgeAreaId: string;
-    judgeKind: "press" | "release" | "trace" | "flick";
+    judgeKinds: ("press" | "release" | "trace" | "flick")[];
   };

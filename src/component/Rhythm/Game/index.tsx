@@ -58,7 +58,7 @@ export const Game = (p: {
     getJudgeAreaMap: judgeAreaMap,
   });
 
-  const noteStyle = (judgeKind: string): JSX.CSSProperties => {
+  const noteStyle = (judgeKinds: string[]): JSX.CSSProperties => {
     const baseStyle: JSX.CSSProperties = {
       width: "100%",
       height: "1.2em",
@@ -68,7 +68,9 @@ export const Game = (p: {
       "background-color": "currentColor",
     };
 
-    switch (judgeKind) {
+    // 複数のjudgeKindがある場合は最初のものを使用
+    const primaryKind = judgeKinds[0] ?? "";
+    switch (primaryKind) {
       case "press":
         return {
           ...baseStyle,
@@ -143,7 +145,7 @@ export const Game = (p: {
                       bottom: `${-1 * playAreaHeight() + judgeLineMarginBottomPx()}px`,
                     },
                   ]}
-                  style={noteStyle(note.judgeKind)}
+                  style={noteStyle(note.judgeKinds)}
                   judged={judge.judgedMap.partial(note.id)}
                 />
               )}</For>

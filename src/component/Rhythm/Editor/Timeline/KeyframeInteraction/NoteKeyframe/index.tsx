@@ -1,3 +1,5 @@
+import { For } from "solid-js";
+
 import { Wve } from "~/type/struct/Wve";
 import { KeyframeBase } from "../KeyframeBase";
 
@@ -6,14 +8,16 @@ import styles from "./NoteKeyframe.module.css";
 export const NoteKeyframe = (p: {
   keyframe: Wve<NoteKeyframe>;
 }) => {
-  const judgeKind = () => p.keyframe().judgeKind;
+  const judgeKinds = () => p.keyframe().judgeKinds;
 
   return (
     <div class={styles.NoteKeyframe}>
-      <div
-        class={styles.Icon}
-        data-kind={judgeKind()}
-      />
+      <For each={judgeKinds()}>{(kind) => (
+        <div
+          class={styles.Icon}
+          data-kind={kind}
+        />
+      )}</For>
     </div>
   );
 };
@@ -22,5 +26,5 @@ type NoteKeyframe
   = KeyframeBase<"note">
   & {
     judgeAreaId: string;
-    judgeKind: "press" | "release" | "trace" | "flick";
+    judgeKinds: ("press" | "release" | "trace" | "flick")[];
   };
