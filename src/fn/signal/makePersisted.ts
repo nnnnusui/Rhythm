@@ -9,10 +9,12 @@ import { Wve } from "~/type/struct/Wve";
 export const makePersisted = <T>(options: {
   name: string;
   init?: (it: T) => T;
+  parse?: (it: string) => T;
 }) => (wve: Wve<T>): Wve<T> => {
   if (isServer) return wve;
   const key = options.name;
   const init = options.init ?? ((it) => it);
+  const parse = options.parse ?? JSON.parse;
 
   const [loaded, setLoaded] = createSignal(false);
   createEffect(() => {
@@ -26,7 +28,7 @@ export const makePersisted = <T>(options: {
   };
   onMount(() => {
     const saved = localStorage.getItem(key);
-    if (saved) wve.set(init(JSON.parse(saved)));
+    if (saved) wve.set(init(parse(saved)));
     window.addEventListener("storage", storageHandler);
     setLoaded(true);
   });
