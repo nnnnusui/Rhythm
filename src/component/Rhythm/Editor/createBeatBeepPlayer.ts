@@ -25,7 +25,7 @@ export const createBeatBeepPlayer = (p: {
 
   const currentBeat = createTimeBasedCache({
     timer: p.timer,
-    values: p.beats,
+    get values() { return p.beats; },
   });
   createEffect(() => {
     if (!p.play) return;
