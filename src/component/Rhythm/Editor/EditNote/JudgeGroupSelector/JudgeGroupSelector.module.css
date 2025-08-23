@@ -1,0 +1,64 @@
+.JudgeGroup {
+  display: grid;
+  align-items: center;
+  grid-template-columns: auto 1fr;
+  gap: 1em;
+}
+
+.Controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5em;
+}
+
+.GroupSelect {
+  cursor: pointer;
+  flex: 1;
+
+  padding: 0.5em;
+  background: #2a2a2a;
+  border: 1px solid #404040;
+  border-radius: 4px;
+
+  color: var(--color-main);
+
+  &:hover {
+    background: #353535;
+    border-color: #505050;
+  }
+
+  &:focus {
+    border-color: #606060;
+    outline: none;
+  }
+}
+
+.NewGroupButton {
+  cursor: pointer;
+  width: 2em;
+  height: 2em;
+  line-height: 1;
+
+  padding: 0;
+  background: #2a2a2a;
+  border: 1px solid #404040;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  font-size: 1.2em;
+  color: var(--color-main);
+
+  &:hover {
+    background: #353535;
+    border-color: #505050;
+  }
+
+  &:active {
+    background: #404040;
+    border-color: #606060;
+  }
+}

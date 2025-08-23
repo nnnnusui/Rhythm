@@ -10,6 +10,7 @@ import styles from "./EditKeyframeInsert.module.css";
 type InsertAction = Extract<TimelineAction, { kind: "insert" }>;
 export const EditKeyframeInsert = (p: {
   action: Wve<InsertAction>;
+  keyframeMap: Wve<Record<TimelineKeyframe["id"], TimelineKeyframe>>;
   sourceMap: Wve<SourceMap>;
   judgeAreaMap: Wve<Record<Id, JudgeArea>>;
 }) => {
@@ -36,6 +37,7 @@ export const EditKeyframeInsert = (p: {
       >note</button>
       <EditKeyframeDetail
         keyframe={keyframe}
+        keyframeMap={p.keyframeMap}
         sourceMap={p.sourceMap}
         judgeAreaMap={p.judgeAreaMap}
       />

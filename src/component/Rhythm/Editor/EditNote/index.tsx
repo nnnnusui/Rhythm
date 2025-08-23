@@ -3,12 +3,14 @@ import { Id } from "~/type/struct/Id";
 import { Wve } from "~/type/struct/Wve";
 import { TimelineKeyframe } from "../Timeline";
 import { JudgeAreaSelector } from "./JudgeAreaSelector";
+import { JudgeGroupSelector } from "./JudgeGroupSelector";
 import { JudgeKindSelector } from "./JudgeKindSelector";
 
 import styles from "./EditNote.module.css";
 
 export const EditNote = (p: {
   keyframe: Wve<NoteKeyframe>;
+  keyframeMap: Wve<Record<TimelineKeyframe["id"], TimelineKeyframe>>;
   judgeAreaMap: Wve<Record<Id, JudgeArea>>;
 }) => {
   const keyframe = Wve.from(() => p.keyframe);
@@ -24,6 +26,10 @@ export const EditNote = (p: {
           judgeAreaMap={p.judgeAreaMap}
         />
         <JudgeKindSelector value={judgeKinds} />
+        <JudgeGroupSelector
+          keyframe={keyframe}
+          keyframeMap={p.keyframeMap}
+        />
       </div>
     </fieldset>
   );

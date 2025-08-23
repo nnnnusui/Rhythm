@@ -13,6 +13,7 @@ import styles from "./EditKeyframeDetail.module.css";
 
 export const EditKeyframeDetail = (p: {
   keyframe: Wve<TimelineKeyframe>;
+  keyframeMap: Wve<Record<TimelineKeyframe["id"], TimelineKeyframe>>;
   sourceMap: Wve<SourceMap>;
   judgeAreaMap: Wve<Record<Id, JudgeArea>>;
 }) => {
@@ -37,6 +38,7 @@ export const EditKeyframeDetail = (p: {
         <Match when={keyframe.when((it) => it.kind === "note")}>{(note) => (
           <EditNote
             keyframe={note()}
+            keyframeMap={p.keyframeMap}
             judgeAreaMap={p.judgeAreaMap}
           />
         )}</Match>

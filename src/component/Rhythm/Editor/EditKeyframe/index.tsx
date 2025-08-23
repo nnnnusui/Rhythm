@@ -42,6 +42,7 @@ export const EditKeyframe = (p: {
         <Match when={action.when((it) => it.kind === "insert")}>{(insert) => (
           <EditKeyframeInsert
             action={insert()}
+            keyframeMap={p.keyframeMap}
             sourceMap={p.sourceMap}
             judgeAreaMap={p.judgeAreaMap}
           />

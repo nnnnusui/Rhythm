@@ -37,6 +37,7 @@ export const EditKeyframeMove = (p: {
       <Show when={keyframe.when((it) => !!it)}>{(keyframe) => (
         <EditKeyframeDetail
           keyframe={keyframe()}
+          keyframeMap={p.keyframeMap}
           sourceMap={p.sourceMap}
           judgeAreaMap={p.judgeAreaMap}
         />
