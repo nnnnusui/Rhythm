@@ -1,10 +1,4 @@
 .Game {
-  position: absolute;
-  inset: 0;
-
-  display: flex;
-  flex-direction: column-reverse;
-  align-items: center;
   overflow: hidden;
 
   white-space: nowrap;
@@ -16,10 +10,21 @@
   }
 }
 
-.PlayArea {
+.DebugInfo {
+  pointer-events: none;
   position: absolute;
   inset: 0;
+
+  display: flex;
+  flex-direction: column-reverse;
+  align-items: center;
+}
+
+.PlayArea {
+  position: relative;
+  width: 100%;
   max-width: 650px;
+  height: 100%;
 
   margin: auto;
   background-color: color-mix(in srgb, black, transparent 20%);

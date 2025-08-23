@@ -6,6 +6,7 @@ import { TimelineKeyframe } from "../Editor/Timeline";
 /** @public */
 export type Score = {
   title: string;
+  description?: string;
   length: number;
   sourceMap: SourceMap;
   judgeAreaMap: Record<Id, JudgeArea>;

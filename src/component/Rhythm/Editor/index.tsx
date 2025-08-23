@@ -22,6 +22,7 @@ import { Score } from "../type/Score";
 
 import styles from "./Editor.module.css";
 
+/** @public */
 export const Editor = (p: {
   children: JSX.Element;
   timer: Timer;
@@ -148,4 +149,5 @@ const viewModes = ["edit", "play", "sourceControl"] as const;
 type ViewMode = typeof viewModes[number];
 const ViewMode = { init: (): ViewMode => viewModes[0] };
 
+/** @public */
 export { ViewMode };

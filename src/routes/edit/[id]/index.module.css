@@ -1,0 +1,32 @@
+.EditPage {
+  width: 100%;
+  height: 100%;
+
+  display: grid;
+  grid-template:
+    "header" auto
+    "content" 1fr
+    / 1fr;
+}
+
+.Header {
+  grid-area: header;
+}
+
+.ViewBackground {
+  position: absolute;
+  inset: 0;
+
+  background-color: rgba(0, 0, 0, 0.6);
+
+  &.Hidden {
+    display: none;
+  }
+}
+
+.GameContainer {
+  position: absolute;
+  inset: 0;
+
+  display: grid;
+}

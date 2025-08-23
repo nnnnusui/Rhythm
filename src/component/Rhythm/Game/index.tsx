@@ -14,12 +14,13 @@ import { Score } from "../type/Score";
 
 import styles from "./Game.module.css";
 
+/** @public */
 export const Game = (p: {
   score: Score;
   time: number;
   judgeDelay: number;
   duration: number;
-  ghost: boolean;
+  ghost?: boolean;
 }) => {
   const keyframes = () => Object.values(p.score.timeline.keyframeMap);
   const judgeAreaMap = () => p.score.judgeAreaMap;
@@ -109,9 +110,6 @@ export const Game = (p: {
     <div class={styles.Game}
       classList={{ [styles.Ghost]: p.ghost }}
     >
-      <span>time: {p.time}</span>
-      <span>duration: {p.duration}</span>
-      <span>judgeDelay: {p.judgeDelay}</span>
       <div class={styles.PlayArea}
         ref={setPlayArea}
         onPointerDown={pointer.onPointerDown}
@@ -158,6 +156,11 @@ export const Game = (p: {
         <LatestJudge
           judge={judge.latestJudge()}
         />
+      </div>
+      <div class={styles.DebugInfo}>
+        <span>time: {p.time}</span>
+        <span>duration: {p.duration}</span>
+        <span>judgeDelay: {p.judgeDelay}</span>
       </div>
     </div>
   );

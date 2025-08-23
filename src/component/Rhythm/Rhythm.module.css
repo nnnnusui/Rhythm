@@ -3,21 +3,4 @@
   height: 100%;
 
   display: grid;
-  grid-template-rows: auto 1fr;
-}
-
-.Controls {
-  display: grid;
-  grid-auto-flow: column;
-}
-
-.ViewBackground {
-  position: absolute;
-  inset: 0;
-
-  background-color: rgba(0, 0, 0, 0.6);
-
-  &.Hidden {
-    display: none;
-  }
 }

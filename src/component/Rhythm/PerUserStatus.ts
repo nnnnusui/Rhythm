@@ -4,12 +4,14 @@ import { Objects } from "~/fn/objects";
 import { GameConfig } from "./type/GameConfig";
 import { Score } from "./type/Score";
 
+/** @public */
 export type PerUserStatus = {
   editingScoreMap: Record<ScoreId, Score>;
   editingScoreId?: ScoreId;
   gameConfig: GameConfig;
 };
 
+/** @public */
 export const PerUserStatus = (() => {
   const init = (base?: PerUserStatus): PerUserStatus => {
     if (!base) return {
