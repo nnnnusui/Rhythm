@@ -34,7 +34,7 @@ Created with AI (Claude 3.5 Sonnet) in Cursor
 ```
 Ensure `Wve#partial()` infers undefineable type when the target is a record
 
-Created with AI (Claude 3.5 Sonnet) in Cursor
+Created with AI (GPT-4.1) in GitHub Copilot
 ```
 
 ```
@@ -63,6 +63,7 @@ echo -e "improve note kind visualization\n\nCreated with AI (Claude 3.5 Sonnet) 
 - 2行目に空行を入れる
 - 3行目は "Created with AI ([Model Name]) in [Platform Name]" の形式で記述する
   例： Created with AI (Claude 3.5 Sonnet) in Cursor
+  例： Created with AI (GPT-4.1) in GitHub Copilot
 - 4行目以降は必要なら、変更についての詳細や備考などを追記する
 - 4行目以降は自明なら省略してよい
 - 技術的な単語は正確に記述すること
