@@ -1,4 +1,4 @@
-import { For } from "solid-js";
+import { For, Show } from "solid-js";
 
 import { Pos } from "~/type/struct/2d/Pos";
 import { NoteValue } from "~/type/struct/music/NoteValue";
@@ -59,6 +59,7 @@ export const Beats = (p: {
             style={{ "--progress": `${Px.getPxFromSeconds(beat.time)}px` }}
             classList={{
               [styles.Current]: p.currentBeat?.time === beat.time,
+              [styles.Auxiliary]: beat.kind === "auxiliary",
             }}
           />
         )}</For>
@@ -92,7 +93,9 @@ export const Beats = (p: {
             <div class={styles.VerticalInfo}>
               <div>{Math.floor(beat.time * 1000) / 1000}</div>
               <div class={styles.Kind}>
-                <span>{beat.kind}</span>
+                <Show when={beat.kind !== "auxiliary"}>
+                  <span>{beat.kind}</span>
+                </Show>
               </div>
             </div>
           </div>
