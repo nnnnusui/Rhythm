@@ -1,12 +1,12 @@
 import { For } from "solid-js";
 
 import { Wve } from "~/type/struct/Wve";
-import { KeyframeBase } from "../KeyframeBase";
+import { KeyframeKindMap } from "../../Keyframe";
 
 import styles from "./NoteKeyframe.module.css";
 
 export const NoteKeyframe = (p: {
-  keyframe: Wve<NoteKeyframe>;
+  keyframe: Wve<KeyframeKindMap<"note">>;
 }) => {
   const judgeKinds = () => p.keyframe().judgeKinds;
 
@@ -21,10 +21,3 @@ export const NoteKeyframe = (p: {
     </div>
   );
 };
-
-type NoteKeyframe
-  = KeyframeBase<"note">
-  & {
-    judgeAreaId: string;
-    judgeKinds: ("press" | "release" | "trace" | "flick")[];
-  };

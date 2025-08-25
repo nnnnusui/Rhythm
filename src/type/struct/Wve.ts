@@ -88,9 +88,10 @@ export const Wve = (() => {
    * @param init - Initial value
    * @returns Wve store instance
    */
-  const create = <T extends object>(init: T): Wve<T> => {
-    const [get, set] = createStore<T>(init);
-    return completion(atomicFrom(() => get, set));
+  const create = <T>(init: T): Wve<T> => {
+    const [get, set] = createStore({ value: init });
+    // @ts-ignore
+    return completion(atomicFrom(() => get, set)).partial("value");
   };
 
   /**

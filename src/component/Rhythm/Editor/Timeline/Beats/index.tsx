@@ -4,16 +4,16 @@ import { Pos } from "~/type/struct/2d/Pos";
 import { NoteValue } from "~/type/struct/music/NoteValue";
 import { Wve } from "~/type/struct/Wve";
 import { Beat } from "../../Beat";
-import { Time, TimeFns } from "../createTimeFns";
+import { PxFns } from "../createPxFns";
 
 import styles from "./Beats.module.css";
 
 export const Beats = (p: {
   beats: Beat[];
   currentBeat: undefined | Beat;
-  timeFns: TimeFns;
+  pxFns: PxFns;
 }) => {
-  const Time = TimeFns.from(() => p.timeFns);
+  const Px = PxFns.from(() => p.pxFns);
   const beats = () => p.beats
     .map((it, index, all) => {
       const next = all[index + 1];
@@ -21,30 +21,30 @@ export const Beats = (p: {
     });
 
   const selection = Wve.create<{
-    from?: Time;
-    to?: Time;
+    from?: number;
+    to?: number;
   }>({});
   const setSelectionFrom = (event: PointerEvent) => {
     const pos = Pos.fromEvent(event);
-    const time = Time.fromProgressPxPos(pos);
-    selection.set("from", time);
+    const step = Px.getStepFromPxPos(pos);
+    selection.set("from", step);
     selection.set("to", undefined);
   };
   const setSelectionTo = (event: PointerEvent) => {
     const pos = Pos.fromEvent(event);
-    const time = Time.fromProgressPxPos(pos);
-    selection.set("to", time);
+    const step = Px.getStepFromPxPos(pos);
+    selection.set("to", step);
   };
   const selectionStyle = () => {
     const { from, to } = selection();
     if (!from) return;
     if (!to) return;
-    const low = Time.validate(Math.min(from, to));
+    const low = Math.min(from, to);
     const high = Math.max(from, to);
-    const diff = Time.validate(high - low);
+    const diff = high - low;
     return {
-      "--progress": `${Time.toProgressPx(low)}px`,
-      "--range": `${Time.toProgressPx(diff)}px`,
+      "--progress": `${Px.getPxFromStep(low)}px`,
+      "--range": `${Px.getPxFromStep(diff)}px`,
     };
   };
 
@@ -56,7 +56,7 @@ export const Beats = (p: {
       <div class={styles.Lines}>
         <For each={beats()}>{(beat) => (
           <div class={styles.BeatLine}
-            style={{ "--progress": `${Time.toProgressPx(Time.validate(beat.time))}px` }}
+            style={{ "--progress": `${Px.getPxFromSeconds(beat.time)}px` }}
             classList={{
               [styles.Current]: p.currentBeat?.time === beat.time,
             }}
@@ -79,8 +79,8 @@ export const Beats = (p: {
         <For each={beats()}>{(beat) => (
           <div class={styles.LineInfo}
             style={{
-              "--progress": `${Time.toProgressPx(Time.validate(beat.time))}px`,
-              "--length": `${Time.toProgressPx(Time.validate(beat.diff))}px`,
+              "--progress": `${Px.getPxFromSeconds(beat.time)}px`,
+              "--length": `${Px.getPxFromSeconds(beat.diff)}px`,
             }}
             classList={{
               [styles.Current]: p.currentBeat?.time === beat.time,

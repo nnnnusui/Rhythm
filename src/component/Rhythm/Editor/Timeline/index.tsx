@@ -6,12 +6,13 @@ import { ScrollBar } from "~/component/render/ScrollBar";
 import { ScrollBarTo } from "~/component/render/ScrollBarTo";
 import { Timer } from "~/fn/signal/createTimer";
 import { Id } from "~/type/struct/Id";
+import { NoteValue } from "~/type/struct/music/NoteValue";
 import { Wve } from "~/type/struct/Wve";
 import { Action } from "./Action";
-import { Beats } from "./Beats";
 import { Beat } from "../Beat";
+import { Beats } from "./Beats";
+import { createPxFns } from "./createPxFns";
 import { createSyncTimerToScroll } from "./createSyncTimerToScroll";
-import { createTimeFns } from "./createTimeFns";
 import { Keyframe } from "./Keyframe";
 import { LaneContainer } from "./LaneContainer";
 import { JudgeArea } from "../../type/JudgeArea";
@@ -28,6 +29,7 @@ export const Timeline = (p: {
   duration: Wve<number>;
   beats: Beat[];
   currentBeat: Beat | undefined;
+  auxiliaryBeat: NoteValue;
 }) => {
   const duration = Wve.from(() => p.duration);
   const [container, setContainer] = createSignal<HTMLElement>();
@@ -46,10 +48,19 @@ export const Timeline = (p: {
 
   const [timelineOffsetRatio] = createSignal(0.5);
   const timelineOffsetPx = () => viewLength() * timelineOffsetRatio();
-  const Time = createTimeFns({
+
+  const keyframeMap = Wve.from(() => p.keyframeMap);
+  const tempoKeyframeMap = keyframeMap.filter((it) => it.kind === "tempo");
+  const tempoNodes = () => Keyframe.getTempoNodes([
+    Keyframe.defaultTempoKeyframe,
+    ...Object.values(tempoKeyframeMap()),
+  ]);
+
+  const Px = createPxFns({
+    get tempoNodes() { return tempoNodes(); },
     get maxTime() { return p.maxTime; },
     get maxScrollPx() { return maxScrollPx(); },
-    get beats() { return p.beats; },
+    get auxiliaryBeat() { return p.auxiliaryBeat; },
   });
 
   return (
@@ -72,13 +83,13 @@ export const Timeline = (p: {
         <Beats
           beats={p.beats}
           currentBeat={p.currentBeat}
-          timeFns={Time}
+          pxFns={Px}
         />
         <LaneContainer
           keyframeMap={p.keyframeMap}
           judgeAreaMap={p.judgeAreaMap}
           editAction={p.action}
-          timeFns={Time}
+          pxFns={Px}
         />
       </ScrollBarTo>
       <ScrollBar

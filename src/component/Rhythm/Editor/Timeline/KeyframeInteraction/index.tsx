@@ -6,16 +6,16 @@ import { Pos } from "~/type/struct/2d/Pos";
 import { Id } from "~/type/struct/Id";
 import { Wve } from "~/type/struct/Wve";
 import { Action } from "../Action";
-import { TimeFns } from "../createTimeFns";
 import { Keyframe } from "../Keyframe";
 import { NoteKeyframe } from "./NoteKeyframe";
+import { PxFns } from "../createPxFns";
 
 import styles from "./KeyframeInteraction.module.css";
 
 export const KeyframeInteraction = (p: {
   keyframe: Wve<Keyframe>;
   action: Wve<Action>;
-  timeFns: TimeFns;
+  pxFns: PxFns;
   dragContainer: HTMLElement | undefined;
   getLaneOrder: (judgeAreaId: Id) => undefined | number;
   getJudgeAreaFromPx: (pxPos: Pos) => JudgeArea | undefined;
@@ -24,7 +24,7 @@ export const KeyframeInteraction = (p: {
 }) => {
   const keyframe = Wve.from(() => p.keyframe);
   const action = Wve.from(() => p.action);
-  const Time = TimeFns.from(() => p.timeFns);
+  const Px = PxFns.from(() => p.pxFns);
   const getGridOrderFromKeyframe = (keyframe?: Keyframe) => {
     if (!keyframe) return;
     if (keyframe.kind !== "note") return;
@@ -40,13 +40,13 @@ export const KeyframeInteraction = (p: {
     const start = event.start;
     const id = start.id;
     if (event.phase === "preview") {
-      const rawTime = start.time + Time.fromDeltaPxPos(event.delta);
-      const nextTime = event.raw.ctrlKey
-        ? rawTime
-        : Time.toAdjusted(Time.validate(rawTime));
+      const rawStep = Px.getStepFromDeltaPxPos(start.step, event.delta);
+      const nextStep = event.raw.ctrlKey
+        ? rawStep
+        : Px.getStepAdjusted(rawStep);
       draggedKeyframe.set(({
         ...start,
-        time: nextTime,
+        step: nextStep,
       }));
     }
     const draggedNote = draggedKeyframe.when((it) => it?.kind === "note");
@@ -88,7 +88,7 @@ export const KeyframeInteraction = (p: {
           [styles.MayBe]: p.mayBe,
         }}
         style={{
-          "--progress": `${Time.toProgressPx(Time.validate(keyframe().time))}px`,
+          "--progress": `${Px.getPxFromStep(keyframe().step)}px`,
           "--gridOrder": getGridOrderFromKeyframe(keyframe()),
           "--gridWidth": 1,
         }}
@@ -106,12 +106,13 @@ export const KeyframeInteraction = (p: {
             [styles.MayBe]: true,
           }}
           style={{
-            "--progress": `${Time.toProgressPx(Time.validate(keyframe().time))}px`,
+            "--progress": `${Px.getPxFromStep(keyframe().step)}px`,
             "--gridOrder": getGridOrderFromKeyframe(keyframe()),
             "--gridWidth": 1,
           }}
         >
           {renderKeyframe()}
+          {keyframe().step}
         </div>
       )}</Show>
     </>

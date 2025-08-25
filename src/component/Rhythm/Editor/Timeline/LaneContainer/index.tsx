@@ -7,7 +7,7 @@ import { Pos } from "~/type/struct/2d/Pos";
 import { Id } from "~/type/struct/Id";
 import { Wve } from "~/type/struct/Wve";
 import { Action } from "../Action";
-import { TimeFns } from "../createTimeFns";
+import { PxFns } from "../createPxFns";
 import { Keyframe } from "../Keyframe";
 import { KeyframeInteraction } from "../KeyframeInteraction";
 
@@ -17,9 +17,9 @@ export const LaneContainer = (p: {
   keyframeMap: Wve<Record<Keyframe["id"], Keyframe>>;
   judgeAreaMap: Wve<Record<Id, JudgeArea>>;
   editAction: Wve<Action>;
-  timeFns: TimeFns;
+  pxFns: PxFns;
 }) => {
-  const Time = TimeFns.from(() => p.timeFns);
+  const Px = PxFns.from(() => p.pxFns);
 
   const [container, setContainer] = createSignal<HTMLElement>();
   const containerSize = createElementSize(container);
@@ -52,8 +52,8 @@ export const LaneContainer = (p: {
     const action = editAction();
     if (action.kind !== "insert") return;
     const pos = Pos.fromEvent(event);
-    const timeRaw = Time.fromProgressPxPos(pos);
-    const time = Time.toAdjusted(timeRaw);
+    const stepRaw = Px.getStepFromPxPos(pos);
+    const step = Px.getStepAdjusted(stepRaw);
     const id = Id.new();
     if (action.keyframe.kind === "note") {
       const judgeArea = getJudgeAreaFromPx(pos);
@@ -61,13 +61,13 @@ export const LaneContainer = (p: {
       return {
         ...action.keyframe,
         judgeAreaId: judgeArea.id,
-        time,
+        step,
         id,
       };
     } else {
       return {
         ...action.keyframe,
-        time,
+        step,
         id,
       };
     }
@@ -109,7 +109,7 @@ export const LaneContainer = (p: {
               keyframe={keyframe()}
               action={editAction}
               dragContainer={container()}
-              timeFns={Time}
+              pxFns={Px}
               getJudgeAreaFromPx={getJudgeAreaFromPx}
               selected={isSelected(keyframeId)}
               getLaneOrder={(judgeAreaId?: Id) => judgeAreaOrderMap()[judgeAreaId ?? -1]}
@@ -121,7 +121,7 @@ export const LaneContainer = (p: {
             keyframe={keyframe()}
             action={editAction}
             dragContainer={container()}
-            timeFns={Time}
+            pxFns={Px}
             getJudgeAreaFromPx={getJudgeAreaFromPx}
             selected={false}
             mayBe

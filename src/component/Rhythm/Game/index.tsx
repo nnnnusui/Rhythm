@@ -10,6 +10,7 @@ import { createPointerInput } from "./createPointerInput";
 import { Lane } from "./Lane";
 import { LatestJudge } from "./LatestJudge";
 import { Note } from "./Note";
+import { TimelineKeyframe } from "../Editor/Timeline";
 import { Score } from "../type/Score";
 
 import styles from "./Game.module.css";
@@ -27,8 +28,8 @@ export const Game = (p: {
   const judgeAreas = () => Object.values(judgeAreaMap());
   const maxOrder = () => Math.max(...judgeAreas().map((it) => it.order));
 
-  const notes = () => keyframes().filter((it) => it.kind === "note")
-    .sort((prev, next) => prev.time - next.time);
+  const notes = () => TimelineKeyframe.getNodes(keyframes())
+    .noteNodes;
   const notesMap = () => Objects.groupBy(notes(), (it) => it.judgeAreaId);
 
   const state = Wve.create({
@@ -130,7 +131,7 @@ export const Game = (p: {
                 <Note
                   gameTime={p.time}
                   gameDuration={p.duration}
-                  time={note.time}
+                  time={note.offsetSeconds}
                   keyframes={[
                     {
                       offset: 0,

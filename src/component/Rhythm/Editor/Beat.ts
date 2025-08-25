@@ -18,14 +18,14 @@ export const Beat = (() => {
     duration: NoteValue.from("1/4"),
   });
 
-  const fromTempos = (temposWithTime: (Tempo & { time: number })[], maxSecond: number, auxiliaryBeat: NoteValue) => {
+  const fromTempos = (temposWithTime: (Tempo & { offsetSeconds: number })[], maxSecond: number, auxiliaryBeat: NoteValue) => {
     return temposWithTime
-      .sort((prev, next) => prev.time - next.time)
+      .sort((prev, next) => prev.offsetSeconds - next.offsetSeconds)
       .flatMap((tempo, index, all) => {
         const next = all[index + 1];
-        const _maxTime = (next?.time ?? maxSecond) - tempo.time;
+        const _maxTime = (next?.offsetSeconds ?? maxSecond) - tempo.offsetSeconds;
         return Beat.fromTempo(tempo, _maxTime, auxiliaryBeat)
-          .map((it) => ({ ...it, time: tempo.time + it.time }));
+          .map((it) => ({ ...it, time: tempo.offsetSeconds + it.time }));
       });
   };
 

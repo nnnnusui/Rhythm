@@ -3,7 +3,6 @@ import { children, createMemo, JSX } from "solid-js";
 import { Fps } from "~/component/indicate/Fps";
 import { TimerInteraction } from "~/component/interaction/TimerInteraction";
 import { Resizable } from "~/component/render/Resizable";
-import { Objects } from "~/fn/objects";
 import { action } from "~/fn/signal/createAction";
 import { Timer } from "~/fn/signal/createTimer";
 import { NoteValue } from "~/type/struct/music/NoteValue";
@@ -54,7 +53,10 @@ export const Editor = (p: {
   const timelineAction = local.partial("timelineAction");
 
   const tempoKeyframeMap = keyframeMap.filter((it) => it.kind === "tempo");
-  const tempoNodes = () => TimelineKeyframe.getTempoNodes(Objects.values(tempoKeyframeMap()));
+  const tempoNodes = () => TimelineKeyframe.getTempoNodes([
+    TimelineKeyframe.defaultTempoKeyframe,
+    ...Object.values(tempoKeyframeMap()),
+  ]);
   const beats = createMemo(() => Beat.fromTempos(tempoNodes(), maxTime(), auxiliaryBeat()));
   const { currentBeat } = createBeatBeepPlayer({
     timer,
@@ -105,8 +107,8 @@ export const Editor = (p: {
           duration={duration}
           beats={beats()}
           currentBeat={currentBeat()}
+          auxiliaryBeat={auxiliaryBeat()}
         />
-        {/* <InteractOverlay /> */}
       </div>
       <div class={styles.Detail}>
         details.

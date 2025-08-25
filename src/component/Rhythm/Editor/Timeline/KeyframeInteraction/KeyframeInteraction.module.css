@@ -18,6 +18,6 @@
   &.MayBe {
     pointer-events: none;
 
-    color: color-mix(in srgb, currentColor, transparent 60%);
+    color: color-mix(in srgb, currentColor, transparent 20%);
   }
 }

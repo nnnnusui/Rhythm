@@ -22,9 +22,9 @@ export const ResourcePlayer = (p: {
     const reversedTargetTimeline = p.timeline
       .filter((it) => it.sourceId === sourceId)
       .reverse();
-    return (time: number) => {
+    return (ms: number) => {
       const lastAction = reversedTargetTimeline
-        .find((it) => it.time * 1000 <= time);
+        .find((it) => it.offsetSeconds * 1000 <= ms);
       return lastAction;
     };
   };
@@ -42,7 +42,7 @@ export const ResourcePlayer = (p: {
           const sourceOffsetMs = () => (it.offset ?? 0) * 1000;
           const lastAction = () => getLastActionMap()[sourceId]?.(p.time - Math.min(sourceOffsetMs(), 0));
           const playing = () => p.playing && lastAction()?.action === "play";
-          const seekTo = () => p.offset - sourceOffsetMs() + ((lastAction()?.offset ?? 0) * 1000);
+          const seekTo = () => p.offset - sourceOffsetMs() + ((lastAction()?.offset ?? 0) * 1000) - ((lastAction()?.offsetSeconds ?? 0) * 1000);
           return (
             <Switch>
               <Match when={Objects.when(it, (it) => it.kind === "YouTube")}>{(source) => (
@@ -79,7 +79,7 @@ export type SourceMap = Record<SourceId, Source>;
 
 /** @public */
 export type SourceControlNode = {
-  time: number;
+  offsetSeconds: number;
   sourceId: string;
   action: "play" | "pause";
   offset?: number;

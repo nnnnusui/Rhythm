@@ -1,4 +1,5 @@
 import { Objects } from "~/fn/objects";
+import { NoteValue } from "~/type/struct/music/NoteValue";
 import { Tempo } from "~/type/struct/music/Tempo";
 
 export type Keyframe
@@ -7,8 +8,19 @@ export type Keyframe
   | NoteKeyframe
   ;
 
+export type KeyframeKindMap<Kind extends Keyframe["kind"]>
+  = Extract<Keyframe, { kind: Kind }>;
+
+export type KeyframeNodeKindMap<Kind extends Keyframe["kind"]>
+  = Required<Extract<Keyframe, { kind: Kind }>>
+  & {
+    offsetSeconds: number;
+  };
+
+type KeyframeNode<T extends Keyframe> = KeyframeNodeKindMap<T["kind"]>;
+
 export const Keyframe = (() => {
-  const toNodes = <T extends Keyframe>(
+  const toRequiredKeyframes = <T extends Keyframe>(
     keyframes: T[],
     isRequired: (keyframe: T) => keyframe is Required<T>,
   ): Required<T>[] => {
@@ -20,34 +32,59 @@ export const Keyframe = (() => {
     }, init).sum;
   };
 
-  const toNodeMap = <T extends Keyframe>(
-    keyframeMap: Record<Keyframe["id"], T>,
-    isRequired: (keyframe: T) => keyframe is Required<T>,
-  ): Record<Keyframe["id"], Required<T>> => {
-    const keyframes = Objects.values(keyframeMap);
-    const nodes = toNodes(keyframes, isRequired);
-    const nodeMap = Objects.fromEntries(nodes.map((it) => ([it.id, it])));
-    return nodeMap;
+  const defaultTempoKeyframe: KeyframeNodeKindMap<"tempo"> = {
+    id: "defaultTempoKeyframe",
+    step: 0,
+    kind: "tempo",
+    offsetSeconds: 0,
+    ...Tempo.from({ bpm: 60 }),
   };
-
-  type Id = Keyframe["id"];
-  type ToNodes<T extends Keyframe> = (keyframes: T[]) => Required<T>[];
-  type ToNodeMap<T extends Keyframe> = (keyframeMap: Record<Id, T>) => Record<Id, Required<T>>;
-
-  const isSourceNode = (it: SourceKeyframe): it is Required<SourceKeyframe> =>
-    Objects.isRequired(it, { action: "", sourceId: "" });
-  const getSourceNodes: ToNodes<SourceKeyframe> = (keyframes) => toNodes(keyframes, isSourceNode);
-  const getSourceNodeMap: ToNodeMap<SourceKeyframe> = (keyframeMap) => toNodeMap(keyframeMap, isSourceNode);
-
   const isTempoNode = (it: TempoKeyframe): it is Required<TempoKeyframe> =>
     Objects.isRequired(it, { beat: "", bpm: "", timeSignature: "" });
-  const getTempoNodes: ToNodes<TempoKeyframe> = (keyframes) => toNodes(keyframes, isTempoNode);
-  const getTempoNodeMap: ToNodeMap<TempoKeyframe> = (keyframeMap) => toNodeMap(keyframeMap, isTempoNode);
+  const getTempoNodes = (keyframes: TempoKeyframe[]): KeyframeNodeKindMap<"tempo">[] => {
+    const init: {
+      prev: Required<KeyframeKindMap<"tempo">>;
+      sum: KeyframeNodeKindMap<"tempo">[];
+      offsetSeconds: number;
+    } = { prev: Keyframe.defaultTempoKeyframe, sum: [], offsetSeconds: 0 };
+    return toRequiredKeyframes(keyframes, isTempoNode)
+      .reduce(({ prev, sum, offsetSeconds }, it) => {
+        const elapsed = Tempo.getSecondFromNote(prev, NoteValue["*"](prev.beat, it.step));
+        const nextOffsetSeconds = offsetSeconds + elapsed;
+        const node = { ...it, offsetSeconds: nextOffsetSeconds };
+        sum.push(node);
+        return { prev: it, sum, offsetSeconds: nextOffsetSeconds };
+      }, init)
+      .sum;
+  };
+
+  const getSecondsFromStep = (step: number, tempoNodes: KeyframeNodeKindMap<"tempo">[]) => {
+    const currentTempo = tempoNodes.findLast((it) => it.step <= Math.max(0, step));
+    if (!currentTempo) throw new Error(`No current tempo found: ${JSON.stringify({ step })}`);
+    const elapsedStep = step - currentTempo.step;
+    const elapsedSeconds = Tempo.getSecondFromNote(currentTempo, NoteValue["*"](currentTempo.beat, elapsedStep));
+    return currentTempo.offsetSeconds + elapsedSeconds;
+  };
+
+  const toNodes = <T extends Keyframe>(
+    keyframes: T[],
+    isRequired: (keyframe: T) => keyframe is Required<T>,
+    tempoNodes: KeyframeNodeKindMap<"tempo">[],
+  ): KeyframeNode<T>[] => {
+    return toRequiredKeyframes(keyframes, isRequired)
+      .map((it) => ({
+        ...it,
+        offsetSeconds: getSecondsFromStep(it.step, tempoNodes),
+      })) as KeyframeNode<T>[];
+  };
+  const isSourceNode = (it: SourceKeyframe): it is Required<SourceKeyframe> =>
+    Objects.isRequired(it, { action: "", sourceId: "" });
+  const isNoteNode = (it: NoteKeyframe): it is Required<NoteKeyframe> => true;
 
   const init = <Kind extends Keyframe["kind"]>(p: {
     kind: Kind;
   }): Keyframe => {
-    const base: KeyframeBase<Kind> = { id: "", time: 0, kind: p.kind };
+    const base: KeyframeBase<Kind> = { id: "", step: 0, kind: p.kind };
     switch (base.kind) {
       case "note":
         return NoteKeyframe.init(base);
@@ -56,18 +93,25 @@ export const Keyframe = (() => {
     }
   };
 
+  const getNodes = (keyframes: Keyframe[]) => {
+    const tempoNodes = getTempoNodes([defaultTempoKeyframe, ...keyframes.filter((it) => it.kind === "tempo")]);
+    const sourceNodes = toNodes(keyframes.filter((it) => it.kind === "source"), isSourceNode, tempoNodes);
+    const noteNodes = toNodes(keyframes.filter((it) => it.kind === "note"), isNoteNode, tempoNodes);
+    return { tempoNodes, sourceNodes, noteNodes };
+  };
+
   return {
-    getSourceNodes,
-    getSourceNodeMap,
-    getTempoNodes,
-    getTempoNodeMap,
+    getNodes,
     init,
+    getTempoNodes,
+    getSecondsFromStep,
+    defaultTempoKeyframe,
   };
 })();
 
 type KeyframeBase<Kind> = {
   readonly id: string;
-  time: number;
+  step: number;
   kind: Kind;
 };
 

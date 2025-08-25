@@ -42,9 +42,9 @@ const PlayScreen = (p: {
   const timer = createTimer();
   const score = Wve.from(() => p.score);
   const keyframeMap = score.partial("timeline", "keyframeMap");
-  const sourceKeyframeMap = keyframeMap.filter((it) => it.kind === "source");
   const playerTimeline = () => TimelineKeyframe
-    .getSourceNodes(Objects.values(sourceKeyframeMap()));
+    .getNodes(Objects.values(keyframeMap()))
+    .sourceNodes;
 
   const gameConfig = Wve.from(() => p.gameConfig);
   const [gameKey, setGameKey] = createSignal([{}]);

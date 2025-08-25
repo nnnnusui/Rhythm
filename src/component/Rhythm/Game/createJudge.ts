@@ -47,7 +47,7 @@ export const createJudge = (p: {
   const findMayBeJudgedNotes = (notes: Note[]) => {
     return notes.flatMap((note) => {
       if (judgedMap()[note.id]) return [];
-      const untilSecond = p.judgeDelay + note.time - p.time;
+      const untilSecond = p.judgeDelay + note.offsetSeconds - p.time;
       const diffMs = Math.abs(untilSecond) * 1000;
       const judgeKind = findJudgeKindByDiffMs(diffMs);
       if (judgeKind == null) return [];
@@ -75,7 +75,7 @@ export const createJudge = (p: {
       (() => { // judge trace notes: bulk judgement
         const traceNotes = mayBeJudgedNotes.filter(({ note }) => note.judgeKinds.includes("trace"));
         return traceNotes
-          .filter(({ note }) => note.time <= p.time)
+          .filter(({ note }) => note.offsetSeconds <= p.time)
           .map(({ note, judge }) => {
             const currentJudge = judgedMap()[note.id];
             if (currentJudge && currentJudge.diffMs < judge.diffMs) return false;
@@ -100,7 +100,7 @@ export const createJudge = (p: {
       (() => { // judge trace notes: bulk judgement
         const traceNotes = mayBeJudgedNotes.filter(({ note }) => note.judgeKinds.includes("trace"));
         return traceNotes
-          .filter(({ note }) => note.time >= p.time)
+          .filter(({ note }) => note.offsetSeconds >= p.time)
           .map(({ note, judge }) => {
             const currentJudge = judgedMap()[note.id];
             if (currentJudge && currentJudge.diffMs < judge.diffMs) return;
@@ -125,7 +125,7 @@ export const createJudge = (p: {
           if (!active) return;
           const justNotes = traceNotesMap()[judgeAreaId]
             ?.filter((note) => {
-              const judgeSecond = p.judgeDelay + note.time;
+              const judgeSecond = p.judgeDelay + note.offsetSeconds;
               return judgeSecond <= currentTime && beforeTime <= judgeSecond;
             });
           justNotes?.forEach((note) => {
@@ -151,7 +151,7 @@ export const createJudge = (p: {
 type JudgeKind = "perfect" | "great" | "good" | "bad" | "miss";
 type Note = {
   id: string;
-  time: number;
+  offsetSeconds: number;
   judgeKinds: string[];
   judgeAreaId: string;
 };
