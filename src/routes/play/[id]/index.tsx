@@ -2,9 +2,11 @@ import { useParams } from "@solidjs/router";
 import { createSignal, For, Show, untrack } from "solid-js";
 
 import { ResourcePlayer } from "~/component/embed/ResourcePlayer";
+import { EditGameConfig } from "~/component/Rhythm/Editor/EditGameConfig";
 import { TimelineKeyframe } from "~/component/Rhythm/Editor/Timeline";
-import { Game } from "~/component/Rhythm/Game";
+import { Game, GameResultEvent } from "~/component/Rhythm/Game";
 import { PerUserStatus } from "~/component/Rhythm/PerUserStatus";
+import { ResultScreen } from "~/component/Rhythm/screen/ResultScreen";
 import { Score } from "~/component/Rhythm/type/Score";
 import { Objects } from "~/fn/objects";
 import { createTimer } from "~/fn/signal/createTimer";
@@ -50,7 +52,11 @@ const PlayScreen = (p: {
   const [gameKey, setGameKey] = createSignal([{}]);
   const resetGame = () => setGameKey([{}]);
 
-  const [mode, setMode] = createSignal<"play" | "pause">("play");
+  type Mode = "source" | "ready" | "play" | "pause" | "result";
+  const [mode, setMode] = createSignal<Mode>("ready");
+  const viewSource = () => {
+    setMode("source");
+  };
   const resume = () => {
     setMode("play");
     timer.start();
@@ -62,11 +68,15 @@ const PlayScreen = (p: {
   const reset = () => {
     timer.stop();
     resetGame();
-    setMode("play");
-    timer.start();
+    setMode("ready");
   };
 
-  timer.start();
+  const [gameResult, setGameResult] = createSignal<GameResultEvent>();
+  const result = (event: GameResultEvent) => {
+    setMode("result");
+    setGameResult(event);
+  };
+
   return (
     <div class={styles.PlayScreen}>
       <ResourcePlayer
@@ -77,34 +87,67 @@ const PlayScreen = (p: {
         timeline={playerTimeline()}
         preload
       />
-      <div class={styles.ViewBackground} />
-      <div class={styles.GameContainer}>
-        <For each={gameKey()}>{() => (
-          <Game
-            score={score()}
-            time={timer.current / 1000}
-            duration={gameConfig().duration}
-            judgeDelay={gameConfig().judgeDelay}
-          />
-        )}</For>
-      </div>
+      <Show when={mode() !== "source"}>
+
+        <div class={styles.ViewBackground} />
+        <div class={styles.GameContainer}>
+          <For each={gameKey()}>{() => (
+            <Game
+              readOnly={mode() !== "play"}
+              score={score()}
+              time={timer.current / 1000}
+              duration={gameConfig().duration}
+              judgeDelay={gameConfig().judgeDelay}
+              onGameOver={(e) => result(e)}
+            />
+          )}</For>
+        </div>
+      </Show>
+      <Show when={mode() === "ready"}>
+        <div class={styles.ReadyScreen}
+          tabIndex={0}
+          onClick={() => resume()}
+          onKeyDown={() => resume()}
+        >
+          <h2>Get Ready!</h2>
+          <p>"Tap the screen to start."</p>
+        </div>
+      </Show>
+      <Show when={mode() === "result"}>
+        <Show when={gameResult()}>{(gameResult) => (
+          <ResultScreen gameResult={gameResult()}>
+            <button
+              onClick={() => reset()}
+            >Reset</button>
+            <a href="..">exit</a>
+          </ResultScreen>
+        )}</Show>
+      </Show>
       <Show when={mode() === "pause"}>
         <div class={styles.PauseScreen}>
-          <button
-            onClick={() => resume()}
-          >Resume</button>
-          <button
-            onClick={() => reset()}
-          >Reset</button>
-          <div class={styles.Header}>
-            <a href="..">exit</a>
+          <div>
+            <button
+              onClick={() => resume()}
+            >Resume</button>
+            <button
+              onClick={() => reset()}
+            >Reset</button>
+            <div class={styles.Header}>
+              <a href="..">exit</a>
+            </div>
           </div>
+          <EditGameConfig value={gameConfig} />
         </div>
       </Show>
       <button class={styles.PauseButton}
         onClick={() => mode() === "play" ? pause() : resume()}
       >
         {mode() === "play" ? "Pause" : "Resume"}
+      </button>
+      <button class={styles.ViewSourceButton}
+        onClick={() => mode() === "source" ? pause() : viewSource()}
+      >
+        {mode() === "source" ? "View Game" : "View Source"}
       </button>
     </div>
   );

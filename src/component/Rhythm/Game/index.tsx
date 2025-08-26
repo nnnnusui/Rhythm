@@ -1,5 +1,5 @@
 import { createElementSize } from "@solid-primitives/resize-observer";
-import { createEffect, createSignal, For, Show } from "solid-js";
+import { createEffect, createSignal, For, Show, untrack } from "solid-js";
 import type { JSX } from "solid-js";
 
 import { Objects } from "~/fn/objects";
@@ -24,6 +24,7 @@ export const Game = (p: {
   judgeDelay: number;
   duration: number;
   ghost?: boolean;
+  readOnly?: boolean;
   onGameOver?: (event: GameResultEvent) => void;
 }) => {
   const keyframes = () => Object.values(p.score.timeline.keyframeMap);
@@ -51,22 +52,26 @@ export const Game = (p: {
   });
 
   createKeyboardInput({
+    get enabled() { return !p.readOnly; },
     judge,
     getJudgeAreas: judgeAreas,
   });
 
-  const [overed, setOvered] = createSignal(false);
+  const [overed, setOvered] = createSignal(true);
   createEffect(() => {
     if (p.time < p.score.length) return setOvered(false);
-    if (overed()) return;
-    setOvered(true);
-    p.onGameOver?.({
-      judgedMap: judge.judgedMap(),
-      noteCount: notes().length,
+    untrack(() => {
+      if (overed()) return;
+      setOvered(true);
+      p.onGameOver?.({
+        judgedMap: judge.judgedMap(),
+        noteCount: notes().length,
+      });
     });
   });
 
   const pointer = createPointerInput({
+    get enabled() { return !p.readOnly; },
     judge,
     playArea,
     maxOrder,
@@ -175,7 +180,7 @@ export const Game = (p: {
         )}</Show>
       </div>
       <div class={styles.DebugInfo}>
-        <span>time: {p.time}</span>
+        <span>time: {p.time.toFixed(3)}</span>
         <span>duration: {p.duration}</span>
         <span>judgeDelay: {p.judgeDelay}</span>
       </div>

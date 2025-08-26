@@ -3,6 +3,7 @@ import { GameConfig } from "../../type/GameConfig";
 
 import styles from "./EditGameConfig.module.css";
 
+/** @public */
 export const EditGameConfig = (p: {
   value: Wve<GameConfig>;
 }) => {

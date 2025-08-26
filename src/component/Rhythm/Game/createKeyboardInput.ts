@@ -5,17 +5,19 @@ import { createJudge } from "./createJudge";
 import { JudgeArea } from "../type/JudgeArea";
 
 export const createKeyboardInput = (p: {
+  enabled?: boolean;
   judge: ReturnType<typeof createJudge>;
   getJudgeAreas: () => JudgeArea[];
 }) => {
   const getJudgeAreaFromKey = (key: string) => {
-    const keys = "asdjkl".split("");
+    const keys = "asdfghjkl".split("");
     const index = keys.indexOf(key);
     if (index === -1) return;
     return p.getJudgeAreas()[index];
   };
 
   const keyDown = (event: KeyboardEvent) => {
+    if (!p.enabled) return;
     if (event.repeat) return;
     const judgeArea = getJudgeAreaFromKey(event.key);
     if (!judgeArea) return;
@@ -23,6 +25,7 @@ export const createKeyboardInput = (p: {
   };
 
   const keyUp = (event: KeyboardEvent) => {
+    if (!p.enabled) return;
     const judgeArea = getJudgeAreaFromKey(event.key);
     if (!judgeArea) return;
     p.judge.onRelease(judgeArea.id);

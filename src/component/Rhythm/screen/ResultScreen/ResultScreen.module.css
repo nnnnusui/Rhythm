@@ -1,0 +1,25 @@
+.ResultScreen {
+  position: absolute;
+  inset: 0;
+
+  background-color: rgba(0, 0, 0, 0.6);
+
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.JudgeCountsContainer {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0 8px;
+
+  .JudgeKind {
+    font-weight: bold;
+  }
+
+  .JudgeCount {
+    text-align: right;
+  }
+}

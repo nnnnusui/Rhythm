@@ -7,6 +7,7 @@ import { createJudge } from "./createJudge";
 import { JudgeArea } from "../type/JudgeArea";
 
 export const createPointerInput = (p: {
+  enabled?: boolean;
   judge: ReturnType<typeof createJudge>;
   playArea: () => HTMLElement | undefined;
   maxOrder: () => number;
@@ -23,6 +24,7 @@ export const createPointerInput = (p: {
   const pointerJudgeAreaIdMap = Wve.create<Record<number, Id>>({});
 
   const onPointerDown: JSX.EventHandler<HTMLElement, PointerEvent> = (event) => {
+    if (!p.enabled) return;
     const pos = Pos.fromEvent(event, { relativeTo: p.playArea() });
     const judgeArea = getJudgeAreaFromPos(pos);
     if (!judgeArea) return;
@@ -31,6 +33,7 @@ export const createPointerInput = (p: {
   };
 
   const onPointerUp: JSX.EventHandler<HTMLElement, PointerEvent> = (event) => {
+    if (!p.enabled) return;
     const judgeAreaId = pointerJudgeAreaIdMap()[event.pointerId];
     const judgeArea = p.getJudgeAreaMap()[judgeAreaId ?? -1];
     if (!judgeArea) return;
