@@ -1,12 +1,14 @@
 import { createElementSize } from "@solid-primitives/resize-observer";
-import { createSignal, For } from "solid-js";
+import { createEffect, createSignal, For, Show } from "solid-js";
 import type { JSX } from "solid-js";
 
 import { Objects } from "~/fn/objects";
+import { Id } from "~/type/struct/Id";
 import { Wve } from "~/type/struct/Wve";
 import { createJudge } from "./createJudge";
 import { createKeyboardInput } from "./createKeyboardInput";
 import { createPointerInput } from "./createPointerInput";
+import { Judge } from "./Judge";
 import { Lane } from "./Lane";
 import { LatestJudge } from "./LatestJudge";
 import { Note } from "./Note";
@@ -22,6 +24,7 @@ export const Game = (p: {
   judgeDelay: number;
   duration: number;
   ghost?: boolean;
+  onGameOver?: (event: GameResultEvent) => void;
 }) => {
   const keyframes = () => Object.values(p.score.timeline.keyframeMap);
   const judgeAreaMap = () => p.score.judgeAreaMap;
@@ -50,6 +53,17 @@ export const Game = (p: {
   createKeyboardInput({
     judge,
     getJudgeAreas: judgeAreas,
+  });
+
+  const [overed, setOvered] = createSignal(false);
+  createEffect(() => {
+    if (p.time < p.score.length) return setOvered(false);
+    if (overed()) return;
+    setOvered(true);
+    p.onGameOver?.({
+      judgedMap: judge.judgedMap(),
+      noteCount: notes().length,
+    });
   });
 
   const pointer = createPointerInput({
@@ -154,9 +168,11 @@ export const Game = (p: {
         <div class={styles.JudgeLine}
           style={{ "--marginBottom": `${judgeLineMarginBottomPx()}px` }}
         />
-        <LatestJudge
-          judge={judge.latestJudge()}
-        />
+        <Show when={judge.latestJudge()}>{(latestJudge) => (
+          <LatestJudge
+            judge={latestJudge()}
+          />
+        )}</Show>
       </div>
       <div class={styles.DebugInfo}>
         <span>time: {p.time}</span>
@@ -165,4 +181,10 @@ export const Game = (p: {
       </div>
     </div>
   );
+};
+
+/** @public */
+export type GameResultEvent = {
+  judgedMap: Record<Id, Judge>;
+  noteCount: number;
 };
