@@ -77,14 +77,15 @@ const EditorScreen = (p: {
       <div class={styles.ViewBackground}
         classList={{ [styles.Hidden]: viewMode() !== "play" }}
       />
-      <div class={styles.GameContainer}>
+      <div class={styles.GameContainer}
+        classList={{ [styles.Hidden]: viewMode() === "sourceControl" }}
+      >
         <For each={gameKey()}>{() => (
           <Game
             score={score()}
             time={timer.current / 1000}
             duration={gameConfig().duration}
             judgeDelay={gameConfig().judgeDelay}
-            ghost={viewMode() === "sourceControl"}
           />
         )}</For>
       </div>

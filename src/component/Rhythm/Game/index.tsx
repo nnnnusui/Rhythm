@@ -23,7 +23,6 @@ export const Game = (p: {
   time: number;
   judgeDelay: number;
   duration: number;
-  ghost?: boolean;
   readOnly?: boolean;
   onGameOver?: (event: GameResultEvent) => void;
 }) => {
@@ -127,9 +126,7 @@ export const Game = (p: {
   };
 
   return (
-    <div class={styles.Game}
-      classList={{ [styles.Ghost]: p.ghost }}
-    >
+    <div class={styles.Game}>
       <div class={styles.PlayArea}
         ref={setPlayArea}
         onPointerDown={pointer.onPointerDown}

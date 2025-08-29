@@ -2,12 +2,6 @@
   overflow: hidden;
 
   white-space: nowrap;
-
-  &.Ghost {
-    pointer-events: none;
-
-    opacity: .6;
-  }
 }
 
 .DebugInfo {
