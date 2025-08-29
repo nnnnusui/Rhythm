@@ -7,6 +7,7 @@ import { TimelineKeyframe } from "~/component/Rhythm/Editor/Timeline";
 import { Game, GameResultEvent } from "~/component/Rhythm/Game";
 import { PerUserStatus } from "~/component/Rhythm/PerUserStatus";
 import { ResultScreen } from "~/component/Rhythm/screen/ResultScreen";
+import { VolumeConfig } from "~/component/Rhythm/type/GameConfig";
 import { Score } from "~/component/Rhythm/type/Score";
 import { Objects } from "~/fn/objects";
 import { createTimer } from "~/fn/signal/createTimer";
@@ -80,15 +81,15 @@ const PlayScreen = (p: {
   return (
     <div class={styles.PlayScreen}>
       <ResourcePlayer
+        sourceMap={score().sourceMap}
+        timeline={playerTimeline()}
         playing={timer.measuring}
         offset={timer.offset}
         time={timer.current}
-        sourceMap={score().sourceMap}
-        timeline={playerTimeline()}
+        volume={VolumeConfig.getDecimal(gameConfig().volume, "music")}
         preload
       />
       <Show when={mode() !== "source"}>
-
         <div class={styles.ViewBackground} />
         <div class={styles.GameContainer}>
           <For each={gameKey()}>{() => (
@@ -98,6 +99,7 @@ const PlayScreen = (p: {
               time={timer.current / 1000}
               duration={gameConfig().duration}
               judgeDelay={gameConfig().judgeDelay}
+              volume={VolumeConfig.getDecimal(gameConfig().volume, "effect")}
               onGameOver={(e) => result(e)}
             />
           )}</For>

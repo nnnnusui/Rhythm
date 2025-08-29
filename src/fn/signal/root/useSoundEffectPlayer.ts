@@ -38,7 +38,7 @@ const createSoundEffectPlayer = () => {
     const sound = sourceMap()[id];
     if (!sound) return;
     const gainNode = context.createGain();
-    gainNode.gain.value = options?.gain ?? 0.6;
+    gainNode.gain.value = 0.6 * (options?.volume ?? 1.0);
     const source = context.createBufferSource();
     source.buffer = sound.buffer;
     source.connect(gainNode);
@@ -57,5 +57,5 @@ export const useSoundEffectPlayer = createRoot(createSoundEffectPlayer);
 
 type SoundEffectPlayer = {
   storeByFetch: (id: Id, url: string) => void;
-  play: (id: Id, options?: { gain: number }) => void;
+  play: (id: Id, options?: { volume: number }) => void;
 };

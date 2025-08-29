@@ -3,7 +3,9 @@ import { onMount } from "solid-js";
 import { Objects } from "~/fn/objects";
 import { useSoundEffectPlayer } from "~/fn/signal/root/useSoundEffectPlayer";
 
-export const createSoundEffectPlayer = () => {
+export const createSoundEffectPlayer = (p: {
+  volume: number;
+}) => {
   const sePlayer = useSoundEffectPlayer();
   const seIdMap = {
     ["judge.perfect"]: "/sound/judgePerfect.wav",
@@ -23,8 +25,8 @@ export const createSoundEffectPlayer = () => {
       const id = (targetId in seIdMap)
         ? targetId
         : "judge.great";
-      sePlayer.play(id);
+      sePlayer.play(id, { volume: p.volume });
     },
-    playTap: () => sePlayer.play("tap"),
+    playTap: () => sePlayer.play("tap", { volume: p.volume }),
   };
 };

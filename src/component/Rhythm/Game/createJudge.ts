@@ -13,8 +13,11 @@ export const createJudge = (p: {
   time: number;
   judgeDelay: number;
   notesMap: Record<Id, Note[]>;
+  seVolume: number;
 }) => {
-  const se = createSoundEffectPlayer();
+  const se = createSoundEffectPlayer({
+    get volume() { return p.seVolume; },
+  });
   const judgeMsMap: Record<JudgeKind, number> = {
     perfect: 40,
     great: 100,

@@ -23,6 +23,7 @@ export const Game = (p: {
   time: number;
   judgeDelay: number;
   duration: number;
+  volume: number;
   readOnly?: boolean;
   onGameOver?: (event: GameResultEvent) => void;
 }) => {
@@ -48,6 +49,7 @@ export const Game = (p: {
     get time() { return p.time; },
     get judgeDelay() { return p.judgeDelay; },
     get notesMap() { return notesMap(); },
+    get seVolume() { return p.volume;},
   });
 
   createKeyboardInput({

@@ -8,6 +8,7 @@ export const SoundCloudPlayer = (p: {
   url: string;
   playing: boolean;
   seekTo: number;
+  volume: number;
   preload: boolean;
 }) => {
   const id = createUniqueId();
@@ -42,22 +43,30 @@ export const SoundCloudPlayer = (p: {
     );
   };
 
-  const play = () => {
+  const setVolume = (ratio: number) => {
     if (!widget) return;
-    log("play.");
-    widget.setVolume(12);
-    widget.play();
-  };
-  const pause = () => {
-    if (!widget) return;
-    log("pause.");
-    widget.pause();
+    const baseVolume = 12;
+    log(`change volume to \`${baseVolume} * ${ratio}\`.`);
+    widget.setVolume(baseVolume * ratio);
   };
 
   const seekTo = (offset: number) => {
     if (!widget) return;
     log(`seek to ${offset}.`);
     widget.seekTo(offset);
+  };
+
+  const play = () => {
+    if (!widget) return;
+    log("play.");
+    setVolume(p.volume);
+    widget.play();
+  };
+
+  const pause = () => {
+    if (!widget) return;
+    log("pause.");
+    widget.pause();
   };
 
   let playingCache = untrack(() => p.playing);
@@ -69,6 +78,14 @@ export const SoundCloudPlayer = (p: {
     seekTo(untrack(() => Math.floor(p.seekTo)));
     if (p.playing) play();
     else pause();
+  });
+
+  let volumeCache = untrack(() => p.volume);
+  createEffect(() => {
+    // change volume
+    if (!widget) return;
+    if (volumeCache === p.volume) return;
+    setVolume(p.volume);
   });
 
   return (

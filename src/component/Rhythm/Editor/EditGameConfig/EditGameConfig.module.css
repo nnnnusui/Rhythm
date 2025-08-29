@@ -16,3 +16,13 @@
 
 .Duration{
 }
+
+.RangeInputContainer {
+  display: grid;
+  align-items: center;
+  grid-template-columns: .5fr 1fr;
+
+  > input[type="number"] {
+    min-width: 2.5em;
+  }
+}

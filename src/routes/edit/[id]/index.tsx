@@ -6,6 +6,7 @@ import { Editor, ViewMode } from "~/component/Rhythm/Editor";
 import { TimelineKeyframe } from "~/component/Rhythm/Editor/Timeline";
 import { Game } from "~/component/Rhythm/Game";
 import { PerUserStatus } from "~/component/Rhythm/PerUserStatus";
+import { VolumeConfig } from "~/component/Rhythm/type/GameConfig";
 import { Score } from "~/component/Rhythm/type/Score";
 import { Objects } from "~/fn/objects";
 import { createTimer } from "~/fn/signal/createTimer";
@@ -67,11 +68,12 @@ const EditorScreen = (p: {
       resetGame={resetGame}
     >
       <ResourcePlayer
+        sourceMap={score().sourceMap}
+        timeline={playerTimeline()}
         playing={timer.measuring}
         offset={timer.offset}
         time={timer.current}
-        sourceMap={score().sourceMap}
-        timeline={playerTimeline()}
+        volume={VolumeConfig.getDecimal(gameConfig().volume, "music")}
         preload
       />
       <div class={styles.ViewBackground}
@@ -86,6 +88,7 @@ const EditorScreen = (p: {
             time={timer.current / 1000}
             duration={gameConfig().duration}
             judgeDelay={gameConfig().judgeDelay}
+            volume={VolumeConfig.getDecimal(gameConfig().volume, "effect")}
           />
         )}</For>
       </div>

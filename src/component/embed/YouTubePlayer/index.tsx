@@ -8,6 +8,7 @@ export const YouTubePlayer = (p: {
   videoId: string;
   playing: boolean;
   seekTo: number;
+  volume: number;
   preload: boolean;
 }) => {
   const id = createUniqueId();
@@ -38,22 +39,30 @@ export const YouTubePlayer = (p: {
     });
   };
 
-  const play = () => {
+  const setVolume = (ratio: number) => {
     if (!player) return;
-    log("play.");
-    player.setVolume(30);
-    player.playVideo();
-  };
-  const pause = () => {
-    if (!player) return;
-    log("pause.");
-    player.pauseVideo();
+    const baseVolume = 30;
+    log(`change volume to \`${baseVolume} * ${ratio}\`.`);
+    player.setVolume(baseVolume * ratio);
   };
 
   const seekTo = (offset: number) => {
     if (!player) return;
     log(`seek to ${offset}.`);
     player.seekTo(offset);
+  };
+
+  const play = () => {
+    if (!player) return;
+    log("play.");
+    setVolume(p.volume);
+    player.playVideo();
+  };
+
+  const pause = () => {
+    if (!player) return;
+    log("pause.");
+    player.pauseVideo();
   };
 
   let playingCache = untrack(() => p.playing);
@@ -65,6 +74,14 @@ export const YouTubePlayer = (p: {
     seekTo(untrack(() => p.seekTo / 1000));
     if (p.playing) play();
     else pause();
+  });
+
+  let volumeCache = untrack(() => p.volume);
+  createEffect(() => {
+    // change volume
+    if (!player) return;
+    if (volumeCache === p.volume) return;
+    setVolume(p.volume);
   });
 
   return (

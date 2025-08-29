@@ -9,6 +9,7 @@ export const createBeatBeepPlayer = (p: {
   timer: Timer;
   beats: Beat[];
   play: boolean;
+  volume: number;
 }) => {
   const sePlayer = useSoundEffectPlayer();
   const seIdMap: Record<Beat["kind"], string> = {
@@ -32,7 +33,7 @@ export const createBeatBeepPlayer = (p: {
     const beat = currentBeat();
     if (!beat) return;
     const seId = seIdMap[beat.kind];
-    sePlayer.play(seId, { gain: 0.2 });
+    sePlayer.play(seId, { volume: p.volume });
   });
 
   return {

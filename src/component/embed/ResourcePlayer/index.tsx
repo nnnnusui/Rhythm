@@ -14,6 +14,7 @@ export const ResourcePlayer = (p: {
   playing: boolean;
   offset: number;
   time: number;
+  volume: number;
   preload?: boolean;
 }) => {
   const operated = useOperated();
@@ -50,6 +51,7 @@ export const ResourcePlayer = (p: {
                   videoId={source().videoId}
                   playing={playing()}
                   seekTo={seekTo()}
+                  volume={p.volume}
                   preload={preload()}
                 />
               )}</Match>
@@ -58,6 +60,7 @@ export const ResourcePlayer = (p: {
                   url={source().url}
                   playing={playing()}
                   seekTo={seekTo()}
+                  volume={p.volume}
                   preload={preload()}
                 />
               )}</Match>

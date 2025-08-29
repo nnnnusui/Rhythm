@@ -16,7 +16,7 @@ import { EditKeyframe } from "./EditKeyframe";
 import { EditScoreInfo } from "./EditScoreInfo";
 import { EditViewState } from "./EditViewState";
 import { Timeline, TimelineAction, TimelineKeyframe } from "./Timeline";
-import { GameConfig } from "../type/GameConfig";
+import { GameConfig, VolumeConfig } from "../type/GameConfig";
 import { Score } from "../type/Score";
 
 import styles from "./Editor.module.css";
@@ -33,6 +33,8 @@ export const Editor = (p: {
   const child = children(() => p.children);
   const timer = Timer.from(() => p.timer);
   const score = Wve.from(() => p.score);
+  const viewMode = Wve.from(() => p.viewMode);
+  const gameConfig = Wve.from(() => p.gameConfig);
 
   const sourceMap = score.partial("sourceMap");
   const timeline = score.partial("timeline");
@@ -46,7 +48,6 @@ export const Editor = (p: {
     playBeatBeep: true,
     timelineAction: TimelineAction.init(),
   });
-  const viewMode = Wve.from(() => p.viewMode);
   const duration = local.partial("duration");
   const auxiliaryBeat = local.partial("auxiliaryBeat");
   const playBeatBeep = local.partial("playBeatBeep");
@@ -62,6 +63,7 @@ export const Editor = (p: {
     timer,
     get beats() { return beats(); },
     get play() { return playBeatBeep(); },
+    get volume() { return VolumeConfig.getDecimal(gameConfig().volume, "effect"); },
   });
 
   const resetGame = () => p.resetGame();
@@ -119,7 +121,7 @@ export const Editor = (p: {
         <Fps />
         <EditScoreInfo score={score} />
         <TimerInteraction timer={timer} />
-        <EditGameConfig value={p.gameConfig} />
+        <EditGameConfig value={gameConfig} />
         <EditViewState
           mode={viewMode}
           duration={duration}
