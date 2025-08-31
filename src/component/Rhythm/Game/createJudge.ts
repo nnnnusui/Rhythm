@@ -1,4 +1,4 @@
-import { batch, createEffect } from "solid-js";
+import { batch, createEffect, untrack } from "solid-js";
 
 import { Objects } from "~/fn/objects";
 import { Id } from "~/type/struct/Id";
@@ -138,6 +138,29 @@ export const createJudge = (p: {
               diffMs: 0,
             });
           });
+        });
+    });
+  });
+
+  createEffect(() => { // judge overlook (miss)
+    const notesMap = p.notesMap;
+    const time = p.time;
+    untrack(() => {
+      Objects.values(notesMap)
+        .flatMap((it) => it)
+        .forEach((note) => {
+          if (judgedMap()[note.id]) return;
+          const untilJudge = p.judgeDelay + note.offsetSeconds - time;
+          if (untilJudge > 0) return;
+          const diffMs = Math.abs(untilJudge) * 1000;
+          if (judgeMsMap["miss"] > diffMs) return;
+          const judge = {
+            kind: "miss",
+            untilSecond: untilJudge,
+            diffMs,
+          };
+          latestJudge.set(judge);
+          judgedMap.set(note.id, judge);
         });
     });
   });
