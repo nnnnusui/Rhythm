@@ -1,5 +1,5 @@
 import { useParams } from "@solidjs/router";
-import { createSignal, For, Show, untrack } from "solid-js";
+import { createSignal, For, Show } from "solid-js";
 
 import { ResourcePlayer } from "~/component/embed/ResourcePlayer";
 import { Editor, ViewMode } from "~/component/Rhythm/Editor";
@@ -20,11 +20,7 @@ export default function EditPage() {
   const status = Wve.create(PerUserStatus.init())
     .with(makePersisted({ name: "perUserStatus", init: PerUserStatus.init }));
   const scoreMap = status.partial("editingScoreMap");
-  const score = Wve.mayBe(() => {
-    const id = params.id;
-    if (!id) return;
-    return untrack(() => scoreMap).partial(id);
-  });
+  const score = scoreMap.partial(params.id ?? "");
   const gameConfig = status.partial("gameConfig");
 
   return (
@@ -32,7 +28,7 @@ export default function EditPage() {
       <div class={styles.Header}>
         <a href="..">back to prev</a>
       </div>
-      <Show when={score.when((it) => !!it)}>{(score) => (
+      <Show when={score.whenPresent()}>{(score) => (
         <EditorScreen
           score={score()}
           gameConfig={gameConfig}

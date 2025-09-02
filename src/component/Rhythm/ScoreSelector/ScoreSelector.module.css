@@ -177,10 +177,15 @@
   }
 }
 
+.PerScoreActions {
+  display: grid;
+  grid-auto-flow: column;
+  gap: 2em;
+}
+
 .NewButton {
   cursor: pointer;
 
-  margin-top: 18px;
   padding: 10px 28px;
   background: linear-gradient(90deg, #af8700 0%, #c09e2f 100%);
   box-shadow: 0 2px 8px #fda08555;
@@ -198,6 +203,30 @@
 
     background: linear-gradient(90deg, #fda085 0%, #f6d365 100%);
     box-shadow: 0 0 32px #af8700, 0 2px 16px #c09e2f;
+    border-color: #fff;
+  }
+}
+
+.ImportButton {
+  cursor: pointer;
+
+  padding: 10px 28px;
+  background: linear-gradient(90deg, #00fff7 60%, #00bfff 100%);
+  box-shadow: 0 2px 8px #4fd1c533;
+  border: none;
+  border-radius: 8px;
+  transition: background 0.15s, transform 0.12s;
+
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #181c2f;
+  text-shadow: 0 0 8px #00fff7, 0 0 2px #fff;
+
+  &:hover {
+    transform: scale(1.08);
+
+    background: linear-gradient(90deg, #00bfff 60%, #00fff7 100%);
+    box-shadow: 0 0 32px #00fff7, 0 2px 16px #00fff799;
     border-color: #fff;
   }
 }

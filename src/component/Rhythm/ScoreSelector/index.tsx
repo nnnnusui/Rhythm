@@ -1,5 +1,6 @@
 import { For, Show } from "solid-js";
 
+import { downloadJson } from "~/fn/downloadJson";
 import { Id } from "~/type/struct/Id";
 import { Wve } from "~/type/struct/Wve";
 import { Score } from "../type/Score";
@@ -17,6 +18,7 @@ export const ScoreSelector = (p: {
   scoreEntries: () => [Id, Score][];
   selectedScoreId: Wve<Id | undefined>;
   onNewScore: () => void;
+  onImport: () => void;
 }) => {
   const selectedScore = () => p.scoreEntries().find(([id]) => id === p.selectedScoreId())?.[1];
 
@@ -37,41 +39,50 @@ export const ScoreSelector = (p: {
             <div class={styles.ScoreTitle}>{score.title || id}</div>
           </div>
         )}</For>
-        <button class={styles.NewButton}
-          type="button"
-          onClick={() => p.onNewScore()}
-        >New</button>
+        <div class={styles.PerScoreActions}>
+          <button class={styles.ImportButton}
+            type="button"
+            onClick={() => p.onImport()}
+          >Import</button>
+          <button class={styles.NewButton}
+            type="button"
+            onClick={() => p.onNewScore()}
+          >New</button>
+        </div>
       </div>
-      <Show when={(() => {
-        const score = selectedScore();
-        const id = p.selectedScoreId();
-        return !!score && !!id;
-      })()}
-      >
+      <Show when={selectedScore()}>{(score) => (
         <div class={styles.ScoreDetails}>
           <img class={styles.DetailsThumbnail}
-            src={getThumbnail(selectedScore())}
+            src={getThumbnail(score())}
             alt="thumbnail"
           />
           <div class={styles.Description}>
-            <div class={styles.DetailsTitle}>{selectedScore()?.title || p.selectedScoreId()}</div>
-            <div class={styles.DetailsMeta}>ID: {p.selectedScoreId()}</div>
+            <div class={styles.DetailsTitle}>{score().title || score().id}</div>
+            <div class={styles.DetailsMeta}>ID: {score().id}</div>
             <div class={styles.DetailsDesc}>{
-              selectedScore()?.description || "No description."
+              score().description || "No description."
             }</div>
           </div>
           <div class={styles.DetailsActions}>
             <a
               class={styles.ActionButton}
-              href={`/play/${p.selectedScoreId()}`}
+              href={`/play/${score().id}`}
             >Play</a>
             <a
               class={styles.ActionButton}
-              href={`/edit/${p.selectedScoreId()}`}
+              href={`/edit/${score().id}`}
             >Edit</a>
+            <button
+              onClick={() => {
+                downloadJson({
+                  data: score(),
+                  filename: `${score().title || score().id}.json`,
+                });
+              }}
+            >Export</button>
           </div>
         </div>
-      </Show>
+      )}</Show>
     </div>
   );
 };

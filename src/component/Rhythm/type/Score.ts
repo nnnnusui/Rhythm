@@ -5,6 +5,7 @@ import { TimelineKeyframe } from "../Editor/Timeline";
 
 /** @public */
 export type Score = {
+  id: Id;
   title: string;
   description?: string;
   length: number;
@@ -18,6 +19,7 @@ export type Score = {
 /** @public */
 export const Score = (() => {
   const init = (): Score => ({
+    id: Id.new(),
     title: "",
     length: 100,
     sourceMap: {},
@@ -26,7 +28,23 @@ export const Score = (() => {
       keyframeMap: {},
     },
   });
+
+  const from = <T extends Score>(obj: T): Score => {
+    return {
+      id: obj.id,
+      title: obj.title,
+      description: obj.description,
+      length: obj.length,
+      sourceMap: obj.sourceMap,
+      judgeAreaMap: obj.judgeAreaMap,
+      timeline: {
+        keyframeMap: obj.timeline.keyframeMap,
+      },
+    };
+  };
+
   return {
     init,
+    from,
   };
 })();
