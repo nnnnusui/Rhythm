@@ -1,0 +1,111 @@
+.ScoreOverview {
+  height: 100%;
+
+  padding: 24px 32px;
+  background: linear-gradient(135deg, #181c2f 60%, #23264a 100%);
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  border-radius: 16px;
+  animation: fadeIn 0.3s;
+
+  display: grid;
+  justify-items: center;
+  align-items: center;
+  grid-template:
+    'thumbnail' 1fr
+    'description' auto
+    'controls' auto
+    / 1fr;
+  gap: 24px;
+
+  color: #00fff7;
+  text-shadow: 0 0 8px #00fff7, 0 0 2px #fff;
+}
+
+.Description {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+@keyframes fadeIn {
+
+  from {
+    transform: translateY(16px);
+
+    opacity: 0;
+  }
+
+  to {
+    transform: none;
+
+    opacity: 1;
+  }
+}
+
+.DetailsThumbnail {
+  height: 100px;
+
+  margin-bottom: 16px;
+  background: #181c2f;
+  object-fit: cover;
+  box-shadow: 0 0 24px #00fff7, 0 0 2px #fff;
+  border: 2px solid #00fff7;
+  border-radius: 14px;
+}
+
+.DetailsTitle {
+  margin-bottom: 8px;
+
+  font-weight: bold;
+  font-size: 1.3rem;
+  color: #00fff7;
+  text-shadow: 0 0 12px #00fff7, 0 0 2px #fff;
+}
+
+.DetailsMeta {
+  margin-bottom: 12px;
+
+  font-size: 0.95rem;
+  color: #00fff7;
+  text-shadow: 0 0 8px #00fff7, 0 0 2px #fff;
+}
+
+.DetailsDesc {
+  margin-bottom: 18px;
+
+  text-align: center;
+  font-size: 1rem;
+  color: #fff;
+  text-shadow: 0 0 8px #00fff7, 0 0 2px #fff;
+}
+
+.DetailsActions {
+  margin-top: 10px;
+
+  display: flex;
+  gap: 18px;
+}
+
+.ActionButton {
+  cursor: pointer;
+
+  padding: 10px 28px;
+  background: linear-gradient(90deg, #00fff7 60%, #00bfff 100%);
+  box-shadow: 0 2px 8px #4fd1c533;
+  border: none;
+  border-radius: 8px;
+  transition: background 0.15s, transform 0.12s;
+
+  font-weight: bold;
+  font-size: 1.1rem;
+  color: #181c2f;
+  text-shadow: 0 0 8px #00fff7, 0 0 2px #fff;
+
+  &:hover {
+    transform: scale(1.08);
+
+    background: linear-gradient(90deg, #00bfff 60%, #00fff7 100%);
+    box-shadow: 0 0 32px #00fff7, 0 2px 16px #00fff799;
+    border-color: #fff;
+  }
+}

@@ -51,6 +51,9 @@ export default function ScoreSelectPage() {
             });
           });
         }}
+        onDelete={(id) => {
+          scoreMap.set(id, undefined!);
+        }}
       />
     </main>
   );
