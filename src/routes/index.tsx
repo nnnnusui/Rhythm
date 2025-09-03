@@ -25,8 +25,8 @@ export default function ScoreSelectPage() {
         scoreEntries={scoreEntries}
         selectedScoreId={selectedScoreId}
         onNewScore={() => {
-          const id = Id.new();
-          scoreMap.set(id, Score.init());
+          const score = Score.init();
+          scoreMap.set(score.id, score);
         }}
         onImport={() => {
           openFileDialog({
