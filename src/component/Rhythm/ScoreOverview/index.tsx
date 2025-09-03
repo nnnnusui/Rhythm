@@ -9,9 +9,16 @@ export const ScoreOverview = (p: {
 }) => {
   const score = () => p.score;
   const exportJson = () => {
+    const version = new Date(score().version.current)
+      .toISOString()
+      .replaceAll("-", "")
+      .replaceAll(":", "")
+      .replace(/\.[0-9]{3}Z$/, "");
+    const title = score().title || score().id;
+    const filename = `${title}_${version}.json`;
     downloadJson({
       data: score(),
-      filename: `${score().title || score().id}.json`,
+      filename,
     });
   };
 

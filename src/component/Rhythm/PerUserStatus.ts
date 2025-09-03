@@ -16,10 +16,7 @@ export const PerUserStatus = (() => {
   const init = (base?: PerUserStatus): PerUserStatus => {
     if (!base) return {
       editingScoreMap: {},
-      gameConfig: {
-        duration: 1.2,
-        judgeDelay: 0,
-      },
+      gameConfig: GameConfig.init(),
     };
     return {
       ...base,

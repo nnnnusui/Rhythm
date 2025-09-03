@@ -14,7 +14,7 @@ export const EditScoreInfo = (p: {
         <span>title</span>
         <span>:</span>
         <input class={styles.Input}
-          type="string"
+          type="text"
           value={score().title}
           onChange={(event) => score.set("title", event.currentTarget.value)}
         />
@@ -28,6 +28,22 @@ export const EditScoreInfo = (p: {
           onChange={(event) => score.set("length", event.currentTarget.valueAsNumber)}
         />
       </label>
+      <div class={styles.Label}>
+        <span>version[current]</span>
+        <span>:</span>
+        <div class={styles.CurrentVersionInputBox}>
+          <button
+            onClick={() => {
+              score.set("version", "current", Score.Version.init().current);
+            }}
+          >↻</button>
+          <input class={styles.Input}
+            type="text"
+            value={score().version.current}
+            readOnly
+          />
+        </div>
+      </div>
     </fieldset>
   );
 };
