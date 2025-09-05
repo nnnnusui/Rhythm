@@ -1,7 +1,10 @@
 import { For, Show } from "solid-js";
 
+import { Button } from "~/component/ui/Button";
+import { Objects } from "~/fn/objects";
 import { Id } from "~/type/struct/Id";
 import { Wve } from "~/type/struct/Wve";
+import { ScoreImportButton } from "./ScoreImportButton";
 import { ScoreOverview } from "../ScoreOverview";
 import { Score } from "../type/Score";
 
@@ -9,22 +12,22 @@ import styles from "./ScoreSelector.module.css";
 
 /** @public */
 export const ScoreSelector = (p: {
-  scoreEntries: () => [Id, Score][];
+  scoreMap: Wve<Record<Id, Score>>;
   selectedScoreId: Wve<Id | undefined>;
-  onNewScore: () => void;
-  onImport: () => void;
-  onDelete: (id: Id) => void;
 }) => {
-  const selectedScore = () => p.scoreEntries().find(([id]) => id === p.selectedScoreId())?.[1];
+  const scoreMap = Wve.from(() => p.scoreMap);
+  const selectedScoreId = Wve.from(() => p.selectedScoreId);
+  const scoreEntries = () => Objects.entries(scoreMap());
+  const selectedScore = () => scoreMap()[selectedScoreId() || ""];
 
   return (
     <div class={styles.ScoreSelector}>
       <div class={styles.ScoreList}>
-        <For each={p.scoreEntries()}>{([id, score]) => (
+        <For each={scoreEntries()}>{([id, score]) => (
           <div
-            class={`${styles.ScoreCard} ${id === p.selectedScoreId() ? styles.Selected : ""}`}
+            class={`${styles.ScoreCard} ${id === selectedScoreId() ? styles.Selected : ""}`}
             onClick={() => {
-              p.selectedScoreId.set(id);
+              selectedScoreId.set(id);
             }}
           >
             <img class={styles.Thumbnail}
@@ -35,19 +38,20 @@ export const ScoreSelector = (p: {
           </div>
         )}</For>
         <div class={styles.PerScoreActions}>
-          <button class={styles.ImportButton}
-            type="button"
-            onClick={() => p.onImport()}
-          >Import</button>
-          <button class={styles.NewButton}
-            type="button"
-            onClick={() => p.onNewScore()}
-          >New</button>
+          <ScoreImportButton scoreMap={scoreMap} />
+          <Button class={styles.NewButton}
+            onAction={() => {
+              const score = Score.init();
+              scoreMap.set(score.id, score);
+            }}
+          >New</Button>
         </div>
       </div>
       <Show when={selectedScore()}>{(score) => (
         <ScoreOverview score={score()}
-          onDelete={() => p.onDelete(score().id)}
+          onDelete={() => {
+            scoreMap.set(score().id, undefined!);
+          }}
         />
       )}</Show>
     </div>
