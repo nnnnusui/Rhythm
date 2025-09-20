@@ -1,0 +1,9 @@
+.Menu {
+  background: rgba(0, 0, 0, 0.4);
+  box-shadow: 0px 20px 36px 0px rgba(0, 0, 0, 0.6);
+  border-color: black;
+
+  &::backdrop {
+    background-color: transparent;
+  }
+}

@@ -4,6 +4,7 @@ import { Portal } from "solid-js/web";
 import { Button } from "~/component/ui/Button";
 import { ModalStyled } from "~/component/ui/ModalStyled";
 import { openFileDialog } from "~/fn/openFileDialog";
+import { useLogger } from "~/fn/signal/root/useLogger";
 import { waitForChange } from "~/fn/waitForChange";
 import { Id } from "~/type/struct/Id";
 import { Wve } from "~/type/struct/Wve";
@@ -22,7 +23,9 @@ export const ScoreImportButton = (p: {
   const overwriteMap = Wve.create<Record<Id, "existed" | "imported">>({});
   const applyOverwrite = Wve.create(false);
 
-  const log = (text: string) => console.debug(text);
+  const logger = useLogger();
+  const log = logger.debug;
+
   const importScore = () => {
     log("Start import score...");
     log("Open file selection dialog.");

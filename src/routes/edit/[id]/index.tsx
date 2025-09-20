@@ -18,7 +18,7 @@ import styles from "./index.module.css";
 export default function EditPage() {
   const params = useParams();
   const status = Wve.create(PerUserStatus.init())
-    .with(makePersisted({ name: "perUserStatus", init: PerUserStatus.init }));
+    .with(makePersisted({ name: "perUserStatus", init: PerUserStatus.from }));
   const scoreMap = status.partial("editingScoreMap");
   const score = scoreMap.partial(params.id ?? "");
   const gameConfig = status.partial("gameConfig");

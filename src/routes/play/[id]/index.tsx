@@ -19,7 +19,7 @@ import styles from "./index.module.css";
 export default function PlayPage() {
   const params = useParams();
   const status = Wve.create(PerUserStatus.init())
-    .with(makePersisted({ name: "perUserStatus", init: PerUserStatus.init }));
+    .with(makePersisted({ name: "perUserStatus", init: PerUserStatus.from }));
   const scoreMap = status.partial("editingScoreMap");
   const score = Wve.mayBe(() => {
     const id = params.id;

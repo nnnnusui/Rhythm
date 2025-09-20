@@ -1,0 +1,15 @@
+.LogArea {
+  pointer-events: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 400px;
+  height: 120px;
+
+  background-color: rgba(0, 0, 0, 0.4);
+
+  overflow: auto;
+
+  white-space: nowrap;
+  font-size: 12px;
+}

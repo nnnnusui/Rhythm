@@ -1,6 +1,7 @@
 import { JSX, createEffect } from "solid-js";
 
 import { HeadlessProps } from "~/type/component/HeadlessProps";
+import { OrFn } from "~/type/OrFn";
 import { Wve } from "~/type/struct/Wve";
 
 /**
@@ -13,7 +14,7 @@ import { Wve } from "~/type/struct/Wve";
  */
 export const Modal = (p: HeadlessProps<{
   open: Wve<boolean>;
-  children: (p: ModalControls) => JSX.Element;
+  children: OrFn<JSX.Element, [ModalControls]>;
 }>) => {
   const open = Wve.from(() => p.open);
   let ref: HTMLDialogElement | undefined;
@@ -48,7 +49,7 @@ export const Modal = (p: HeadlessProps<{
         open.set(false);
       }}
     >
-      {p.children({ close })}
+      {OrFn.resolve(p.children, { close })}
     </dialog>
   );
 };
