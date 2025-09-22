@@ -25,6 +25,7 @@ export const Game = (p: {
   duration: number;
   volume: number;
   readOnly?: boolean;
+  disableAutoJudge?: boolean;
   onGameOver?: (event: GameResultEvent) => void;
 }) => {
   const keyframes = () => Object.values(p.score.timeline.keyframeMap);
@@ -49,7 +50,8 @@ export const Game = (p: {
     get time() { return p.time; },
     get judgeDelay() { return p.judgeDelay; },
     get notesMap() { return notesMap(); },
-    get seVolume() { return p.volume;},
+    get seVolume() { return p.volume; },
+    get disableAutoJudge() { return !!p.disableAutoJudge; },
   });
 
   createKeyboardInput({

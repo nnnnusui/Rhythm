@@ -72,6 +72,7 @@ const EditorScreen = (p: {
             duration={gameConfig().duration}
             judgeDelay={gameConfig().judgeDelay}
             volume={VolumeConfig.getDecimal(gameConfig().volume, "effect")}
+            disableAutoJudge
           />
         )}</For>
       </div>

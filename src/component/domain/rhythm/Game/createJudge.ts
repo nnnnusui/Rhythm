@@ -14,6 +14,7 @@ export const createJudge = (p: {
   judgeDelay: number;
   notesMap: Record<Id, Note[]>;
   seVolume: number;
+  disableAutoJudge: boolean;
 }) => {
   const se = createSoundEffectPlayer({
     get volume() { return p.seVolume; },
@@ -143,6 +144,7 @@ export const createJudge = (p: {
   });
 
   createEffect(() => { // judge overlook (miss)
+    if (p.disableAutoJudge) return;
     const notesMap = p.notesMap;
     const time = p.time;
     untrack(() => {
