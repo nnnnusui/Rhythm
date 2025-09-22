@@ -1,6 +1,6 @@
 import { createRoot } from "solid-js";
 
-import { PerUserStatus } from "~/component/Rhythm/PerUserStatus";
+import { PerUserStatus } from "~/component/domain/rhythm/PerUserStatus";
 import { Wve } from "~/type/struct/Wve";
 import { makePersisted } from "../makePersisted";
 

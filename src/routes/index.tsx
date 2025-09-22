@@ -1,5 +1,5 @@
+import { ScoreSelector } from "~/component/domain/rhythm/ScoreSelector";
 import { AppConfigInteraction } from "~/component/interaction/AppConfigInteraction";
-import { ScoreSelector } from "~/component/Rhythm/ScoreSelector";
 import { DropDownMenu } from "~/component/ui/DropDownMenu";
 import { usePerUserStatus } from "~/fn/signal/root/usePerUserStatus";
 import { usePlaybackState } from "~/fn/signal/root/usePlaybackState";

@@ -1,7 +1,7 @@
 import { createElementSize } from "@solid-primitives/resize-observer";
 import { createSignal, For, Show } from "solid-js";
 
-import { JudgeArea } from "~/component/Rhythm/type/JudgeArea";
+import { JudgeArea } from "~/component/domain/rhythm/type/JudgeArea";
 import { Objects } from "~/fn/objects";
 import { Pos } from "~/type/struct/2d/Pos";
 import { Id } from "~/type/struct/Id";

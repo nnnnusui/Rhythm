@@ -1,7 +1,7 @@
 import { Show, Switch, Match } from "solid-js";
 
 import { DragDetector, OnDrag } from "~/component/detect/DragDetector";
-import { JudgeArea } from "~/component/Rhythm/type/JudgeArea";
+import { JudgeArea } from "~/component/domain/rhythm/type/JudgeArea";
 import { Pos } from "~/type/struct/2d/Pos";
 import { Id } from "~/type/struct/Id";
 import { Wve } from "~/type/struct/Wve";

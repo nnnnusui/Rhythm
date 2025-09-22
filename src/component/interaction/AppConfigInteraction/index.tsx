@@ -1,4 +1,4 @@
-import { AppConfig } from "~/component/Rhythm/type/AppConfig";
+import { AppConfig } from "~/component/domain/rhythm/type/AppConfig";
 import { Wve } from "~/type/struct/Wve";
 
 import styles from "./AppConfigInteraction.module.css";

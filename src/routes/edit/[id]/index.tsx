@@ -1,12 +1,12 @@
 import { useParams } from "@solidjs/router";
 import { createSignal, For, Show } from "solid-js";
 
+import { Editor, ViewMode } from "~/component/domain/rhythm/Editor";
+import { Game } from "~/component/domain/rhythm/Game";
+import { PerUserStatus } from "~/component/domain/rhythm/PerUserStatus";
+import { VolumeConfig } from "~/component/domain/rhythm/type/GameConfig";
+import { Score } from "~/component/domain/rhythm/type/Score";
 import { ResourcePlayerPortal } from "~/component/embed/ResourcePlayerPortal";
-import { Editor, ViewMode } from "~/component/Rhythm/Editor";
-import { Game } from "~/component/Rhythm/Game";
-import { PerUserStatus } from "~/component/Rhythm/PerUserStatus";
-import { VolumeConfig } from "~/component/Rhythm/type/GameConfig";
-import { Score } from "~/component/Rhythm/type/Score";
 import { usePerUserStatus } from "~/fn/signal/root/usePerUserStatus";
 import { usePlaybackState } from "~/fn/signal/root/usePlaybackState";
 import { Wve } from "~/type/struct/Wve";

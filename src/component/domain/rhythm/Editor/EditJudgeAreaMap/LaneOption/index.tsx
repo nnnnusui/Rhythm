@@ -1,4 +1,4 @@
-import { JudgeArea } from "~/component/Rhythm/type/JudgeArea";
+import { JudgeArea } from "~/component/domain/rhythm/type/JudgeArea";
 import { Wve } from "~/type/struct/Wve";
 
 import styles from "./LaneOption.module.css";

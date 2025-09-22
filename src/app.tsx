@@ -3,10 +3,10 @@ import { Router } from "@solidjs/router";
 import { FileRoutes } from "@solidjs/start/router";
 import { Show, Suspense } from "solid-js";
 
+import { TimelineKeyframe } from "./component/domain/rhythm/Editor/Timeline";
+import { VolumeConfig } from "./component/domain/rhythm/type/GameConfig";
 import { ResourcePlayer } from "./component/embed/ResourcePlayer";
 import { LogArea } from "./component/indicate/LogArea";
-import { TimelineKeyframe } from "./component/Rhythm/Editor/Timeline";
-import { VolumeConfig } from "./component/Rhythm/type/GameConfig";
 import { Objects } from "./fn/objects";
 import { useOperated } from "./fn/signal/root/useOperated";
 import { usePerUserStatus } from "./fn/signal/root/usePerUserStatus";
