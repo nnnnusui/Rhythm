@@ -30,10 +30,6 @@ export const ScoreSelector = (p: {
               selectedScoreId.set(id);
             }}
           >
-            <img class={styles.Thumbnail}
-              src={getThumbnail(score)}
-              alt="thumbnail"
-            />
             <div class={styles.ScoreTitle}>{score.title || id}</div>
           </div>
         )}</For>
@@ -56,10 +52,4 @@ export const ScoreSelector = (p: {
       )}</Show>
     </div>
   );
-};
-
-// TODO: サムネイル取得のダミー関数（本来はScoreにサムネイルURL等を持たせる）
-const getThumbnail = (score: Score | undefined) => {
-  // @ts-ignore
-  return (score && (score.thumbnailUrl || score.thumbnail || score.imageUrl)) || "/icon/note-flick.svg";
 };

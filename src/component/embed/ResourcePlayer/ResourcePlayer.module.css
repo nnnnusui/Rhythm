@@ -1,6 +1,28 @@
 .ResourcePlayer {
   position: absolute;
-  inset: 0;
+  top: var(--top, 0);
+  left: var(--left, 0);
+  width: var(--width, 100vw);
+  height: var(--height, 100vh);
+  z-index: var(--z-index);
+
+  border-radius: var(--border-radius, 0);
 
   overflow: hidden;
+}
+
+.ResourceTimelinePlayer {
+  position: absolute;
+  inset: 0;
+
+  display: grid;
+  justify-items: stretch;
+  align-items: stretch;
+  overflow: hidden;
+}
+
+.Hidden {
+  pointer-events: none;
+
+  opacity: 0;
 }

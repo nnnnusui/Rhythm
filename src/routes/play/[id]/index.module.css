@@ -2,8 +2,12 @@
   grid-area: header;
 }
 
-.PlayScreen {
+.Resource {
+  position: absolute;
+  inset: 0;
+}
 
+.PlayScreen {
 }
 
 .ViewBackground {
@@ -42,6 +46,7 @@
   position: absolute;
   top: 16px;
   right: 16px;
+  z-index: 1;
 }
 
 .PauseScreen {

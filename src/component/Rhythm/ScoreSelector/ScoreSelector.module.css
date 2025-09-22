@@ -1,6 +1,6 @@
 .ScoreSelector {
   padding: 32px;
-  background: linear-gradient(135deg, #0a0a1a 60%, #181c2f 100%);
+  background: linear-gradient(135deg, #0a0a1a90 60%, #181c2f90 100%);
 
   display: grid;
   grid-template:

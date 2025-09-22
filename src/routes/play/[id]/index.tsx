@@ -1,25 +1,22 @@
 import { useParams } from "@solidjs/router";
 import { createSignal, For, Show, untrack } from "solid-js";
 
-import { ResourcePlayer } from "~/component/embed/ResourcePlayer";
+import { ResourcePlayerPortal } from "~/component/embed/ResourcePlayerPortal";
 import { EditGameConfig } from "~/component/Rhythm/Editor/EditGameConfig";
-import { TimelineKeyframe } from "~/component/Rhythm/Editor/Timeline";
 import { Game, GameResultEvent } from "~/component/Rhythm/Game";
 import { PerUserStatus } from "~/component/Rhythm/PerUserStatus";
 import { ResultScreen } from "~/component/Rhythm/screen/ResultScreen";
 import { VolumeConfig } from "~/component/Rhythm/type/GameConfig";
 import { Score } from "~/component/Rhythm/type/Score";
-import { Objects } from "~/fn/objects";
-import { createTimer } from "~/fn/signal/createTimer";
-import { makePersisted } from "~/fn/signal/makePersisted";
+import { usePerUserStatus } from "~/fn/signal/root/usePerUserStatus";
+import { usePlaybackState } from "~/fn/signal/root/usePlaybackState";
 import { Wve } from "~/type/struct/Wve";
 
 import styles from "./index.module.css";
 
 export default function PlayPage() {
   const params = useParams();
-  const status = Wve.create(PerUserStatus.init())
-    .with(makePersisted({ name: "perUserStatus", init: PerUserStatus.from }));
+  const status = usePerUserStatus();
   const scoreMap = status.partial("editingScoreMap");
   const score = Wve.mayBe(() => {
     const id = params.id;
@@ -42,14 +39,10 @@ const PlayScreen = (p: {
   score: Wve<Score>;
   gameConfig: Wve<PerUserStatus["gameConfig"]>;
 }) => {
-  const timer = createTimer();
   const score = Wve.from(() => p.score);
-  const keyframeMap = score.partial("timeline", "keyframeMap");
-  const playerTimeline = () => TimelineKeyframe
-    .getNodes(Objects.values(keyframeMap()))
-    .sourceNodes;
-
   const gameConfig = Wve.from(() => p.gameConfig);
+  const { timer } = usePlaybackState();
+  timer.set(0);
   const [gameKey, setGameKey] = createSignal([{}]);
   const resetGame = () => setGameKey([{}]);
 
@@ -80,14 +73,8 @@ const PlayScreen = (p: {
 
   return (
     <div class={styles.PlayScreen}>
-      <ResourcePlayer
-        sourceMap={score().sourceMap}
-        timeline={playerTimeline()}
-        playing={timer.measuring}
-        offset={timer.offset}
-        time={timer.current}
-        volume={VolumeConfig.getDecimal(gameConfig().volume, "music")}
-        preload
+      <ResourcePlayerPortal class={styles.Resource}
+        asBackground={mode() !== "source"}
       />
       <Show when={mode() !== "source"}>
         <div class={styles.ViewBackground} />

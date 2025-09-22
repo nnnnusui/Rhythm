@@ -3,30 +3,64 @@ import { Router } from "@solidjs/router";
 import { FileRoutes } from "@solidjs/start/router";
 import { Show, Suspense } from "solid-js";
 
-import "./app.css";
+import { ResourcePlayer } from "./component/embed/ResourcePlayer";
 import { LogArea } from "./component/indicate/LogArea";
-import { PerUserStatus } from "./component/Rhythm/PerUserStatus";
-import { makePersisted } from "./fn/signal/makePersisted";
-import { Wve } from "./type/struct/Wve";
+import { TimelineKeyframe } from "./component/Rhythm/Editor/Timeline";
+import { VolumeConfig } from "./component/Rhythm/type/GameConfig";
+import { Objects } from "./fn/objects";
+import { useOperated } from "./fn/signal/root/useOperated";
+import { usePerUserStatus } from "./fn/signal/root/usePerUserStatus";
+import { usePlaybackState } from "./fn/signal/root/usePlaybackState";
+
+import styles from "./app.module.css";
+import "./app.css";
 
 export default function App() {
-  const status = Wve.create(PerUserStatus.init())
-    .with(makePersisted({ name: "perUserStatus", init: PerUserStatus.from }));
+  const status = usePerUserStatus();
+
   const appConfig = status.partial("appConfig");
+  const gameConfig = status.partial("gameConfig");
+  const scoreMap = status.partial("editingScoreMap");
+  const selectedScoreId = status.partial("editingScoreId");
+
+  const operated = useOperated();
+  const { timer, resourcePosition } = usePlaybackState();
+
+  const resourceBundleMap = () => Objects
+    .map(scoreMap(), (score) => ({
+      id: score.id,
+      sourceMap: score.sourceMap,
+      timeline: TimelineKeyframe
+        .getNodes(Objects.values(score.timeline.keyframeMap))
+        .sourceNodes,
+    }));
 
   return (
-    <Router
-      root={(props) => (
-        <MetaProvider>
-          <Title>Rhythm</Title>
-          <Suspense>{props.children}</Suspense>
-          <Show when={appConfig().showLogs}>
-            <LogArea />
-          </Show>
-        </MetaProvider>
-      )}
-    >
-      <FileRoutes />
-    </Router>
+    <Show when={operated()}>
+      <Router
+        root={(props) => (
+          <MetaProvider>
+            <Title>Rhythm</Title>
+            <main>
+              <Show when={appConfig().showLogs}>
+                <LogArea />
+              </Show>
+              <ResourcePlayer
+                resourceBundleMap={resourceBundleMap()}
+                selectedId={selectedScoreId()}
+                timer={timer}
+                volume={VolumeConfig.getDecimal(gameConfig().volume, "music")}
+                position={resourcePosition()}
+              />
+              <div class={styles.AppContainer}>
+                <Suspense>{props.children}</Suspense>
+              </div>
+            </main>
+          </MetaProvider>
+        )}
+      >
+        <FileRoutes />
+      </Router>
+    </Show>
   );
 }

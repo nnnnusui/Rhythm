@@ -13,6 +13,11 @@
   grid-area: header;
 }
 
+.Resource {
+  position: absolute;
+  inset: 0;
+}
+
 .ViewBackground {
   position: absolute;
   inset: 0;

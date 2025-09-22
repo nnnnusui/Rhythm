@@ -1,3 +1,4 @@
+import { ResourcePlayerPortal } from "~/component/embed/ResourcePlayerPortal";
 import { downloadJson } from "~/fn/downloadJson";
 import { Score } from "../type/Score";
 
@@ -24,9 +25,8 @@ export const ScoreOverview = (p: {
 
   return (
     <div class={styles.ScoreOverview}>
-      <img class={styles.DetailsThumbnail}
-        src={getThumbnail(score())}
-        alt="thumbnail"
+      <ResourcePlayerPortal
+        class={styles.DetailsThumbnail}
       />
       <div class={styles.Description}>
         <div class={styles.DetailsTitle}>{score().title || score().id}</div>
@@ -56,10 +56,4 @@ export const ScoreOverview = (p: {
       </div>
     </div>
   );
-};
-
-// TODO: サムネイル取得のダミー関数（本来はScoreにサムネイルURL等を持たせる）
-const getThumbnail = (score: Score | undefined) => {
-  // @ts-ignore
-  return (score && (score.thumbnailUrl || score.thumbnail || score.imageUrl)) || "/icon/note-flick.svg";
 };

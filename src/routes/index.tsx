@@ -1,19 +1,20 @@
 import { AppConfigInteraction } from "~/component/interaction/AppConfigInteraction";
-import { PerUserStatus } from "~/component/Rhythm/PerUserStatus";
 import { ScoreSelector } from "~/component/Rhythm/ScoreSelector";
 import { DropDownMenu } from "~/component/ui/DropDownMenu";
-import { makePersisted } from "~/fn/signal/makePersisted";
-import { Wve } from "~/type/struct/Wve";
+import { usePerUserStatus } from "~/fn/signal/root/usePerUserStatus";
+import { usePlaybackState } from "~/fn/signal/root/usePlaybackState";
 
 import styles from "./index.module.css";
 
 export default function ScoreSelectPage() {
-  const status = Wve.create(PerUserStatus.init())
-    .with(makePersisted({ name: "perUserStatus", init: PerUserStatus.from }));
+  const status = usePerUserStatus();
 
   const scoreMap = status.partial("editingScoreMap");
   const selectedScoreId = status.partial("editingScoreId");
   const appConfig = status.partial("appConfig");
+
+  const { timer } = usePlaybackState();
+  timer.start();
 
   return (
     <main class={styles.ScoreSelectPage}>

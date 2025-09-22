@@ -1,24 +1,21 @@
 import { useParams } from "@solidjs/router";
 import { createSignal, For, Show } from "solid-js";
 
-import { ResourcePlayer } from "~/component/embed/ResourcePlayer";
+import { ResourcePlayerPortal } from "~/component/embed/ResourcePlayerPortal";
 import { Editor, ViewMode } from "~/component/Rhythm/Editor";
-import { TimelineKeyframe } from "~/component/Rhythm/Editor/Timeline";
 import { Game } from "~/component/Rhythm/Game";
 import { PerUserStatus } from "~/component/Rhythm/PerUserStatus";
 import { VolumeConfig } from "~/component/Rhythm/type/GameConfig";
 import { Score } from "~/component/Rhythm/type/Score";
-import { Objects } from "~/fn/objects";
-import { createTimer } from "~/fn/signal/createTimer";
-import { makePersisted } from "~/fn/signal/makePersisted";
+import { usePerUserStatus } from "~/fn/signal/root/usePerUserStatus";
+import { usePlaybackState } from "~/fn/signal/root/usePlaybackState";
 import { Wve } from "~/type/struct/Wve";
 
 import styles from "./index.module.css";
 
 export default function EditPage() {
   const params = useParams();
-  const status = Wve.create(PerUserStatus.init())
-    .with(makePersisted({ name: "perUserStatus", init: PerUserStatus.from }));
+  const status = usePerUserStatus();
   const scoreMap = status.partial("editingScoreMap");
   const score = scoreMap.partial(params.id ?? "");
   const gameConfig = status.partial("gameConfig");
@@ -42,12 +39,8 @@ const EditorScreen = (p: {
   score: Wve<Score>;
   gameConfig: Wve<PerUserStatus["gameConfig"]>;
 }) => {
-  const timer = createTimer();
+  const { timer } = usePlaybackState();
   const score = Wve.from(() => p.score);
-  const keyframeMap = score.partial("timeline", "keyframeMap");
-  const playerTimeline = () => TimelineKeyframe
-    .getNodes(Objects.values(keyframeMap()))
-    .sourceNodes;
 
   const gameConfig = Wve.from(() => p.gameConfig);
   const [gameKey, setGameKey] = createSignal([{}]);
@@ -63,14 +56,8 @@ const EditorScreen = (p: {
       gameConfig={gameConfig}
       resetGame={resetGame}
     >
-      <ResourcePlayer
-        sourceMap={score().sourceMap}
-        timeline={playerTimeline()}
-        playing={timer.measuring}
-        offset={timer.offset}
-        time={timer.current}
-        volume={VolumeConfig.getDecimal(gameConfig().volume, "music")}
-        preload
+      <ResourcePlayerPortal class={styles.Resource}
+        asBackground={viewMode() !== "sourceControl"}
       />
       <div class={styles.ViewBackground}
         classList={{ [styles.Hidden]: viewMode() !== "play" }}
