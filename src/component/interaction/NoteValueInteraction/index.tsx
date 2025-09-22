@@ -17,7 +17,7 @@ export const NoteValueInteraction = <
   const numerator = applied.partial("numerator");
   const denominator = applied.partial("denominator");
 
-  const cache = Wve.create(untrack(() => applied() ?? NoteValue.from(0)));
+  const cache = Wve.create(untrack(() => applied() ?? NoteValue.from(1)));
   const disabled = () => !applied();
   const required = () => p.required ?? false;
 
@@ -34,15 +34,23 @@ export const NoteValueInteraction = <
       <input placeholder="numerator"
         type="number"
         value={numerator() ?? cache().numerator}
-        onChange={(event) => numerator.set(event.currentTarget.valueAsNumber)}
+        onChange={(event) => {
+          if (!event.currentTarget.checkValidity()) return;
+          numerator.set(event.currentTarget.valueAsNumber);
+        }}
         disabled={disabled()}
+        min={1}
       />
       /
       <input placeholder="denominator"
         type="number"
         value={denominator()?.[0] ?? cache().denominator[0]}
-        onChange={(event) => denominator.set(0, event.currentTarget.valueAsNumber)}
+        onChange={(event) => {
+          if (!event.currentTarget.checkValidity()) return;
+          denominator.set(0, event.currentTarget.valueAsNumber);
+        }}
         disabled={disabled()}
+        min={1}
       />
       <button class={styles.DeleteButton}
         type="button"
