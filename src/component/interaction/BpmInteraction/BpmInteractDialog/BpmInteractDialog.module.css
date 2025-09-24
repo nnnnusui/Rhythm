@@ -1,0 +1,63 @@
+.BpmInteractDialog {
+  margin: auto;
+  padding: 24px;
+  background: #222;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+  border-radius: 12px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+
+  &:not([open]) {
+    display: none;
+  }
+}
+
+.TapButton {
+  cursor: pointer;
+
+  padding: 12px 32px;
+  background: #4caf50;
+  border: none;
+  border-radius: 8px;
+  transition: background 0.2s;
+
+  font-size: 1.2rem;
+  color: #fff;
+}
+
+.TapButton:hover {
+  background: #388e3c;
+}
+
+.ResetButton {
+  cursor: pointer;
+
+  padding: 8px 24px;
+  background: #f44336;
+  border: none;
+  border-radius: 8px;
+  transition: background 0.2s;
+
+  font-size: 1rem;
+  color: #fff;
+}
+
+.ResetButton:hover {
+  background: #c62828;
+}
+
+.BpmDisplay {
+  margin-top: 8px;
+
+  font-weight: bold;
+  font-size: 1.5rem;
+  color: #fff;
+}
+
+.TapCount {
+  font-size: 1rem;
+  color: #bbb;
+}

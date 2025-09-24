@@ -6,12 +6,14 @@ import { HeadlessProps } from "~/type/component/HeadlessProps";
 export const Button = (p: HeadlessProps<{
   children: JSX.Element;
   onAction: () => void;
+  disabled?: boolean;
 }>) => {
 
   return (
     <button {...HeadlessProps.getStyles(p)}
       type="button"
       onClick={() => p.onAction()}
+      disabled={p.disabled}
     >
       {p.children}
     </button>

@@ -15,9 +15,15 @@ import { Wve } from "~/type/struct/Wve";
 export const Modal = (p: HeadlessProps<{
   open: Wve<boolean>;
   children: OrFn<JSX.Element, [ModalControls]>;
+  onClose?: () => void;
 }>) => {
   const open = Wve.from(() => p.open);
-  let ref: HTMLDialogElement | undefined;
+  let ref!: HTMLDialogElement;
+
+  const close = () => {
+    ref.close();
+    p.onClose?.();
+  };
 
   const closeIfBackdropClicked: JSX.EventHandler<HTMLDialogElement, MouseEvent> = (event) => {
     const target = event.currentTarget;
@@ -30,14 +36,12 @@ export const Modal = (p: HeadlessProps<{
       && left <= clientX
       && clientX <= left + width;
 
-    if (!inDialog) target.close();
+    if (!inDialog) close();
   };
 
-  const close = () => ref?.close();
-
   createEffect(() => {
-    if (!open()) return ref?.close();
-    ref?.showModal();
+    if (!open()) return ref.close();
+    ref.showModal();
   });
 
   return (

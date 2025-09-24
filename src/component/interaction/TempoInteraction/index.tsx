@@ -2,6 +2,7 @@ import { Show } from "solid-js";
 
 import { Tempo } from "~/type/struct/music/Tempo";
 import { Wve } from "~/type/struct/Wve";
+import { BpmInteraction } from "../BpmInteraction";
 import { NoteValueInteraction } from "../NoteValueInteraction";
 
 import styles from "./TempoInteraction.module.css";
@@ -31,13 +32,8 @@ export const TempoInteraction = <T extends Base>(p: {
       <NoteValueInteraction
         value={beat}
       />
-      <input placeholder="bpm"
-        type="number"
-        value={bpm()}
-        onChange={(event) => {
-          const value = event.currentTarget.valueAsNumber;
-          bpm.set(isNaN(value) ? undefined : value);
-        }}
+      <BpmInteraction
+        value={bpm}
       />
       <NoteValueInteraction
         value={timeSignature}
