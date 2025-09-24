@@ -1,15 +1,23 @@
 .LogArea {
+  --indent: 2em;
+  --padding: 4px;
   pointer-events: none;
   position: fixed;
   top: 0;
   left: 0;
-  width: 400px;
+  min-width: 400px;
+  max-width: 100%;
   height: 120px;
 
+  padding-top: var(--padding);
+  padding-left: calc(var(--padding) + var(--indent));
+  padding-right: var(--padding);
+  padding-bottom: var(--padding);
   background-color: rgba(0, 0, 0, 0.4);
 
   overflow: auto;
 
-  white-space: nowrap;
+  white-space: wrap;
+  text-indent: calc(var(--indent) * -1);
   font-size: 12px;
 }
