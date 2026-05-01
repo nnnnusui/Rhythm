@@ -9,7 +9,6 @@ import { ResourcePlayer } from "./component/embed/ResourcePlayer";
 import { LogArea } from "./component/indicate/LogArea";
 import { LoggerProvider, useLogger } from "./fn/context/LoggerContext";
 import { Objects } from "./fn/objects";
-import { useOperated } from "./fn/signal/root/useOperated";
 import { usePerUserStatus } from "./fn/signal/root/usePerUserStatus";
 import { usePlaybackState } from "./fn/signal/root/usePlaybackState";
 
@@ -26,7 +25,6 @@ export default function App() {
   const scoreMap = status.partial("editingScoreMap");
   const selectedScoreId = status.partial("editingScoreId");
 
-  const operated = useOperated();
   const { timer, resourcePosition } = usePlaybackState();
 
   const resourceBundleMap = () => Objects
@@ -39,35 +37,33 @@ export default function App() {
     }));
 
   return (
-    <Show when={operated()}>
-      <Router
-        root={(props) => (
-          <MetaProvider>
-            <Title>Rhythm</Title>
-            <main>
-              <Show when={appConfig().showLogs}>
-                <LogArea />
-              </Show>
-              <ResourcePlayer
-                resourceBundleMap={resourceBundleMap()}
-                selectedId={selectedScoreId()}
-                timer={timer}
-                volume={VolumeConfig.getDecimal(gameConfig().volume, "music")}
-                position={resourcePosition()}
-              />
-              <div class={styles.AppContainer}>
-                <Suspense>
-                  <LoggerProvider categories={[props.location.pathname]}>
-                    {props.children}
-                  </LoggerProvider>
-                </Suspense>
-              </div>
-            </main>
-          </MetaProvider>
-        )}
-      >
-        <FileRoutes />
-      </Router>
-    </Show>
+    <Router
+      root={(props) => (
+        <MetaProvider>
+          <Title>Rhythm</Title>
+          <main>
+            <Show when={appConfig().showLogs}>
+              <LogArea />
+            </Show>
+            <ResourcePlayer
+              resourceBundleMap={resourceBundleMap()}
+              selectedId={selectedScoreId()}
+              timer={timer}
+              volume={VolumeConfig.getDecimal(gameConfig().volume, "music")}
+              position={resourcePosition()}
+            />
+            <div class={styles.AppContainer}>
+              <Suspense>
+                <LoggerProvider categories={[props.location.pathname]}>
+                  {props.children}
+                </LoggerProvider>
+              </Suspense>
+            </div>
+          </main>
+        </MetaProvider>
+      )}
+    >
+      <FileRoutes />
+    </Router>
   );
 }
