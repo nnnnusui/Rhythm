@@ -49,6 +49,7 @@ export const ResourcePlayer = (p: {
           offset={p.timer.offset}
           time={p.timer.current}
           volume={p.volume}
+          inFront={p.position?.inFront}
         />
       )}</For>
     </div>

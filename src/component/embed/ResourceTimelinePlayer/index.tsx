@@ -15,6 +15,7 @@ export const ResourceTimelinePlayer = (p: HeadlessProps<{
   time: number;
   volume: number;
   preload?: boolean;
+  inFront?: boolean;
 }>) => {
   const operated = useOperated();
   const preload = () => p.preload ?? false;
@@ -53,6 +54,8 @@ export const ResourceTimelinePlayer = (p: HeadlessProps<{
                   seekTo={seekTo()}
                   volume={p.volume}
                   preload={preload()}
+                  isActive={p.playing}
+                  inFront={p.inFront}
                 />
               )}</Match>
               <Match when={Objects.when(it, (it) => it.kind === "SoundCloud")}>{(source) => (

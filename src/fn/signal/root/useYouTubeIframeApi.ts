@@ -4,8 +4,15 @@ import { isServer } from "solid-js/web";
 import { useLogger } from "~/fn/context/LoggerContext";
 import { Id } from "~/type/struct/Id";
 import { Wve } from "~/type/struct/Wve";
+import { useIframeCache } from "./useIframeCache";
 
-/** @public */
+/**
+ * Minimal surface of the YouTube iframe player instance used by this app.
+ *
+ * This type represents the player methods the cache needs after the YouTube API
+ * finishes initializing the embedded iframe.
+ * @public
+ */
 export type YouTubeIframe = {
   seekTo: (offset: number) => void;
   setVolume: (value: number) => void;
@@ -32,6 +39,12 @@ declare global {
   }
 }
 
+/**
+ * Loads the YouTube iframe API once and exposes the current global API object.
+ *
+ * The loader is rooted outside component instances so repeated renders do not
+ * repeatedly inject the script tag or reset the readiness state.
+ */
 const createYouTubeIframeApi = () => {
   const logger = useLogger(["createYouTubeIframeApi"]);
   if (isServer) return () => () => undefined;
@@ -61,52 +74,57 @@ const createYouTubeIframeApi = () => {
   return () => YT;
 };
 
-/** @public */
+/**
+ * Provides access to the shared YouTube iframe API loader.
+ * @public
+ */
 export const useYouTubeIframeApi = createRoot(createYouTubeIframeApi);
 
+/**
+ * Keeps YouTube iframe instances and player handles reusable across rerenders.
+ *
+ * This layer combines the global YouTube API with `useIframeCache` so the app can
+ * keep embedded players alive outside the JSX lifecycle, then mount them into the
+ * active view only when needed.
+ */
 const createYouTubePlayerCache = () => {
   const logger = useLogger(["createYouTubePlayerCache"]);
   if (isServer) return () => undefined;
   const api = useYouTubeIframeApi();
-  const players = Wve.create<Record<Id, {
-    iframe: HTMLIFrameElement;
-    ytPlayer?: YouTubeIframe;
-  }>>({});
+  const iframeCache = useIframeCache();
+  const ytPlayers = Wve.create<Record<Id, YouTubeIframe>>({});
 
-  const container = document.createElement("div");
-  onMount(() => {
-    logger.debug("loading...");
-    if (document.body.querySelector("div#YouTubePlayerContainer")) return;
-    container.id = "YouTubePlayerContainer";
-    container.style.display = "none";
-    document.body.prepend(container);
-  });
-
-  onCleanup(() => {
-    logger.debug("cleanup.");
-    container.remove();
-  });
-
+  /**
+   * Returns a cached player entry for a specific source.
+   *
+   * The first call creates the iframe and initializes the YouTube player when the
+   * API is ready. Later calls reuse the same iframe and player so playback state is
+   * not lost during component remounts or hot reloads.
+   */
   return (p: { elementId: string; videoId: string; preload?: boolean; targetElement: HTMLElement }) => {
-    const player = players.partial(p.elementId);
-    if (!player()?.iframe) {
+    const ytPlayer = ytPlayers.partial(p.elementId);
+    const iframe = iframeCache.get({ elementId: p.elementId });
+    if (!iframe) {
       logger.debug("create iframe.");
-      const protocol = window.location.protocol;
-      const params = new URLSearchParams({
-        enablejsapi: "1",
-        origin: document.location.origin,
-        rel: "0",
+      iframeCache.set({
+        elementId: p.elementId,
+        createIframe: (iframe) => {
+          const protocol = window.location.protocol;
+          const params = new URLSearchParams({
+            enablejsapi: "1",
+            origin: document.location.origin,
+            rel: "0",
+          });
+          const embedUrl = () => `${protocol}//www.youtube.com/embed/${p.videoId}?${params.toString()}`;
+          iframe.id = p.elementId;
+          iframe.src = embedUrl();
+          iframe.title = "YouTube iframe";
+          iframe.allow = "autoplay";
+          return iframe;
+        },
       });
-      const embedUrl = () => `${protocol}//www.youtube.com/embed/${p.videoId}?${params.toString()}`;
-      const iframe = document.createElement("iframe");
-      iframe.id = p.elementId;
-      iframe.src = embedUrl();
-      iframe.title = "YouTube iframe";
-      iframe.allow = "autoplay";
-      container.append(iframe);
-      player.set({ iframe });
     }
-    if (!player()?.ytPlayer) {
+    if (!ytPlayer()) {
       logger.debug("initialize ytPlayer.");
       const YT = api();
       if (!YT) return undefined;
@@ -114,25 +132,33 @@ const createYouTubePlayerCache = () => {
         videoId: p.videoId,
         events: {
           onReady: (event) => {
-            const ytPlayer = event.target;
-            player.set("ytPlayer", ytPlayer);
-
-            ytPlayer.setVolume(0);
+            const ytPlayerInstance = event.target;
+            ytPlayer.set(ytPlayerInstance);
+            ytPlayerInstance.setVolume(0);
             if (!p.preload) return;
-            ytPlayer.playVideo();
+            ytPlayerInstance.playVideo();
           },
         },
       });
     }
 
     return {
-      get iframe() { return player()?.iframe; },
-      get ytPlayer() { return player()?.ytPlayer; },
-      mount: (element: HTMLElement) => element.moveBefore(player()?.iframe!, null),
-      unmount: () => container.moveBefore(player()?.iframe!, null),
+      /** Returns the cached iframe element for direct access when needed. */
+      get iframe() { return iframeCache.get({ elementId: p.elementId }); },
+      /** Returns the initialized YouTube player handle if setup has completed. */
+      get ytPlayer() { return ytPlayer(); },
+      /** Mounts the cached iframe into the requested UI position. */
+      mount: (element: HTMLElement) => iframeCache.mount({ elementId: p.elementId, targetElement: element }),
+      /** Detaches the cached iframe from the active view without destroying it. */
+      unmount: () => iframeCache.unmount({ elementId: p.elementId }),
+      /** Applies fallback-only visibility and stacking control for browsers without `moveBefore`. */
+      setActive: (p: { elementId: string; active: boolean; inFront: boolean }) => iframeCache.setActive({ elementId: p.elementId, active: p.active, inFront: p.inFront }),
     };
   };
 };
 
-/** @public */
+/**
+ * Provides the shared YouTube player cache used by embed components.
+ * @public
+ */
 export const useYouTubePlayerCache = createRoot(createYouTubePlayerCache);

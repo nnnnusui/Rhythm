@@ -12,6 +12,8 @@ export const YouTubePlayer = (p: {
   seekTo: number;
   volume: number;
   preload: boolean;
+  isActive: boolean;
+  inFront?: boolean;
 }) => {
   const logger = useLogger([`YouTubePlayer:${untrack(() => p.sourceId)}`]);
   logger.info`Rendering...`;
@@ -20,14 +22,16 @@ export const YouTubePlayer = (p: {
   let player: YouTubeIframe | undefined;
   const playerCache = useYouTubePlayerCache({ targetElement: playerContainerRef, elementId: p.sourceId, videoId: p.videoId, preload: p.preload });
   onMount(() => {
-    const iframe = playerCache?.iframe;
-    if (!iframe) return;
+    if (!playerCache) return;
     playerCache.mount(playerContainerRef);
-    // playerContainerRef.moveBefore(iframe, null);
     player = playerCache.ytPlayer;
   });
   onCleanup(() => {
     playerCache?.unmount();
+  });
+  createEffect(() => {
+    console.log("YouTubePlayer props changed", { sourceId: p.sourceId, isActive: p.isActive, inFront: p.inFront });
+    playerCache?.setActive({ elementId: p.sourceId, active: p.isActive, inFront: p.inFront ?? false });
   });
 
   const setVolume = (ratio: number) => {
