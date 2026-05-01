@@ -15,4 +15,11 @@ export default defineConfig({
       target: "esnext",
     },
   },
+  ssr: false,
+  server: {
+    static: true,
+    prerender: {
+      crawlLinks: true,
+    },
+  },
 });
