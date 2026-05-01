@@ -29,8 +29,8 @@ export const makePersisted = <T>(options: {
 
   const [loaded, setLoaded] = createSignal(false);
   createEffect(() => {
-    if (!untrack(loaded)) return;
     if (!key) return;
+    if (!loaded()) return;
     persistentStorage.set(wve());
   });
 
