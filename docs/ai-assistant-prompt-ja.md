@@ -4,12 +4,23 @@
 各セクションの内容は、AIアシスタントへのプロンプトとして使用することを想定しています。
 
 ## Table of Contents <!-- omit from toc -->
+- [DocComment](#doccomment)
 - [Git](#git)
   - [When committing](#when-committing)
     - [Message format](#message-format)
     - [Message examples](#message-examples)
     - [Command examples](#command-examples)
     - [Message rules](#message-rules)
+
+## DocComment
+
+- DocComment は英語で記述する
+- TypeScript の型情報から自明な説明は繰り返さず、用途・目的・どういう場面で使うかを優先して書く
+- public API や、外部から見たときに意図が分かりにくい関数・値に対して記述する
+- 実装詳細の羅列ではなく、その機能が何を維持し、何を隠蔽し、何を呼び出し側に提供するかを書く
+- ブラウザ差異やフォールバック処理のように、利用者が知るべき前提があれば簡潔に含める
+- 既存の記述に `@public` がある場合は削除せず、DocComment の末尾に残す
+- 短く済むなら短く書き、冗長な説明にはしない
 
 ## Git
 
