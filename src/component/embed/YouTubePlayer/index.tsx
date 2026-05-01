@@ -1,46 +1,34 @@
-import { createEffect, createUniqueId, untrack } from "solid-js";
+import { createEffect, onCleanup, onMount, untrack } from "solid-js";
 
 import { useLogger } from "~/fn/context/LoggerContext";
-import { useYouTubeIframeApi, YouTubeIframe } from "~/fn/signal/root/useYouTubeIframeApi";
+import { useYouTubePlayerCache, YouTubeIframe } from "~/fn/signal/root/useYouTubeIframeApi";
 
 import styles from "./YouTubePlayer.module.css";
 
 export const YouTubePlayer = (p: {
+  sourceId: string;
   videoId: string;
   playing: boolean;
   seekTo: number;
   volume: number;
   preload: boolean;
 }) => {
-  const id = createUniqueId();
-  const logger = useLogger([`YouTubePlayer:${id}`]);
+  const logger = useLogger([`YouTubePlayer:${untrack(() => p.sourceId)}`]);
   logger.info`Rendering...`;
 
-  const api = useYouTubeIframeApi();
-  const protocol = window.location.protocol;
-  const params = new URLSearchParams({
-    enablejsapi: "1",
-    origin: document.location.origin,
-    rel: "0",
-  });
-  const embedUrl = () => `${protocol}//www.youtube.com/embed/${p.videoId}?${params.toString()}`;
-
+  let playerContainerRef!: HTMLDivElement;
   let player: YouTubeIframe | undefined;
-  const initPlayer = () => {
-    if (!api) return;
-    logger.debug("initialize.");
-    new api.Player(id, {
-      videoId: p.videoId,
-      events: {
-        onReady: (event) => {
-          player = event.target;
-          player.setVolume(0);
-          if (!p.preload) return;
-          player.playVideo();
-        },
-      },
-    });
-  };
+  const playerCache = useYouTubePlayerCache({ targetElement: playerContainerRef, elementId: p.sourceId, videoId: p.videoId, preload: p.preload });
+  onMount(() => {
+    const iframe = playerCache?.iframe;
+    if (!iframe) return;
+    playerCache.mount(playerContainerRef);
+    // playerContainerRef.moveBefore(iframe, null);
+    player = playerCache.ytPlayer;
+  });
+  onCleanup(() => {
+    playerCache?.unmount();
+  });
 
   const setVolume = (ratio: number) => {
     if (!player) return;
@@ -71,7 +59,7 @@ export const YouTubePlayer = (p: {
   let playingCache = untrack(() => p.playing);
   createEffect(() => {
     // Apply the current status to the player.
-    if (!player) initPlayer();
+    if (!player) player = playerCache?.ytPlayer;
     if (playingCache === p.playing) return;
     playingCache = p.playing;
     seekTo(untrack(() => p.seekTo / 1000));
@@ -88,12 +76,8 @@ export const YouTubePlayer = (p: {
   });
 
   return (
-    <iframe
-      title="YouTube iframe"
+    <div ref={playerContainerRef}
       class={styles.YouTubePlayer}
-      id={id}
-      src={embedUrl()}
-      allow="autoplay"
     />
   );
 };

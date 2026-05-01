@@ -47,6 +47,7 @@ export const ResourceTimelinePlayer = (p: HeadlessProps<{
             <Switch>
               <Match when={Objects.when(it, (it) => it.kind === "YouTube")}>{(source) => (
                 <YouTubePlayer
+                  sourceId={sourceId}
                   videoId={source().videoId}
                   playing={playing()}
                   seekTo={seekTo()}
