@@ -91,6 +91,11 @@ export const Timeline = (p: {
           editAction={p.action}
           pxFns={Px}
         />
+        <div class={styles.Cursor}
+          style={{
+            "--offset": `${Px.getPxFromSeconds(p.timer.current / 1000)}px`,
+          }}
+        />
       </ScrollBarTo>
       <ScrollBar
         progress={gameProgessPercentage()}
