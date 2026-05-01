@@ -1,16 +1,16 @@
 import { For } from "solid-js";
 
-import { useLogger } from "~/fn/signal/root/useLogger";
+import { useLogStore } from "~/fn/signal/root/useLogStore";
 
 import styles from "./LogArea.module.css";
 
 /** @public */
 export const LogArea = () => {
-  const logger = useLogger();
+  const logStore = useLogStore();
 
   return (
     <div class={styles.LogArea}>
-      <For each={logger.logs()}>{(line) => (
+      <For each={logStore.logs()}>{(line) => (
         <p>{line}</p>
       )}</For>
     </div>

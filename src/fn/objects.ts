@@ -1,3 +1,4 @@
+import { AnyObject } from "~/type/AnyObject";
 import { KeyOf } from "~/type/KeyOf";
 import { OmitOfValue } from "~/type/OmitOfValue";
 import { OptionalKeyOf } from "~/type/OptionalKeyOf";
@@ -65,7 +66,6 @@ export const Objects = (() => {
   };
 })();
 
-type AnyObject = Record<PropertyKey, unknown>;
 type Entry<T extends AnyObject> = {
   [Key in KeyOf<T>]: [key: Key, value: T[Key]]
 }[KeyOf<T>];

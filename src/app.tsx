@@ -7,6 +7,7 @@ import { TimelineKeyframe } from "./component/domain/rhythm/Editor/Timeline";
 import { VolumeConfig } from "./component/domain/rhythm/type/GameConfig";
 import { ResourcePlayer } from "./component/embed/ResourcePlayer";
 import { LogArea } from "./component/indicate/LogArea";
+import { LoggerProvider, useLogger } from "./fn/context/LoggerContext";
 import { Objects } from "./fn/objects";
 import { useOperated } from "./fn/signal/root/useOperated";
 import { usePerUserStatus } from "./fn/signal/root/usePerUserStatus";
@@ -16,6 +17,8 @@ import styles from "./app.module.css";
 import "./app.css";
 
 export default function App() {
+  const logger = useLogger();
+  logger.info`Rendering App...`;
   const status = usePerUserStatus();
 
   const appConfig = status.partial("appConfig");
@@ -53,7 +56,11 @@ export default function App() {
                 position={resourcePosition()}
               />
               <div class={styles.AppContainer}>
-                <Suspense>{props.children}</Suspense>
+                <Suspense>
+                  <LoggerProvider categories={[props.location.pathname]}>
+                    {props.children}
+                  </LoggerProvider>
+                </Suspense>
               </div>
             </main>
           </MetaProvider>

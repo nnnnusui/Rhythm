@@ -3,8 +3,8 @@ import { Portal } from "solid-js/web";
 
 import { Button } from "~/component/ui/Button";
 import { ModalStyled } from "~/component/ui/ModalStyled";
+import { useLogger } from "~/fn/context/LoggerContext";
 import { openFileDialog } from "~/fn/openFileDialog";
-import { useLogger } from "~/fn/signal/root/useLogger";
 import { waitForChange } from "~/fn/waitForChange";
 import { Id } from "~/type/struct/Id";
 import { Wve } from "~/type/struct/Wve";
@@ -24,11 +24,10 @@ export const ScoreImportButton = (p: {
   const applyOverwrite = Wve.create(false);
 
   const logger = useLogger();
-  const log = logger.debug;
 
   const importScore = () => {
-    log("Start import score...");
-    log("Open file selection dialog.");
+    logger.debug("Start import score...");
+    logger.debug("Open file selection dialog.");
     openFileDialog({
       contentTypes: ".json,application/json",
       multiple: true,
@@ -36,34 +35,34 @@ export const ScoreImportButton = (p: {
       batch(async () => {
         const scores = await Promise.all(
           files.map(async (file) => {
-            log(`Files selected for import: ${file.name}`);
+            logger.debug(`Files selected for import: ${file.name}`);
             const text = await file.text();
-            log(`loaded ${text.length} chars.`);
+            logger.debug(`loaded ${text.length} chars.`);
             const data = JSON.parse(text);
             return Score.from(data);
           }),
         );
         const scorePairs = scores
           .map((it) => ({ existed: scoreMap()[it.id], imported: it }));
-        log(`already exists count: ${scorePairs.filter((it) => !!it.existed).length}`);
+        logger.debug(`already exists count: ${scorePairs.filter((it) => !!it.existed).length}`);
         importingScores.set(scorePairs);
         open.set(true);
         await waitForChange(open);
         const apply = untrack(applyOverwrite);
         applyOverwrite.set(false);
         if (!apply) {
-          log("import canceled.");
+          logger.debug("import canceled.");
           return;
         }
-        log("import applied.");
+        logger.debug("import applied.");
         scorePairs.forEach(({ existed, imported }) => {
           const id = imported.id;
           const overwrite = overwriteMap()[id];
           const score = existed && overwrite === "existed" ? existed : imported;
-          log(`append score[${overwrite}]: ${id}`);
+          logger.debug(`append score[${overwrite}]: ${id}`);
           scoreMap.set(id, score);
         });
-        log("import done.");
+        logger.debug("import done.");
       });
     });
   };

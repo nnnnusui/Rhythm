@@ -1,6 +1,8 @@
 import { createRoot, createSignal, onCleanup, onMount } from "solid-js";
 import { isServer } from "solid-js/web";
 
+import { useLogger } from "~/fn/context/LoggerContext";
+
 /** @public */
 export type YouTubeIframe = {
   seekTo: (offset: number) => void;
@@ -28,7 +30,7 @@ declare global {
   }
 }
 
-const log = (message: string) => console.log(`[createYouTubeIframeApi] ${message}`);
+const logger = useLogger(["useYouTubeIframeApi"]);
 const createYouTubeIframeApi = () => {
   if (isServer) {
     return () => undefined;
@@ -36,7 +38,7 @@ const createYouTubeIframeApi = () => {
 
   const element = document.createElement("script");
   onMount(() => {
-    log("loading...");
+    logger.info("loading...");
     const scriptPath = "https://www.youtube.com/player_api";
     if (document.querySelector(`script[src="${scriptPath}"]`)) return;
     element.type = "text/javascript";
@@ -45,14 +47,14 @@ const createYouTubeIframeApi = () => {
   });
 
   onCleanup(() => {
-    log("cleanup.");
+    logger.info("cleanup.");
     element.remove();
     window.onYouTubeIframeAPIReady = () => {};
   });
 
   const [YT, setYT] = createSignal<YouTubeIframeApi | undefined>(window.YT);
   window.onYouTubeIframeAPIReady = () => {
-    log("loaded.");
+    logger.info("loaded.");
     setYT(window.YT);
   };
 

@@ -1,5 +1,6 @@
 import { createEffect, createUniqueId, untrack } from "solid-js";
 
+import { useLogger } from "~/fn/context/LoggerContext";
 import { useYouTubeIframeApi, YouTubeIframe } from "~/fn/signal/root/useYouTubeIframeApi";
 
 import styles from "./YouTubePlayer.module.css";
@@ -12,7 +13,9 @@ export const YouTubePlayer = (p: {
   preload: boolean;
 }) => {
   const id = createUniqueId();
-  const log = (message: string) => console.log(`[YouTubePlayer:${id}] ${message}`);
+  const logger = useLogger([`YouTubePlayer:${id}`]);
+  logger.info`Rendering...`;
+
   const api = useYouTubeIframeApi();
   const protocol = window.location.protocol;
   const params = new URLSearchParams({
@@ -25,7 +28,7 @@ export const YouTubePlayer = (p: {
   let player: YouTubeIframe | undefined;
   const initPlayer = () => {
     if (!api) return;
-    log("initialize.");
+    logger.debug("initialize.");
     new api.Player(id, {
       videoId: p.videoId,
       events: {
@@ -42,26 +45,26 @@ export const YouTubePlayer = (p: {
   const setVolume = (ratio: number) => {
     if (!player) return;
     const baseVolume = 30;
-    log(`change volume to \`${baseVolume} * ${ratio}\`.`);
+    logger.debug(`change volume to \`${baseVolume} * ${ratio}\`.`);
     player.setVolume(baseVolume * ratio);
   };
 
   const seekTo = (offset: number) => {
     if (!player) return;
-    log(`seek to ${offset}.`);
+    logger.debug(`seek to ${offset}.`);
     player.seekTo(offset);
   };
 
   const play = () => {
     if (!player) return;
-    log("play.");
+    logger.debug("play.");
     setVolume(p.volume);
     player.playVideo();
   };
 
   const pause = () => {
     if (!player) return;
-    log("pause.");
+    logger.debug("pause.");
     player.pauseVideo();
   };
 

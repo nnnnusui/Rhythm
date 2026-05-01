@@ -25,6 +25,7 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
+    "@logtape/logtape": "^2.0.6",
     "@solid-primitives/bounds": "^0.0.123",
     "@solid-primitives/deep": "^0.3.0",
     "@solid-primitives/raf": "^2.2.0",
@@ -38,7 +39,8 @@
     "clsx": "^2.1.1",
     "solid-js": "^1.9.3",
     "ts-deepmerge": "^7.0.2",
-    "ui7": "^0.2.3"
+    "ui7": "^0.2.3",
+    "zod": "^4.4.1"
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3.2.0",

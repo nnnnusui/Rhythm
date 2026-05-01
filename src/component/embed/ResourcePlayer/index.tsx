@@ -1,5 +1,6 @@
 import { For } from "solid-js";
 
+import { useLogger } from "~/fn/context/LoggerContext";
 import { Objects } from "~/fn/objects";
 import { Timer } from "~/fn/signal/createTimer";
 import { ResourcePosition } from "~/fn/signal/root/usePlaybackState";
@@ -16,6 +17,8 @@ export const ResourcePlayer = (p: {
   volume: number;
   position: ResourcePosition | undefined;
 }) => {
+  const logger = useLogger(["ResourcePlayer"]);
+  logger.info`Rendering...`;
 
   const cssVariables = () => {
     const bounds = p.position;

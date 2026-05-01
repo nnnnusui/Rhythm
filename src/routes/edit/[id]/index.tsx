@@ -7,16 +7,15 @@ import { PerUserStatus } from "~/component/domain/rhythm/PerUserStatus";
 import { VolumeConfig } from "~/component/domain/rhythm/type/GameConfig";
 import { Score } from "~/component/domain/rhythm/type/Score";
 import { ResourcePlayerPortal } from "~/component/embed/ResourcePlayerPortal";
-import { useLogger } from "~/fn/signal/root/useLogger";
+import { useLogger } from "~/fn/context/LoggerContext";
 import { usePerUserStatus } from "~/fn/signal/root/usePerUserStatus";
 import { usePlaybackState } from "~/fn/signal/root/usePlaybackState";
 import { Wve } from "~/type/struct/Wve";
 
 import styles from "./index.module.css";
 
-const logger = useLogger("EditPage");
-
 export default function EditPage() {
+  const logger = useLogger("EditPage");
   const params = useParams();
   const status = usePerUserStatus();
   const scoreMap = status.partial("editingScoreMap");
